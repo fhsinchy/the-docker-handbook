@@ -7,4 +7,6 @@
 * [Hello World in Docker](hello-world-in-docker.md)
 * [Manipulating Containers](manipulating-containers.md)
 * [Demonstration of Container Isolation](demonstration-of-container-isolation.md)
+* [Creating Custom Images](creating-custom-images.md)
+* [Conclusion](conclusion.md)
 

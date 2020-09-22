@@ -24,13 +24,13 @@
   * [Stopping or Killing a Running Container](manipulating-containers.md#stopping-or-killing-a-running-container)
   * [Mapping Ports](manipulating-containers.md#mapping-ports)
 * [Demonstration of Container Isolation](demonstration-of-container-isolation.md)
-* Creating Custom Images
-  * Image Creation Basics
-  * Creating an Executable Image
-  * Containerizing an Express Application
-  * Working with Volumes
-  * Multi-staged Builds
-  * Uploading Built Images to Docker Hub
+* [Creating Custom Images](creating-custom-images.md)
+  * [Image Creation Basics](creating-custom-images.md#image-creation-basics)
+  * [Creating an Executable Image](creating-custom-images.md#creating-an-executable-image)
+  * [Containerizing an Express Application](creating-custom-images.md#containerizing-an-express-application)
+  * [Working with Volumes](creating-custom-images.md#working-with-volumes)
+  * [Multi-staged Builds](creating-custom-images.md#multi-staged-builds)
+  * [Uploading Built Images to Docker Hub](creating-custom-images.md#uploading-built-images-to-docker-hub)
 * Working with Multi-container Applications using Docker - Compose
   * Compose Basics
   * Listing Services
@@ -39,5 +39,5 @@
   * Accessing Logs From a Running Service
   * Stopping Running Services
   * Composing a Full-stack Application
-* Conclusion
+* [Conclusion](conclusion.md)
 
