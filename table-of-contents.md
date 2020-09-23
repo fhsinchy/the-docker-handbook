@@ -31,13 +31,13 @@
   * [Working with Volumes](creating-custom-images.md#working-with-volumes)
   * [Multi-staged Builds](creating-custom-images.md#multi-staged-builds)
   * [Uploading Built Images to Docker Hub](creating-custom-images.md#uploading-built-images-to-docker-hub)
-* Working with Multi-container Applications using Docker - Compose
-  * Compose Basics
-  * Listing Services
-  * Executing Commands Inside a Running Service
-  * Starting Shell Inside a Running Service
-  * Accessing Logs From a Running Service
-  * Stopping Running Services
-  * Composing a Full-stack Application
+* [Working with Multi-container Applications using Docker - Compose](working-with-multi-container-applications-using-docker-compose.md)
+  * [Compose Basics](working-with-multi-container-applications-using-docker-compose.md#compose-basics)
+  * [Listing Services](working-with-multi-container-applications-using-docker-compose.md#listing-services)
+  * [Executing Commands Inside a Running Service](working-with-multi-container-applications-using-docker-compose.md#executing-commands-inside-a-running-service)
+  * [Starting Shell Inside a Running Service](working-with-multi-container-applications-using-docker-compose.md#starting-shell-inside-a-running-service)
+  * [Accessing Logs From a Running Service](working-with-multi-container-applications-using-docker-compose.md#accessing-logs-from-a-running-service)
+  * [Stopping Running Services](working-with-multi-container-applications-using-docker-compose.md#stopping-running-services)
+  * [Composing a Full-stack Application](working-with-multi-container-applications-using-docker-compose.md#composing-a-full-stack-application)
 * [Conclusion](conclusion.md)
 
