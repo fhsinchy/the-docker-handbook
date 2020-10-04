@@ -36,13 +36,16 @@ docker run hello-world
 
 The [hello-world](https://hub.docker.com/_/hello-world) image is an example of minimal containerization with Docker. It has a single [hello.c](https://github.com/docker-library/hello-world/blob/master/hello.c) file responsible for printing out the message you're seeing on your terminal.
 
-Almost every image contains a default command. In case of the hello-world image, the default command is to execute the _hello_ binary compiled from the previously mentioned C code.
+Now in your terminal, you can use the `docker ps -a` command to have a look at all the containers that are currently running or have run in the past:
 
-If you open up the dashboard again, you should find the hello-world container there:
+```text
+docker ps -a
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-03-at-1.35.49-AM.png)
+# CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
+# 631c9481eabd        hello-world         "/hello"            8 seconds ago       Exited (0) 7 seconds ago                       reverent_rhodes
+```
 
-The status is `EXITED(0)` which indicates that the container has run and exited successfully. You can view the _Logs_, _Stats \(CPU/memory/disk/network usage\)_ or _Inspect \(environment/port mappings\)_.
+As you can see in the output, a container was run with the container id of `631c9481eabd` using the `hello-world` image and has  The status is `EXITED(0)` which indicates that the container has run and exited successfully. You can view the _Logs_, _Stats \(CPU/memory/disk/network usage\)_ or _Inspect \(environment/port mappings\)_.
 
 ## Docker Architecture
 
