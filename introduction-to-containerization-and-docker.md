@@ -1,6 +1,6 @@
 # Introduction to Containerization and Docker
 
-Containerization is the process of encapsulating software code along with all of its dependencies inside a single package so that it can be run consistently anywhere.
+Containerization is the process of encapsulating software code along with all of its dependencies inside a single package, so that it can be run consistently anywhere.
 
 Docker is an open source containerization platform. It provides the ability to run applications in an isolated environment known as a container.
 
