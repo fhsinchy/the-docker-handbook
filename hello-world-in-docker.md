@@ -45,7 +45,9 @@ docker ps -a
 # 631c9481eabd        hello-world         "/hello"            8 seconds ago       Exited (0) 7 seconds ago                       reverent_rhodes
 ```
 
-As you can see in the output, a container was run with the container id of `631c9481eabd` using the `hello-world` image and has  The status is `EXITED(0)` which indicates that the container has run and exited successfully. You can view the _Logs_, _Stats \(CPU/memory/disk/network usage\)_ or _Inspect \(environment/port mappings\)_.
+As you can see in the output, a container named `reverent_rhodes` was run with the container id of `631c9481eabd` using the `hello-world` image and has `Exited (0) 7 seconds ago` where the `(0)` exit code means no error was produced during the runtime of the container.
+
+Now in order to understand how the entire thing happened behind the scenes, you'll have to get familiar with the Docker Architecture along with some very common terminology that you'll encounter on a daily basis.
 
 ## Docker Architecture
 
