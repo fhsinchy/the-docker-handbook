@@ -47,17 +47,38 @@ docker ps -a
 
 As you can see in the output, a container named `reverent_rhodes` was run with the container id of `631c9481eabd` using the `hello-world` image and has `Exited (0) 7 seconds ago` where the `(0)` exit code means no error was produced during the runtime of the container.
 
-Now in order to understand how the entire thing happened behind the scenes, you'll have to get familiar with the Docker Architecture along with some very common terminology that you'll encounter on a daily basis.
+Now in order to understand how the entire thing happened behind the scenes, you'll have to get familiar with the Docker Architecture and three very fundamental concepts which are as follows:
 
-## Docker Architecture
+* [Container](hello-world-in-docker.md#container)
+* [Image](hello-world-in-docker.md#image)
+* [Registry](hello-world-in-docker.md#registry)
 
-To understand what just happened, you need to get familiar with the Docker Architecture, Images and Containers, and Registries.
+I've listed the three concepts in alphabetical order and will begin my explanations with the first on on the list.
 
-![https://docs.docker.com/get-started/overview/\#docker-architecture](https://www.freecodecamp.org/news/content/images/2020/07/architecture-1.svg)
+## Container
 
-Don't worry if it looks confusing at the moment. Everything will become much clearer in the upcoming sub-sections.
+In the world of containerization, there can not be anything more fundamental than the concept of a container. According to our friends at [IBM](https://www.ibm.com/cloud/learn/containers#toc-what-are-c-ZHBio1VR), "Containers are an executable unit of software in which application code is packaged, along with its libraries and dependencies, in common ways so that it can be run anywhere, whether it be on desktop, traditional IT, or the cloud."
 
-## Images and Containers
+A virtual machine is the emulated equivalent of a physical computer system with their virtual CPU, memory, storage, and operating system.
+
+A program known as a hypervisor creates and runs virtual machines. The physical computer running a hypervisor is called the host system, while the virtual machines are called guest systems.
+
+![](.gitbook/assets/virtual-machines.svg)
+
+The hypervisor treats resources — like the CPU, memory, and storage — as a pool that can be easily reallocated between the existing guest virtual machines.
+
+Hypervisors are of two types:
+
+* Type 1 Hypervisor \(VMware vSphere, KVM, Microsoft Hyper-V\).
+* Type 2 Hypervisor \(Oracle VM VirtualBox, VMware Workstation Pro/VMware Fusion\).
+
+A container is an abstraction at the application layer that packages code and dependencies together. Instead of virtualizing the entire physical machine, containers virtualize the host operating system only.
+
+![](.gitbook/assets/containers.svg)
+
+Containers sit on top of the physical machine and its operating system. Each container shares the host operating system kernel and, usually, the binaries and libraries, as well.
+
+## Image
 
 Images are multi-layered self-contained files that act as the template for creating Docker containers. Images can be exchanged through registries. We can use any image built by others or can also modify them by adding new instructions.
 
@@ -65,7 +86,7 @@ Images can be created from [scratch](https://hub.docker.com/_/scratch) as well. 
 
 Containers are images in running state. When we pull an image like hello-world and run them, they create an isolated environment suitable for running the program included in the image. This isolated environment is a container.
 
-## Registries
+## Registry
 
 Registries are storage for Docker images. [Docker Hub](https://hub.docker.com/) is the default public registry for storing images.
 
