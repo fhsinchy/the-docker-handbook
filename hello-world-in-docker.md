@@ -57,26 +57,41 @@ I've listed the three concepts in alphabetical order and will begin my explanati
 
 ## Container
 
-In the world of containerization, there can not be anything more fundamental than the concept of a container. According to our friends at [IBM](https://www.ibm.com/cloud/learn/containers#toc-what-are-c-ZHBio1VR), "Containers are an executable unit of software in which application code is packaged, along with its libraries and dependencies, in common ways so that it can be run anywhere, whether it be on desktop, traditional IT, or the cloud."
+In the world of containerization, there can not be anything more fundamental than the concept of a container. 
 
-A virtual machine is the emulated equivalent of a physical computer system with their virtual CPU, memory, storage, and operating system.
+The official Docker [resources](https://www.docker.com/resources/what-container) site says, "A container is an abstraction at the application layer that packages code and dependencies together. Instead of virtualizing the entire physical machine, containers virtualize the host operating system only."
 
-A program known as a hypervisor creates and runs virtual machines. The physical computer running a hypervisor is called the host system, while the virtual machines are called guest systems.
+You may consider containers as the next generation of virtual machines. Just like virtual machines, containers are completely isolated from each other hence the chances of unwanted conflict between parts of an application, goes right out of the window. They are even a lot lighter than the traditional virtual machine hence a huge number of containers can be run simultaneously without affecting the performance of the host system.
+
+As you may have already understood, containers are virtual machines are actually different ways of virtualizing your physical hardware. The main difference between these two approaches is the method of virtualization.
+
+Virtual machines are usually created and managed by a program known as a hypervisor i.e. Oracle VM VirtualBox, VMware Workstation, KVM, Microsoft Hyper-V etc. This hypervisor program usually sits between the host operating system and the virtual machines to act as a medium of communication.
 
 ![](.gitbook/assets/virtual-machines.svg)
 
-The hypervisor treats resources — like the CPU, memory, and storage — as a pool that can be easily reallocated between the existing guest virtual machines.
+Each virtual machine comes with it's own guest operating system which is just as heavy as the host operating system. Application running inside a virtual machine communicates with the guest operating system running inside that virtual machine, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the virtual machines. 
 
-Hypervisors are of two types:
+As you can see there is a long chain of communication between applications running inside the virtual machines and the physical infrastructure, hence applications running inside virtual machines are slow and resource hogging.
 
-* Type 1 Hypervisor \(VMware vSphere, KVM, Microsoft Hyper-V\).
-* Type 2 Hypervisor \(Oracle VM VirtualBox, VMware Workstation Pro/VMware Fusion\).
-
-A container is an abstraction at the application layer that packages code and dependencies together. Instead of virtualizing the entire physical machine, containers virtualize the host operating system only.
+Unlike a virtual machine, a container does the job of virtualization in an intelligent way. Instead of having a complete guest operating system inside the containers, they just utilize the host operating system directly while maintaining isolation just like a traditional virtual machine.
 
 ![](.gitbook/assets/containers.svg)
 
-Containers sit on top of the physical machine and its operating system. Each container shares the host operating system kernel and, usually, the binaries and libraries, as well.
+Instead of a hypervisor, a container runtime i.e. Docker or rkt sits between the containers and the host operating system kernel. The containers then communicate with the container runtime which then communicates with host operating system to get necessary resources from the physical infrastructure.
+
+As you can see, containers eliminate the entire guest operating system layer making the containers a lot lighter and less resource hogging.
+
+As an demonstration of the point, look at the following code block:
+
+```text
+uname -a
+# Linux alpha-centauri 5.4.0-48-generic #52-Ubuntu SMP Thu Sep 10 10:58:49 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+docker run alpine uname -a
+# Linux 3ceffa5c9fe3 5.4.0-48-generic #52-Ubuntu SMP Thu Sep 10 10:58:49 UTC 2020 x86_64 Linux
+```
+
+In the code block above, I have executed the `uname -a` command on my host operating system to print out the kernel details. Then on the next line I've executed the same command inside a container running [Alpine Linux](https://alpinelinux.org/) inside it. As you can see from the outputs, the container is indeed using the kernel from my host operating system. This goes to prove the point that containers virtualize the host operating system instead of having an operating system of their own.
 
 ## Image
 
