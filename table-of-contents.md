@@ -9,6 +9,7 @@
   * [Container](hello-world-in-docker.md#container)
   * [Image](hello-world-in-docker.md#image)
   * [Registry](hello-world-in-docker.md#registry)
+  * [Docker Architecture](hello-world-in-docker.md#docker-architecture)
   * [The Full Picture](hello-world-in-docker.md#the-full-picture)
 * [Manipulating Containers](manipulating-containers.md)
   * [Running Containers](manipulating-containers.md#running-containers)
