@@ -111,11 +111,11 @@ You've already learned about two very important pieces of the puzzle, Container 
 
 ![](.gitbook/assets/docker-hub.png)
 
-You can share any number of public images on Docker Hub completely free. People around the world will be able to download them and use them freely. Images that I've uploaded are available for everyone on my [profile](https://hub.docker.com/u/fhsinchy) page.
+You can share any number of public images on Docker Hub completely free. People around the world will be able to download them and use them freely. Images that I've uploaded are available on my [profile](https://hub.docker.com/u/fhsinchy) page.
 
 ![](.gitbook/assets/my-images-on-docker-hub.png)
 
-Apart from Docker Hub, you can also create custom image repositories for hosting private images. There is also a local registry that runs within your computer. When you try to access an image, Docker first looks for it within your local computer registry and then reaches out to the remote one.
+Apart from Docker Hub, you can also create your own image repositories for hosting private images. There is also a local registry that runs within your computer that caches images pulled from remote registries.
 
 ## Docker Architecture
 
