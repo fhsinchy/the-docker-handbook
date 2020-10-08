@@ -12,7 +12,7 @@ Now if you make a list of the dependencies, that list will be as follows:
 * Express.js
 * SQLite3
 
-Well theoretically this should be it. But practically there is other stuff as well. [Node.js](https://nodejs.org/) uses a build tool known as `node-gyp` for building native add-ons and according to the [installation instruction](https://github.com/nodejs/node-gyp#installation) in the [official repository](https://github.com/nodejs/node-gyp), this build tool requires Python 2/3 and a proper C/C++ compiler tool-chain. Taking all these into account, the final list of dependencies as follows:
+Well theoretically this should be it. But practically there are some other stuff as well. Turns out [Node.js](https://nodejs.org/) uses a build tool known as `node-gyp` for building native add-ons and according to the [installation instruction](https://github.com/nodejs/node-gyp#installation) in the [official repository](https://github.com/nodejs/node-gyp), this build tool requires Python 2/3 and a proper C/C++ compiler tool-chain. Taking all these into account, the final list of dependencies is as follows:
 
 * Node.js
 * Express.js
@@ -20,25 +20,31 @@ Well theoretically this should be it. But practically there is other stuff as we
 * Python 2/3
 * C/C++ tool-chain
 
-Installing Python 2/3 is pretty straight forward regardless of the platform you're on. A C/C++ tool-chain is pretty easy to setup on Linux but on Windows and Mac, it's painful task. On Windows, the C++ build tools package measures at gigabytes and takes quite some time to install. On a Mac, there are two ways to get it done. You either install the gigantic [Xcode](https://developer.apple.com/xcode/) package or you install the much smaller [Command Line Tools for Xcode](https://developer.apple.com/downloads/) package. Regardless the one you install, it may break on OS updates. In fact the problem is so prevalent that there are [Installation notes for macOS Catalina](https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md) available on the official repository.
+Installing Python 2/3 is pretty straight forward regardless of the platform you're on. Setting-up C/C++ tool-chain is pretty easy on Linux but on Windows and Mac, it's a painful task. On Windows, the C++ build tools package measures at gigabytes and takes quite some time to install. On a Mac, you can either install the gigantic [Xcode](https://developer.apple.com/xcode/) application or you install the much smaller [Command Line Tools for Xcode](https://developer.apple.com/downloads/) package. Regardless of the one you install, it still may break on OS updates. In fact, the problem is so prevalent that there are [Installation notes for macOS Catalina](https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md) available on the official repository.
 
 Now let's assume that you've gone through all the hassles of setting up the dependencies and have started working on the project. Does that mean you're out of danger now? Of course not.
 
-What if you have a colleague who uses Windows while you're using Linux. Now you have to consider the inconsistencies of how these two different operating systems handle environment variables and paths.
+What if you have a teammate who uses Windows while you're using Linux. Now you have to consider the inconsistencies of how these two different operating systems handle paths. Or the fact that popular technologies like [nginx](https://nginx.org/) are not well optimized to run on Windows. Some technologies i.e. [Redis](https://redis.io/) doesn't even come pre-built for Windows.
 
-What if the person responsible for managing the servers doesn't have much knowledge on deploying Node.js applications or follows the wrong procedure \(because there is no one size fits all deployment process\)?
+Even if you get through the entire development phase, what if the person responsible for managing the servers follows the wrong deployment procedure?
 
-All these issues can be solved if only you can somehow put your application inside a single file \(known as an image\) along with all it's dependencies, necessary configurations and share it through a central server \(known as a registry\) that is accessible by anyone with the proper authorization. That's what containerization allows you to do.
+All these issues can be solved if only you could somehow:
 
-Your colleagues, then will be able to download the file, run it as it is and even deploy directly to a server because the application is already configured properly inside that image.
+* Develop the application inside an isolated environment that matches your final deployment environment.
+* Put your application inside a single file \(known as an image\) along with all it's dependencies, necessary deployment configurations.
+* And share that image through a central server \(known as a registry\) that is accessible by anyone with the proper authorization.
 
-#### Now the question is where does Docker come in?
+Your teammates, then will be able to download the image from the registry, run the application as it is within an isolated environment free from the platform specific inconsistencies or even deploy directly on a server given the image comes with all the proper production configurations.
 
-As I've already explained, containerization is an idea that makes your applications more portable by putting them into boxes. This very idea has quite a few implementations. Docker is such an implementation. It's an open-source containerization platform that allows you to containerize your applications, share them using public or private registries and also to orchestrate them.
+That is the idea behind containerization. Putting your applications inside a self contained package making it extremely portable and reproducible across various environments.
 
-Now, Docker is not the only containerization tool on the market, it's just the most popular one. Another containerization engine that I like is called [rkt](https://coreos.com/rkt/) or rocket. Developed by the amazing [CoreOS](https://coreos.com/) \(now part of Red Hat\) team, rkt is a security oriented container engine. rkt takes a pod native approach to containerization and was once the default container engine for Kubernetes.
+#### Now the question is "What role does Docker play here?"
 
-If you're curious about the other possible choices you have on the containerization scene, you may checkout the [rkt vs other projects](https://coreos.com/rkt/docs/latest/rkt-vs-other-projects.html) page on rkt's official documentation which covers almost all the good options.
+As I've already explained, containerization is an idea that solves myriad of problem in software development by putting things into boxes. This very idea has quite a few implementations. [Docker](https://www.docker.com/) is such an implementation. It's an open-source containerization platform that allows you to containerize your applications, share them using public or private registries and also to [orchestrate](https://docs.docker.com/get-started/orchestration/) them.
+
+Now, Docker is not the only containerization tool on the market, it's just the most popular one. Another containerization engine that I like is called [rkt](https://coreos.com/rkt/) or rocket. Developed by the amazing [CoreOS](https://coreos.com/) team \(now part of [Red Hat](https://www.redhat.com/)\), rkt is a security oriented container engine which takes a pod native approach to containerization and was once the default container engine for [Kubernetes](https://kubernetes.io/).
+
+If you're curious about the other possible choices you have on the containerization scene, you may checkout the [rkt vs other projects](https://coreos.com/rkt/docs/latest/rkt-vs-other-projects.html) page on rkt's official documentation.
 
 Also, if you want some history lessons, you may read the amazing [A Brief History of Containers: From the 1970s Till Now](https://blog.aquasec.com/a-brief-history-of-containers-from-1970s-chroot-to-docker-2016) article which covers most of the major turning points for the technology.
 
