@@ -116,13 +116,44 @@ docker container stop b6ada76e29c1
 # b6ada76e29c1
 ```
 
-If you use the name as identifier, you'll get the name thrown back to you as output. The `stop` sub-command shuts down a container gracefully by sending a `SIGTERM` signal. 
+If you use the name as identifier, you'll get the name thrown back to you as output. The `stop` sub-command shuts down a container gracefully by sending a `SIGTERM` signal. If the container doesn't stop within a grace period, a `SIGKILL` signal is sent which shuts down the container immediately.
+
+In case if you want to send a `SIGKILL` signal instead of a `SIGTERM` signal, you may use the `kill` sub-command instead. The `kill` sub-command follows the same syntax as the `stop` sub-command.
 
 ## Restarting Containers
 
-We've already used the `start` command to run a container. There is another command for starting containers called `restart`. Though the commands seem to serve the same purpose on the surface, they have a slight difference.
+When I say restart I mean two scenarios specifically. They are as follows:
 
-The `start` command starts containers that are not running. The `restart` command, however, kills a running container and starts that again. If we use `restart` with a stopped container then it'll function just as same as the `start` command.
+* Restarting a container that has been previously stopped or killed.
+* Rebooting a running container.
+
+As you've already learned from a previous section, stopped containers remain in your system. If you want you can actually restart them. The `start` sub-command can be used any existing container. The syntax of the command is as follows:
+
+```text
+docker container start <container identifier>
+```
+
+Just like the previous sub-commands, container identifier can be either the name or the id of the container. You can get the list of all stopped container by using the `ls` sub-command with the `--all` option:
+
+```text
+docker container ls --all
+
+# CONTAINER ID        IMAGE                                   COMMAND                  CREATED             STATUS                     PORTS               NAMES
+# b6ada76e29c1        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                         wonderful_bose
+# 88f876042021        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                         ecstatic_satoshi
+```
+
+For a change, I'll be using the container name instead of the id this time. Now to restart the `wonderful_bose` container, you may execute the following command:
+
+```text
+docker container start wonderful_bose
+
+# wonderful_bose
+```
+
+Now you can ensure that the container is running by looking at the list of running containers using the `ls` sub-command. The `start` command starts any container in detached mode by default and retains any port configurations made previously. So if you visit `http://127.0.0.1:8080` now, you should be able to access the `hello-dock` application just like before.
+
+Now, in scenarios where you would like to reboot a running container you may use the `restart` sub-command. The `restart` sub-command follows the exact syntax as the `start` sub-command.
 
 ## Cleaning Up Dangling Containers
 
