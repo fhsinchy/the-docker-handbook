@@ -1,73 +1,113 @@
 # Manipulating Containers
 
-In the previous section, we've had a brief encounter with the Docker client. It is the command-line interface program that takes our commands to the Docker daemon. In this section, you'll learn about more advanced ways of manipulating containers in Docker.
+In the previous sections, you've learned about the building blocks of Docker and have also run a container using the `docker run` command. In this section, you'll be learning about container manipulation in a lot more detail. Given container manipulation is one of the most common task you'll be performing every single day, having a proper understanding of the various commands is absolutely crucial.
+
+Keep in mind though, this is not an exhaustive list of all the commands you can execute on Docker. I'll be talking only about the most common ones. Anytime you want to learn more about the available commands, just visit the official [reference](https://docs.docker.com/engine/reference/commandline/container/) for the Docker CLI.
 
 ## Running Containers
 
-In the previous section, we've used `docker run` to create and run a container using the hello-world image. The generic syntax for this command is:
+In the previous section, you've used `docker run` to create and start a container using the `hello-world` image. The generic syntax for this command is:
 
 ```text
 docker run <image name>
 ```
 
-Here `image name` can be any image from Docker Hub or our local machine. I hope that you've noticed that I've been saying **create and run** and not just **run**, the reason behind that is the `docker run` command actually does the job of two separate docker commands. They are:
-
-1. `docker create <image name>` - creates a container from given image and returns the container id.
-2. `docker start <container id>` - starts a container by given id of a already created command.
-
-To create a container from the hello-world image execute the following command:
+Although this is a perfectly valid command, there is a better way of dispatching commands to the `docker` client. Prior to version `1.13`, Docker had only the command previously mentioned command syntax. Later on the CLI was [restructured](https://www.docker.com/blog/whats-new-in-docker-1-13/) to have the following syntax:
 
 ```text
-docker create hello-world
+docker <command> <sub-command> <options>
 ```
 
-The command should output a long string like `cb2d384726da40545d5a203bdb25db1a8c6e6722e5ae03a573d717cd93342f61` – this is the container id. This id can be used to start the built container.
-
-The first 12 characters of the container id are enough for identifying the container. Instead of using the whole string, using `cb2d384726da` should be fine.
-
-To start this container execute the following command:
+Where command is a logical docker object i.e. `container` and the sub-command is what was previously regarded as a command i.e. `run`. Following this syntax, the `docker run` command will be as follows:
 
 ```text
-docker start cb2d384726da
+docker container run <image name>
 ```
 
-You should get the container id back as output and nothing else. You may think that the container hasn't run properly. But if you check the dashboard, you'll see that the container has run and exited successfully.
+This is much more expressive and organized compared to the previously shown syntax. Throughout the rest of the article, I'll be following this syntax.
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-03-at-11.33.11-PM.png)
-
-What happened here is we didn't attach our terminal to the output stream of the container. UNIX and LINUX commands usually open three I/O streams when run, namely `STDIN`, `STDOUT`, and `STDERR`.
-
-If you want to learn more, there is an amazing [article](https://www.digitalocean.com/community/tutorials/an-introduction-to-linux-i-o-redirection) out there on the topic.
-
-To attach your terminal to the output stream of the container you have to use the `-a` or `--attach` option:
+In the `run` command, the `image name` can be any of image from an online registry or your local machine and `<options>` can be any valid parameter that changes the way the container runs. As an example, you can try to run a container using the [fhsinchy/hello-dock](https://hub.docker.com/repository/docker/fhsinchy/hello-dock) image. This image contains a simple [Vue.js](https://vuejs.org/) application that runs on port 80 inside the container. To run a container using this image, execute following command on your terminal:
 
 ```text
-docker start -a cb2d384726da
+docker container run --publish 8080:80 fhsinchy/hello-dock
+
+# /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+# /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+# /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+# 10-listen-on-ipv6-by-default.sh: Getting the checksum of /etc/nginx/conf.d/default.conf
+# 10-listen-on-ipv6-by-default.sh: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+# /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+# /docker-entrypoint.sh: Configuration complete; ready for start up
 ```
 
-If everything goes right, then you should see the following output:
+In this command:
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-04-at-12.02.16-AM.png)
+* `container` is the command which is a logical object in the world of Docker.
+* `run` is the sub-command which indicates the task that needs to be carried out.
+* `--publish` is an option of the `run` command used for publishing port 80 from inside the container to port 8080 of the local network.
+* `fhsinchy/hello-dock` is the mage name.
 
-We can use the `start` command to run any container that is not already running. Using `run` command will create a new container every time.
+Now in order to access the application, open up your browser and visit `http://127.0.0.1:8080` address.
+
+![](.gitbook/assets/hello-dock.png)
+
+The container can be stopped by simply hitting `Ctrl + C` key combination while the terminal window is in focus or closing off the terminal window completely.
+
+Another very popular option of the `run` sub-command is the `--detach` command. As you've seen in the example above, in order for the container to keep running, you had to keep the terminal window open. Closing the terminal window also stopped the running container.
+
+This is because by default containers run in the foreground and attach themselves to the terminal like any other normal program invoked from the terminal. In order to override this behavior and keep a container running in background, you can include the `--detach` option to the `run` sub-command as follows:
+
+```text
+docker container run --detach --publish 8080:80 fhsinchy/hello-dock
+
+# b6ada76e29c1327b3c4653f7599a30720cd0ae241afc5c868fbfd33fbae24563
+```
+
+Unlike the previous example, you won't get a wall of text thrown at you this time. Instead what you'll get is the ID of the newly created container.
+
+The order of the options you provide doesn't really matter. If you put the `--publish` option before the `--detach` option, it'll work just the same. One thing that you have to keep in mind in case of the `run` sub-command is that the image name must come at last. If you put anything after the image name then that'll be passed as an argument to the container itself and may result in unexpected situations.
 
 ## Listing Containers
 
-You may remember from the previous section, that the dashboard can be used for inspecting containers with ease.
+In the previous section you've learned about running containers both in foreground and background. In this section I'll show you how you can list out the containers currently running or has previously run in your system.
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-03-at-10.23.40-PM.png)
-
-It's a pretty useful tool for inspecting individual containers, but is too much for viewing a plain list of the containers. That's why there is a simpler way to do that. Execute the following command in your terminal:
+The `ls` sub-command can be used to list out containers that are currently running. To do so execute following command:
 
 ```text
-docker ps -a
+docker container ls
+
+# CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                  NAMES
+# b6ada76e29c1        fhsinchy/hello-dock   "/docker-entrypoint.…"   8 minutes ago       Up 8 minutes        0.0.0.0:8080->80/tcp   wonderful_bose
 ```
 
-And you should see a list of all the containers on your terminal.
+As you can see in the output, a container named `wanderful_bose` is running. In was created `8 minutes ago` and the status is the status is `Up 8 minutes,` which indicates that the container is running fine since it's creation.
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-03-at-10.25.36-PM.png)
+The id if the container is `b6ada76e29c1` which is the first 12 characters of the full container id. The full container id is `b6ada76e29c1327b3c4653f7599a30720cd0ae241afc5c868fbfd33fbae24563` which is 64 characters long. This full container id was printed as the output of the `docker container run` command in the previous section.
 
-The `-a` or `--all` option indicates that we want to see not only the running containers but also the stopped ones. Executing `ps` without the `-a` option will list out the running containers only.
+You can also see that port 8080 from your local network is pointing towards port 80 inside the container. The name `wanderful_bose` is generated by Docker and can be something completely different in your computer.
+
+The `ls` sub-command only lists the containers that are currently running on your system. In order to list out the containers that has run in the past you can use the `--all` option.
+
+```text
+docker container ls --all
+
+# CONTAINER ID        IMAGE                                   COMMAND                  CREATED             STATUS                        PORTS                  NAMES
+# b6ada76e29c1        fhsinchy/hello-dock                     "/docker-entrypoint.…"   20 minutes ago      Up 20 minutes                 0.0.0.0:8080->80/tcp   wonderful_bose
+# 88f876042021        fhsinchy/hello-dock                     "/docker-entrypoint.…"   33 minutes ago      Exited (0) 20 minutes ago                            ecstatic_satoshi
+```
+
+As you can see the second `ecstatic_satoshi` was created earlier and has exited with the status code 0, which indicates that no error was produced during the runtime of the container.
+
+## Stopping or Killing a Running Container
+
+Containers running in the foreground can be stopped by simply closing the terminal window or hitting `ctrl + c` key combination. Containers running in the background, however, can not be stopped in the same way.
+
+There are two commands for stopping a running container:
+
+* `docker stop <container id>` - attempts to stop the container gracefully by sending a `SIGTERM` signal to the container. If the container doesn't stop within a grace period, a `SIGKILL` signal is sent.
+* `docker kill <container id>` - stops the container immediately by sending a `SIGKILL` signal. A `SIGKILL` signal can not be ignored by a recipient.
+
+To stop a container with id `bb7fadc33178` execute `docker stop bb7fadc33178` command. Using `docker kill bb7fadc33178` will terminate the container immediately without giving a chance to clean up.
 
 ## Restarting Containers
 
@@ -251,17 +291,6 @@ You should see a wall of text appear on your terminal window.
 This is just a portion from the log output. You can kind of hook into the output stream of the container and get the logs in real-time by using the `-f` or `--follow` option.
 
 Any later log will show up instantly in the terminal as long as you don't exit by pressing `ctrl + c` key combination or closing the window. The container will keep running even if you exit out of the log window.
-
-## Stopping or Killing a Running Container
-
-Containers running in the foreground can be stopped by simply closing the terminal window or hitting `ctrl + c` key combination. Containers running in the background, however, can not be stopped in the same way.
-
-There are two commands for stopping a running container:
-
-* `docker stop <container id>` - attempts to stop the container gracefully by sending a `SIGTERM` signal to the container. If the container doesn't stop within a grace period, a `SIGKILL` signal is sent.
-* `docker kill <container id>` - stops the container immediately by sending a `SIGKILL` signal. A `SIGKILL` signal can not be ignored by a recipient.
-
-To stop a container with id `bb7fadc33178` execute `docker stop bb7fadc33178` command. Using `docker kill bb7fadc33178` will terminate the container immediately without giving a chance to clean up.
 
 ## Mapping Ports
 
