@@ -51,7 +51,7 @@ Now in order to access the application, open up your browser and visit `http://1
 
 ![](.gitbook/assets/hello-dock.png)
 
-The container can be stopped by simply hitting `Ctrl + C` key combination while the terminal window is in focus or closing off the terminal window completely.
+The container can be stopped by simply hitting `ctrl + c` key combination while the terminal window is in focus or closing off the terminal window completely.
 
 Another very popular option of the `run` sub-command is the `--detach` command. As you've seen in the example above, in order for the container to keep running, you had to keep the terminal window open. Closing the terminal window also stopped the running container.
 
@@ -102,12 +102,21 @@ As you can see the second `ecstatic_satoshi` was created earlier and has exited 
 
 Containers running in the foreground can be stopped by simply closing the terminal window or hitting `ctrl + c` key combination. Containers running in the background, however, can not be stopped in the same way.
 
-There are two commands for stopping a running container:
+There are two sub-commands under the `container` command that deals with this task. The first one is the `stop` sub-command. Generic syntax for the sub-command is as follows:
 
-* `docker stop <container id>` - attempts to stop the container gracefully by sending a `SIGTERM` signal to the container. If the container doesn't stop within a grace period, a `SIGKILL` signal is sent.
-* `docker kill <container id>` - stops the container immediately by sending a `SIGKILL` signal. A `SIGKILL` signal can not be ignored by a recipient.
+```text
+docker container stop <container identifier>
+```
 
-To stop a container with id `bb7fadc33178` execute `docker stop bb7fadc33178` command. Using `docker kill bb7fadc33178` will terminate the container immediately without giving a chance to clean up.
+Where `container identifier` can either be the id or the name of the container. I hope that you remember the container you started in the previous section. It's still running in the background. Get the identifier for that container using `docker container ls` , I'll be using `b6ada76e29c1` identifier, which is the container id in my case. Now execute following command to stop the container:
+
+```text
+docker container stop b6ada76e29c1
+
+# b6ada76e29c1
+```
+
+If you use the name as identifier, you'll get the name thrown back to you as output. The `stop` sub-command shuts down a container gracefully by sending a `SIGTERM` signal. 
 
 ## Restarting Containers
 

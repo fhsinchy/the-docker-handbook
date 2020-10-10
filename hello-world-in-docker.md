@@ -1,6 +1,6 @@
 # Hello World in Docker
 
-Now that you have Docker up and running on your machine, it's time for you to run your first container. Open up the terminal and run the following command:
+Docker daemon then reaches out to the default public repository which is Docker Hub and looks pulls in the latest version of the image from there indicated by the Now that you have Docker up and running on your machine, it's time for you to run your first container. Open up the terminal and run the following command:
 
 ```text
 docker run hello-world
@@ -142,7 +142,7 @@ This image is a slightly modified version of the one found in the official [docs
 1. You execute `docker run hello-world` command where `hello-world` is the name of an image.
 2. Docker client reaches out to the daemon, tells it to get the `hello-world` image and run a container from that.
 3. Docker daemon looks for the image within your local repository and realizes that it's not there, hence the `Unable to find image 'hello-world:latest' locally` line gets printed on your terminal.
-4. Docker daemon then reaches out to the default public repository which is Docker Hub and looks pulls in the latest version of the image from there inadicated by the `latest: Pulling from library/hello-world` line in your terminal.
+4. `latest: Pulling from library/hello-world` line in your terminal.
 5. Docker daemon then creates a new container from the image.
 6. Finally Docker daemon runs the container created using the `hello-world` image outputting the wall of text on your terminal.
 
