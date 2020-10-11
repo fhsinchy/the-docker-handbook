@@ -30,8 +30,6 @@ Now, following this syntax, the `run` command can be written as follows:
 docker container run <image name>
 ```
 
-This is much more expressive and organized compared to the previously shown syntax. Throughout the rest of the article, I'll be following this syntax.
-
 The `image name` can be of any image from an online registry or your local system. As an example, you can try to run a container using the [fhsinchy/hello-dock](https://hub.docker.com/repository/docker/fhsinchy/hello-dock) image. This image contains a simple [Vue.js](https://vuejs.org/) application that runs on port 80 inside the container. To run a container using this image, execute following command on your terminal:
 
 ```text
@@ -46,12 +44,17 @@ docker container run --publish 8080:80 fhsinchy/hello-dock
 # /docker-entrypoint.sh: Configuration complete; ready for start up
 ```
 
-In this command:
+The command is pretty self-explanatory. The only portion that may require some explanation is the `--publish 8080:80` portion.
 
-* `container` is the command which is a logical object in the world of Docker.
-* `run` is the sub-command which indicates the task that needs to be carried out.
-* `--publish` is an option of the `run` command used for publishing port 80 from inside the container to port 8080 of the local network.
-* `fhsinchy/hello-dock` is the mage name.
+As I've stated in an earlier section, containers are isolated environments. Your host system doesn't know anything about what's going on inside a container. Hence, applications running inside a container remains inaccessible from the outside.
+
+To allow access from outside of a container, you must publish the appropriate port inside the container to a port on your local network. The common syntax for the `--publish` option is as follows:
+
+```text
+--publish <host port>:<container port>
+```
+
+When you write `--publish 8080:80` it means any request sent to port 8080 of your host system will be forwarded to port 80 inside the container.
 
 Now in order to access the application, open up your browser and visit `http://127.0.0.1:8080` address.
 
@@ -59,9 +62,9 @@ Now in order to access the application, open up your browser and visit `http://1
 
 The container can be stopped by simply hitting `ctrl + c` key combination while the terminal window is in focus or closing off the terminal window completely.
 
-Another very popular option of the `run` sub-command is the `--detach` command. As you've seen in the example above, in order for the container to keep running, you had to keep the terminal window open. Closing the terminal window also stopped the running container.
+Another very popular option of the `run` command is the `--detach` command. As you've seen in the example above, in order for the container to keep running, you had to keep the terminal window open. Closing the terminal window also stopped the running container.
 
-This is because by default containers run in the foreground and attach themselves to the terminal like any other normal program invoked from the terminal. In order to override this behavior and keep a container running in background, you can include the `--detach` option to the `run` sub-command as follows:
+This is because by default containers run in the foreground and attach themselves to the terminal like any other normal program invoked from the terminal. In order to override this behavior and keep a container running in background, you can include the `--detach` option to the `run` command as follows:
 
 ```text
 docker container run --detach --publish 8080:80 fhsinchy/hello-dock
@@ -71,13 +74,13 @@ docker container run --detach --publish 8080:80 fhsinchy/hello-dock
 
 Unlike the previous example, you won't get a wall of text thrown at you this time. Instead what you'll get is the ID of the newly created container.
 
-The order of the options you provide doesn't really matter. If you put the `--publish` option before the `--detach` option, it'll work just the same. One thing that you have to keep in mind in case of the `run` sub-command is that the image name must come at last. If you put anything after the image name then that'll be passed as an argument to the container itself and may result in unexpected situations.
+The order of the options you provide doesn't really matter. If you put the `--publish` option before the `--detach` option, it'll work just the same. One thing that you have to keep in mind in case of the `run` command is that the image name must come at last. If you put anything after the image name then that'll be passed as an argument to the container itself and may result in unexpected situations.
 
 ## Listing Containers
 
 In the previous section you've learned about running containers both in foreground and background. In this section I'll show you how you can list out the containers currently running or has previously run in your system.
 
-The `ls` sub-command can be used to list out containers that are currently running. To do so execute following command:
+The `ls` command can be used to list out containers that are currently running. To do so execute following command:
 
 ```text
 docker container ls
@@ -92,7 +95,7 @@ The id if the container is `b6ada76e29c1` which is the first 12 characters of th
 
 You can also see that port 8080 from your local network is pointing towards port 80 inside the container. The name `wanderful_bose` is generated by Docker and can be something completely different in your computer.
 
-The `ls` sub-command only lists the containers that are currently running on your system. In order to list out the containers that has run in the past you can use the `--all` option.
+The `ls` command only lists the containers that are currently running on your system. In order to list out the containers that has run in the past you can use the `--all` option.
 
 ```text
 docker container ls --all
@@ -108,7 +111,7 @@ As you can see the second `ecstatic_satoshi` was created earlier and has exited 
 
 Containers running in the foreground can be stopped by simply closing the terminal window or hitting `ctrl + c` key combination. Containers running in the background, however, can not be stopped in the same way.
 
-There are two sub-commands under the `container` command that deals with this task. The first one is the `stop` sub-command. Generic syntax for the sub-command is as follows:
+There are two commands under the `container` command that deals with this task. The first one is the `stop` command. Generic syntax for the command is as follows:
 
 ```text
 docker container stop <container identifier>
@@ -122,9 +125,9 @@ docker container stop b6ada76e29c1
 # b6ada76e29c1
 ```
 
-If you use the name as identifier, you'll get the name thrown back to you as output. The `stop` sub-command shuts down a container gracefully by sending a `SIGTERM` signal. If the container doesn't stop within a grace period, a `SIGKILL` signal is sent which shuts down the container immediately.
+If you use the name as identifier, you'll get the name thrown back to you as output. The `stop` command shuts down a container gracefully by sending a `SIGTERM` signal. If the container doesn't stop within a grace period, a `SIGKILL` signal is sent which shuts down the container immediately.
 
-In case if you want to send a `SIGKILL` signal instead of a `SIGTERM` signal, you may use the `kill` sub-command instead. The `kill` sub-command follows the same syntax as the `stop` sub-command.
+In case if you want to send a `SIGKILL` signal instead of a `SIGTERM` signal, you may use the `kill` command instead. The `kill` command follows the same syntax as the `stop` command.
 
 ## Restarting Containers
 
@@ -133,13 +136,13 @@ When I say restart I mean two scenarios specifically. They are as follows:
 * Restarting a container that has been previously stopped or killed.
 * Rebooting a running container.
 
-As you've already learned from a previous section, stopped containers remain in your system. If you want you can actually restart them. The `start` sub-command can be used any existing container. The syntax of the command is as follows:
+As you've already learned from a previous section, stopped containers remain in your system. If you want you can actually restart them. The `start` command can be used any existing container. The syntax of the command is as follows:
 
 ```text
 docker container start <container identifier>
 ```
 
-Just like the previous sub-commands, container identifier can be either the name or the id of the container. You can get the list of all stopped container by using the `ls` sub-command with the `--all` option:
+Just like the previous commands, container identifier can be either the name or the id of the container. You can get the list of all stopped container by using the `ls` command with the `--all` option:
 
 ```text
 docker container ls --all
@@ -157,9 +160,9 @@ docker container start wonderful_bose
 # wonderful_bose
 ```
 
-Now you can ensure that the container is running by looking at the list of running containers using the `ls` sub-command. The `start` command starts any container in detached mode by default and retains any port configurations made previously. So if you visit `http://127.0.0.1:8080` now, you should be able to access the `hello-dock` application just like before.
+Now you can ensure that the container is running by looking at the list of running containers using the `ls` command. The `start` command starts any container in detached mode by default and retains any port configurations made previously. So if you visit `http://127.0.0.1:8080` now, you should be able to access the `hello-dock` application just like before.
 
-Now, in scenarios where you would like to reboot a running container you may use the `restart` sub-command. The `restart` sub-command follows the exact syntax as the `start` sub-command.
+Now, in scenarios where you would like to reboot a running container you may use the `restart` command. The `restart` command follows the exact syntax as the `start` command.
 
 ## Cleaning Up Dangling Containers
 
