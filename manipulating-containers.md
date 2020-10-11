@@ -164,29 +164,33 @@ Now you can ensure that the container is running by looking at the list of runni
 
 Now, in scenarios where you would like to reboot a running container you may use the `restart` command. The `restart` command follows the exact syntax as the `start` command.
 
-## Cleaning Up Dangling Containers
+## Removing Dangling Containers
 
-Containers that have exited already remain in the system. These dangling or unnecessary containers take up space and can even create issues at later times.
+As you've already seen, containers that have been stopped or killed remain in the system. These dangling containers can take up space or can even conflict with newer container.
 
-There are a few ways of cleaning up containers. If we want to remove a container specifically, we can use the `rm` command. Generic syntax for this command is as follows:
-
-```text
-docker rm <container id>
-```
-
-To remove a container with id `e210d4695c51`, execute following command:
+In order to remove a stopped container you can use the `rm` command. The generic syntax is as follows:
 
 ```text
-docker rm e210d4695c51
+docker container rm <container identifier>
 ```
 
-And you should get the id of the removed container as output. If we want to clean up all Docker objects \(images, containers, networks, build cache\) we can use the following command:
+To remove a container with the name `ecstatic_satoshi` you can execute following command:
 
 ```text
-docker system prune
+docker container rm ecstatic_satoshi
+
+# ecstatic_satoshi
 ```
 
-Docker will ask for confirmation. We can use the `-f` or `--force` option to skip this confirmation step. The command will show the amount of reclaimed space at the end of its successful execution.
+You can check if the container was deleted or not by using the `ls` command. You can remove any container using the `rm` command as long as that's not running.
+
+Instead of removing individual containers, if you want to remove all dangling containers at one go, you can use the `prune` the command.
+
+```text
+docker container prune
+```
+
+Docker will ask for confirmation. You can use the `-f` or `--force` option to skip this confirmation step. Once done, the `prune` command will show the amount of reclaimed space.
 
 ## Running Containers in Interactive Mode
 
@@ -218,58 +222,6 @@ We need to use the `-it` option whenever we want to run a container in interacti
 ![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-05-at-2.07.09-AM.png)
 
 We can not run any random container in interactive mode. To be eligible for running in interactive mode, the container has to be configured to start an interactive program on startup. Shells, REPLs, CLIs, and so on are examples of some interactive programs.
-
-## Creating Containers Using Executable Images
-
-Up until now I've been saying that Docker images have a default command that they execute automatically. That's not true for every image. Some images are configured with an entry-point \(`ENTRYPOINT`\) instead of a command \(`CMD`\).
-
-An entry-point allows us to configure a container that will run as an executable. Like any other regular executable, we can pass arguments to these containers. The generic syntax for passing arguments to an executable container is as follows:
-
-```text
-docker run <image name> <arguments>
-```
-
-The Ubuntu image is an executable, and the entry-point for the image is bash. Arguments passed to an executable container will be passed directly to the entry-point program. That means any argument that we pass to the the Ubuntu image will be passed directly to bash.
-
-To see a list of all directories inside the Ubuntu container, you can pass the `ls` command as an argument.
-
-```text
-docker run ubuntu ls
-```
-
- You should get a list of directories like the following:
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-04-at-11.12.18-PM.png)
-
-Notice that we're not using the `-it` option, because we don't want to interact with bash, we just want the output. We can pass any valid bash command as arguments. Like passing the `pwd` command as an argument will return the present working directory.
-
-The list of valid arguments usually depends on the entry-point program itself. If the container uses the shell as entry-point, any valid shell command can be passed as arguments. If the container uses some other program as the entry-point then the arguments valid for that particular program can be passed to the container.
-
-## Running Containers in Detached Mode
-
-Assume that you want to run a [Redis](https://redis.io/) server on your computer. Redis is a very fast in-memory database system, often used as cache in various applications. We can run a Redis server using the official [redis](https://hub.docker.com/_/redis) image. To do that by execute the following command:
-
-```text
-docker run redis
-```
-
-It may take a few moments to fetch the image from the hub and then you should see a wall of text appear on your terminal.
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-04-at-11.41.16-PM.png)
-
-As you can see, the Redis server is running and is ready to accept connections. To keep the server running, you have to keep this terminal window open \(which is a hassle in my opinion\).
-
-You can run these kind of containers in detached mode. Containers running in detach mode run in the background like a service. To detach a container, we can use the `-d` or `--detach` option. To run the container in detached mode, execute the following command:
-
-```text
-docker run -d redis
-```
-
-You should get the container id as output.
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-04-at-11.45.41-PM.png)
-
-The Redis server is now running in the background. You can inspect it using the dashboard or by using the `ps` command.
 
 ## Executing Commands Inside a Running Container
 
