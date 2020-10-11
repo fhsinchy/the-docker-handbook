@@ -1,8 +1,7 @@
 # Installing Docker
 
-Installation of Docker varies greatly depending on the operating system you’re on but it's universally simple across the board. Docker runs flawlessly on all three major platforms, i.e. Mac, Windows and Linux. Among the three, the installation process on Mac is the easiest.
+Installation of Docker varies greatly depending on the operating system you’re on but it's universally simple across the board. Docker runs flawlessly on all three major platforms, i.e. Mac, Windows and Linux. Among the three, the installation process on Mac is the easiest.  
 
-## Installation on a macOS
 
 On a mac, all you have to do is navigate to the official [download page](https://www.docker.com/products/docker-desktop) and click the _Download for Mac \(stable\)_ button. You’ll get a regular looking _Apple Disk Image_ file and inside the file, there will be the application. All you have to do is drag the file and drop it on your Applications directory.
 
@@ -11,10 +10,6 @@ On a mac, all you have to do is navigate to the official [download page](https:/
 You can start Docker by simply double clicking the application icon. Once the application start, you'll see the Docker icon appear on your menu-bar.
 
 ![](.gitbook/assets/docker-icon-in-menubar.png)
-
-Now, open up the terminal and execute `docker --version` and `docker-compose --version` to ensure the success of the installation.
-
-## Installation on Windows
 
 On Windows, the procedure is almost the same, except there are a few extra steps that you’ll need to go through. The installation steps are as follows:  
 
@@ -36,8 +31,6 @@ Now, open up Ubuntu or whatever distribution you've installed from Microsoft Sto
 You can access Docker from your regular Command Prompt or PowerShell as well. It's just that I prefer using WSL2 over any other command line on Windows.
 
 Installation of Docker on Linux is the most different one and depending on the distribution you’re on, it may vary even more. But to be honest, the installation is just as easy \(if not easier\) as the other two platforms.
-
-## Installation on a Linux
 
 The Docker Desktop package on Windows or Mac is a collection of tools like `Docker Engine`, `Docker Compose`, `Docker Dashboard`, `Kubernetes` and a few other goodies. On Linux however, you don’t get such a bundle. What you do instead is you install all the necessary tools you need manually. Installation procedures for different distributions are as follows:
 

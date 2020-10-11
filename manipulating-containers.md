@@ -15,10 +15,16 @@ docker run <image name>
 Although this is a perfectly valid command, there is a better way of dispatching commands to the `docker` client. Prior to version `1.13`, Docker had only the command previously mentioned command syntax. Later on the CLI was [restructured](https://www.docker.com/blog/whats-new-in-docker-1-13/) to have the following syntax:
 
 ```text
-docker <command> <sub-command> <options>
+docker <object> <command> <options>
 ```
 
-Where command is a logical docker object i.e. `container` and the sub-command is what was previously regarded as a command i.e. `run`. Following this syntax, the `docker run` command will be as follows:
+In this syntax:
+
+* `object` indicates the type of Docker object you'll be manipulating. This can be a `container`, `image`, `network` or `volume` object.
+* `command` indicates the actual task to be carried out by the daemon i.e. `run` command.
+* `options` can be any valid parameter that can override the default behavior of the command i.e. the `--publish` command for publishing ports from inside a container.
+
+Now, following this syntax, the `run` command can be written as follows:
 
 ```text
 docker container run <image name>
@@ -26,7 +32,7 @@ docker container run <image name>
 
 This is much more expressive and organized compared to the previously shown syntax. Throughout the rest of the article, I'll be following this syntax.
 
-In the `run` command, the `image name` can be any of image from an online registry or your local machine and `<options>` can be any valid parameter that changes the way the container runs. As an example, you can try to run a container using the [fhsinchy/hello-dock](https://hub.docker.com/repository/docker/fhsinchy/hello-dock) image. This image contains a simple [Vue.js](https://vuejs.org/) application that runs on port 80 inside the container. To run a container using this image, execute following command on your terminal:
+The `image name` can be of any image from an online registry or your local system. As an example, you can try to run a container using the [fhsinchy/hello-dock](https://hub.docker.com/repository/docker/fhsinchy/hello-dock) image. This image contains a simple [Vue.js](https://vuejs.org/) application that runs on port 80 inside the container. To run a container using this image, execute following command on your terminal:
 
 ```text
 docker container run --publish 8080:80 fhsinchy/hello-dock
