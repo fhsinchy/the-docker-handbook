@@ -107,6 +107,36 @@ docker container ls --all
 
 As you can see the second `ecstatic_satoshi` was created earlier and has exited with the status code 0, which indicates that no error was produced during the runtime of the container.
 
+## Naming Containers
+
+As you have already seen, every container has two identifier. They are as follows:
+
+* `CONTAINER ID` - a random 64 characters long string.
+* `NAME` - combination of two random words, joined with an underscore.
+
+As you may have guessed already, referring to a container based on these two random identifier is kind of inconvenient. It would be great if the containers could be referred to using a name defined by you.
+
+Naming a container can be achieved using the `--name` option. To run another container using the `fhsinchy/hello-dock` image with the name `hello-dock-container` you can execute the following command:
+
+```text
+docker container run --detach --publish 8888:80 --name hello-dock-container fhsinchy/hello-dock
+
+# 282a5e8e097dfb64a1c8f1eac44a890f37c3c6f9f818d893888f628a87b552dd
+```
+
+The 8080 port on local network is occupied by the `wonderful_bose` container, that's why you'll have to use a different port number i.e. 8888. Now to verify run the `ls` command:
+
+```text
+docker container run ls
+
+# CONTAINER ID        IMAGE                                   COMMAND                  CREATED             STATUS                        PORTS                  NAMES
+# b6ada76e29c1        fhsinchy/hello-dock                     "/docker-entrypoint.…"   20 minutes ago      Up 20 minutes                 0.0.0.0:8080->80/tcp   wonderful_bose
+# 88f876042021        fhsinchy/hello-dock                     "/docker-entrypoint.…"   33 minutes ago      Exited (0) 20 minutes ago                            ecstatic_satoshi
+# 282a5e8e097d        fhsinchy/hello-dock                     "/docker-entrypoint.…"   58 seconds ago      Up 2 minutes                  0.0.0.0:8888->80/tcp   hello-dock-container
+```
+
+As you can see, a new container with the name of `hello-dock-container` has been started.
+
 ## Stopping or Killing a Running Container
 
 Containers running in the foreground can be stopped by simply closing the terminal window or hitting `ctrl + c` key combination. Containers running in the background, however, can not be stopped in the same way.
@@ -129,6 +159,14 @@ If you use the name as identifier, you'll get the name thrown back to you as out
 
 In case if you want to send a `SIGKILL` signal instead of a `SIGTERM` signal, you may use the `kill` command instead. The `kill` command follows the same syntax as the `stop` command.
 
+```text
+docker container kill hello-dock-container
+
+# hello-dock-container
+```
+
+You can verify that the container is up once again using the `ls` command.
+
 ## Restarting Containers
 
 When I say restart I mean two scenarios specifically. They are as follows:
@@ -147,9 +185,10 @@ Just like the previous commands, container identifier can be either the name or 
 ```text
 docker container ls --all
 
-# CONTAINER ID        IMAGE                                   COMMAND                  CREATED             STATUS                     PORTS               NAMES
-# b6ada76e29c1        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                         wonderful_bose
-# 88f876042021        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                         ecstatic_satoshi
+# CONTAINER ID        IMAGE                                   COMMAND                  CREATED             STATUS                     PORTS                   NAMES
+# b6ada76e29c1        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                             wonderful_bose
+# 88f876042021        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                             ecstatic_satoshi
+# 282a5e8e097d        fhsinchy/hello-dock                     "/docker-entrypoint.…"   58 seconds ago      Up 2 minutes               0.0.0.0:8888->80/tcp    hello-dock-container
 ```
 
 For a change, I'll be using the container name instead of the id this time. Now to restart the `wonderful_bose` container, you may execute the following command:
@@ -163,6 +202,14 @@ docker container start wonderful_bose
 Now you can ensure that the container is running by looking at the list of running containers using the `ls` command. The `start` command starts any container in detached mode by default and retains any port configurations made previously. So if you visit `http://127.0.0.1:8080` now, you should be able to access the `hello-dock` application just like before.
 
 Now, in scenarios where you would like to reboot a running container you may use the `restart` command. The `restart` command follows the exact syntax as the `start` command.
+
+```text
+docker container restart hello-dock-container
+
+# hello-dock-container
+```
+
+Main difference between the two commands is that the `restart` command attempts to stop the target container and then start it back whereas the start command just attempts to start a container.
 
 ## Removing Dangling Containers
 
