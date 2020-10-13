@@ -132,7 +132,7 @@ docker container run ls
 # CONTAINER ID        IMAGE                                   COMMAND                  CREATED             STATUS                        PORTS                  NAMES
 # b6ada76e29c1        fhsinchy/hello-dock                     "/docker-entrypoint.…"   20 minutes ago      Up 20 minutes                 0.0.0.0:8080->80/tcp   wonderful_bose
 # 88f876042021        fhsinchy/hello-dock                     "/docker-entrypoint.…"   33 minutes ago      Exited (0) 20 minutes ago                            ecstatic_satoshi
-# 282a5e8e097d        fhsinchy/hello-dock                     "/docker-entrypoint.…"   58 seconds ago      Up 2 minutes                  0.0.0.0:8888->80/tcp   hello-dock-container
+# 282a5e8e097d        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 minutes ago       Up 2 minutes                  0.0.0.0:8888->80/tcp   hello-dock-container
 ```
 
 As you can see, a new container with the name of `hello-dock-container` has been started.
@@ -188,7 +188,7 @@ docker container ls --all
 # CONTAINER ID        IMAGE                                   COMMAND                  CREATED             STATUS                     PORTS                   NAMES
 # b6ada76e29c1        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                             wonderful_bose
 # 88f876042021        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 hours ago         Exited (0) 2 hours ago                             ecstatic_satoshi
-# 282a5e8e097d        fhsinchy/hello-dock                     "/docker-entrypoint.…"   58 seconds ago      Up 2 minutes               0.0.0.0:8888->80/tcp    hello-dock-container
+# 282a5e8e097d        fhsinchy/hello-dock                     "/docker-entrypoint.…"   2 minutes ago       Up 2 minutes               0.0.0.0:8888->80/tcp    hello-dock-container
 ```
 
 For a change, I'll be using the container name instead of the id this time. Now to restart the `wonderful_bose` container, you may execute the following command:
@@ -209,7 +209,9 @@ docker container restart hello-dock-container
 # hello-dock-container
 ```
 
-Main difference between the two commands is that the `restart` command attempts to stop the target container and then start it back whereas the start command just attempts to start a container.
+Main difference between the two commands is that the `restart` command attempts to stop the target container and then start it back whereas the start command just starts a container.
+
+In case of a stopped container, both commands are exactly same but in case of a running container, you must use `restart` command.
 
 ## Removing Dangling Containers
 
@@ -231,13 +233,13 @@ docker container rm ecstatic_satoshi
 
 You can check if the container was deleted or not by using the `ls` command. You can remove any container using the `rm` command as long as that's not running.
 
-Instead of removing individual containers, if you want to remove all dangling containers at one go, you can use the `prune` the command.
+Instead of removing individual containers, if you want to remove all dangling containers at one go, you can use the `prune` command.
 
 ```text
 docker container prune
 ```
 
-Docker will ask for confirmation. You can use the `-f` or `--force` option to skip this confirmation step. Once done, the `prune` command will show the amount of reclaimed space.
+Docker will ask for confirmation. You can use the `--force` option to skip this confirmation step. Once done, the `prune` command will show the amount of reclaimed space.
 
 ## Running Containers in Interactive Mode
 
@@ -339,28 +341,4 @@ You should see a wall of text appear on your terminal window.
 This is just a portion from the log output. You can kind of hook into the output stream of the container and get the logs in real-time by using the `-f` or `--follow` option.
 
 Any later log will show up instantly in the terminal as long as you don't exit by pressing `ctrl + c` key combination or closing the window. The container will keep running even if you exit out of the log window.
-
-## Mapping Ports
-
-Assume that you want to run an instance of the popular [Nginx](https://www.nginx.com/) web server. You can do that by using the official [nginx](https://hub.docker.com/_/nginx) image. Execute the following command to run a container:
-
-```text
-docker run nginx
-```
-
-Nginx is meant to be kept running, so you may as well use the `-d` or `--detach` option. By default Nginx runs on port 80. But if you try to access `http://localhost:80` you should see something like the following:![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-05-at-1.03.52-AM.png)http://localhost:80
-
-That's because Nginx is running on port 80 inside the container. Containers are isolated environments and your host system knows nothing about what's going on inside a container.
-
-To access a port that is inside a container, you need to map that port to a port on the host system. You can do that by using the `-p` or `--port` option with the `docker run` command. Generic syntax for this option is as follows:
-
-```text
-docker run -p <host port:container port> nginx
-```
-
-Executing `docker run -p 80:80 nginx` will map port 80 on the host machine to port 80 of the container. Now try accessing `http://localhost:80` address:![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-05-at-1.09.57-AM.png)http://localhost:80
-
-If you execute `docker run -p 8080:80 nginx` instead of `80:80` the Nginx server will be available on port 8080 of the host machine. If you forget the port number after a while you can use the dashboard to have a look at it:![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-05-at-2.22.43-PM.png)Port mapping in the Docker Dashboard
-
-The _Inspect_ tab contains information regarding the port mappings. As you can see, I've mapped port 80 from the container to port 8080 of the host system.
 
