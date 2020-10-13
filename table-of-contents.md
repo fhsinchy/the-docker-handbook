@@ -17,7 +17,7 @@
 * [Manipulating Containers](manipulating-containers.md)
   * [Running Containers](manipulating-containers.md#running-containers)
   * [Listing Containers](manipulating-containers.md#listing-containers)
-  * [Naming Containers](manipulating-containers.md#naming-containers)
+  * [Naming and Renaming Containers](manipulating-containers.md#naming-and-renaming-containers)
   * [Stopping or Killing a Running Container](manipulating-containers.md#stopping-or-killing-a-running-container)
   * [Restarting Containers](manipulating-containers.md#restarting-containers)
   * [Removing Dangling Containers](manipulating-containers.md#removing-dangling-containers)
