@@ -45,7 +45,7 @@ docker ps -a
 # 128ec8ceab71        hello-world         "/hello"            14 seconds ago      Exited (0) 13 seconds ago                      exciting_chebyshev
 ```
 
-As you can see in the output, a container named `exciting_chebyshev` was run with the container id of `128ec8ceab71` using the `hello-world` image and has `Exited (0) 13 seconds ago` where the `(0)` exit code means no error was produced during the runtime of the container.
+As you can see in the output, a container named `reverent_rhodes` was run with the container id of `631c9481eabd` using the `hello-world` image and has `Exited (0) 7 seconds ago` where the `(0)` exit code means no error was produced during the runtime of the container.
 
 Now in order to understand how the entire thing happened behind the scenes, you'll have to get familiar with the Docker Architecture and three very fundamental concepts which are as follows:
 
@@ -61,23 +61,23 @@ In the world of containerization, there can not be anything more fundamental tha
 
 The official Docker [resources](https://www.docker.com/resources/what-container) site says, "A container is an abstraction at the application layer that packages code and dependencies together. Instead of virtualizing the entire physical machine, containers virtualize the host operating system only."
 
-You may consider containers as the next generation of virtual machines. Just like virtual machines, containers are completely isolated environments from the host system as well as each other. They are also a lot lighter than the traditional virtual machine hence a large number of containers can be run simultaneously without affecting the performance of the host system.
+You may consider containers as the next generation of virtual machines. Just like virtual machines, containers are completely isolated from each other hence the chances of unwanted conflict between parts of an application, goes right out of the window. They are even a lot lighter than the traditional virtual machine hence a huge number of containers can be run simultaneously without affecting the performance of the host system.
 
-As you may have already understood, containers and virtual machines are actually different ways of virtualizing your physical hardware. The main difference between these two approaches is the method of virtualization.
+As you may have already understood, containers are virtual machines are actually different ways of virtualizing your physical hardware. The main difference between these two approaches is the method of virtualization.
 
 Virtual machines are usually created and managed by a program known as a hypervisor i.e. [Oracle VM VirtualBox](https://www.virtualbox.org/), [VMware Workstation](https://www.vmware.com/), [KVM](https://www.linux-kvm.org/), [Microsoft Hyper-V ](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/about/)etc. This hypervisor program usually sits between the host operating system and the virtual machines to act as a medium of communication.
 
 ![](.gitbook/assets/virtual-machines.svg)
 
-Each virtual machine comes with it's own guest operating system which is just as heavy as the host operating system. Application running inside a virtual machine communicates with the guest operating system, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the virtual machines. 
+Each virtual machine comes with it's own guest operating system which is just as heavy as the host operating system. Application running inside a virtual machine communicates with the guest operating system running inside that virtual machine, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the virtual machines. 
 
-As you can see there is a long chain of communication between applications running inside the virtual machines and the physical infrastructure. The application running inside the virtual machine may take only a small amount of resources but the guest operating system adds a noticeable overhead.
+As you can see there is a long chain of communication between applications running inside the virtual machines and the physical infrastructure. The application running inside the virtual machine may take only a small amount of resources but the guest operating system adds a huge overhead.
 
-Unlike a virtual machine, a container does the job of virtualization in an intelligent way. Instead of having a complete guest operating system inside a container, it just utilizes the host operating system via the container runtime while maintaining isolation just like a traditional virtual machine.
+Unlike a virtual machine, a container does the job of virtualization in an intelligent way. Instead of having a complete guest operating system inside the containers, they just utilize the host operating system directly while maintaining isolation just like a traditional virtual machine.
 
 ![](.gitbook/assets/containers.svg)
 
-The container runtime i.e. Docker or rkt sits between the containers and the host operating system ****instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure.
+Instead of a hypervisor, a container runtime i.e. Docker or rkt sits between the containers and the host operating system kernel. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure.
 
 As you can see, containers eliminate the entire guest operating system layer making the containers a lot lighter and less resource hogging.
 
@@ -85,29 +85,29 @@ As an demonstration of the point, look at the following code block:
 
 ```text
 uname -a
-# Linux alpha-centauri 5.8.0-22-generic #23-Ubuntu SMP Fri Oct 9 00:34:40 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+# Linux alpha-centauri 5.4.0-48-generic #52-Ubuntu SMP Thu Sep 10 10:58:49 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
 
 docker run alpine uname -a
-# Linux f08dbbe9199b 5.8.0-22-generic #23-Ubuntu SMP Fri Oct 9 00:34:40 UTC 2020 x86_64 Linux
+# Linux 3ceffa5c9fe3 5.4.0-48-generic #52-Ubuntu SMP Thu Sep 10 10:58:49 UTC 2020 x86_64 Linux
 ```
 
 In the code block above, I have executed the `uname -a` command on my host operating system to print out the kernel details. Then on the next line I've executed the same command inside a container running [Alpine Linux](https://alpinelinux.org/) inside it. As you can see from the outputs, the container is indeed using the kernel from my host operating system. This goes to prove the point that containers virtualize the host operating system instead of having an operating system of their own.
 
-If you're on a Windows machine, you'll find out that all the containers uses the WSL2 kernel. It happens because WSL2 acts as the back-end for Docker on Windows. On macOS the default back-end is a VM running on [HyperKit](https://github.com/moby/hyperkit) hypervisor.
+If you're on a Windows machine, you'll find out that all the containers uses the WSL2 kernel. It happens because WSL2 acts as the back-end for Docker on Windows. Although there are ways to use something else i.e. a Hyper-V virtual machine as the back-end for Docker, WSL2 is the most performant choice at the moment.
 
 ## Image
 
-Images are multi-layered self-contained files that act as the template for creating Docker containers. They are like a frozen, read-only copy of a container. Images can be exchanged through registries. 
+Images are multi-layered self-contained files that act as the template for creating Docker containers. Images can be exchanged through registries. 
 
 In the past, different container engines had different image formats but later on [Open Container Initiative \(OCI\)](https://opencontainers.org/) defined a standard specification for container images which is complied by the major containerization engines out there.
 
-According to the OCI image format, a container image consists of multiple layer, each layer containing files packed inside tar.gz archives that makes up the container environment in the final layer. A `manifest.json` file contains necessary metadata about the image.
+According to the OCI image format, a container image consists of multiple layer, each layer containing files packed inside tar.gz archives that makes up the container environment in the final layer. A manifest.json file contains necessary metadata about the image.
 
-Containers are images in running state. When you obtain an image from the internet and run a container using that, you essentially create another temporary writable layer on top of the previous read-only ones. This concept will become a lot more clearer in upcoming chapters but for now, just keep in mind that images are multi-layered read-only files carrying your application in a desired state inside them.
+Containers are images in running state. When you obtain an image from somewhere and run a container using that, you essentially create another temporary writable layer on top of the previous read-only ones. This concept will become a lot more clearer in upcoming chapters but for now, just keep in mind that images are multi-layered files carrying your application inside them.
 
 ## Registry
 
-You've already learned about two very important pieces of the puzzle, _Container_ and _Image_. The final piece is _Registry_. An image registry is a centralized place where you can upload your images and can also download images created by others. [Docker Hub](https://hub.docker.com/) is the default public registry for Docker.
+You've already learned about two very important pieces of the puzzle, Container and Image. The final piece is Registry. An image registry is a centralized place where you can upload your images and can also download images created by others. [Docker Hub](https://hub.docker.com/) is the default public registry for Docker.
 
 ![](.gitbook/assets/docker-hub.png)
 
@@ -142,8 +142,8 @@ This image is a slightly modified version of the one found in the official [docs
 1. You execute `docker run hello-world` command where `hello-world` is the name of an image.
 2. Docker client reaches out to the daemon, tells it to get the `hello-world` image and run a container from that.
 3. Docker daemon looks for the image within your local repository and realizes that it's not there, hence the `Unable to find image 'hello-world:latest' locally` line gets printed on your terminal.
-4. The daemon then reaches out to the default public registry which is Docker Hub and pulls in the latest copy of the `hello-world` image, indicated by the `latest: Pulling from library/hello-world` line in your terminal.
-5. Docker daemon then creates a new container from the freshly pulled image.
+4. `latest: Pulling from library/hello-world` line in your terminal.
+5. Docker daemon then creates a new container from the image.
 6. Finally Docker daemon runs the container created using the `hello-world` image outputting the wall of text on your terminal.
 
 It's the default behavior of Docker daemon to look for images in the hub, that are not present locally. But once an image has been fetched, it'll stay in the local cache. So if you execute the command again, you won't see the following lines in the output:
