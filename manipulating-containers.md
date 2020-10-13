@@ -260,9 +260,9 @@ docker container rm 6cf52771dde1
 # 6cf52771dde1
 ```
 
-You can check if the container was deleted or not by using the `ls` command.
+You can check if the container was deleted or not by using the `ls` command. You can also remove multiple containers at once by passing their identifiers one after another separated by spaces.
 
-Instead of removing individual containers, if you want to remove all dangling containers at one go, you can use the `prune` command.
+Or, instead of removing individual containers, if you want to remove all dangling containers at one go, you can use the `prune` command.
 
 ```text
 docker container prune
@@ -280,7 +280,7 @@ docker container ls --all
 # 9f21cb777058        fhsinchy/hello-dock   "/docker-entrypoint.…"   12 minutes ago      Up 3 minutes        0.0.0.0:8080->80/tcp   hello-dock-container-2
 ```
 
-If you've been following the text exactly as written so far, you should only see the `hello-dock-container` and `hello-dock-container-2` in the list.
+If you've been following the book exactly as written so far, you should only see the `hello-dock-container` and `hello-dock-container-2` in the list. I would suggest stopping and removing both containers before going to the next section.
 
 ## Running Containers in Interactive Mode
 
