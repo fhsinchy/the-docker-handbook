@@ -284,9 +284,13 @@ If you've been following the book exactly as written so far, you should only see
 
 ## Running Containers in Interactive Mode
 
-So far we've only run containers built from the hello-world image. The default command for hello-world image is to execute the single [hello.c](https://github.com/docker-library/hello-world/blob/master/hello.c) program that comes with the image.
+So far you've only run containers created from either the [hello-world](https://hub.docker.com/_/hello-world) image or the [fhsinchy/hello-dock](https://hub.docker.com/r/fhsinchy/hello-dock) image. These images are made for executing a simple program that are not interactive.
 
-All images are not that simple. Images can encapsulate an entire operating system inside them. Linux distributions such as [Ubuntu](https://ubuntu.com/), [Fedora](https://fedora.org/), [Debian](https://debian.org/) all have official Docker images available in the hub.
+Well, all images are not that simple. Images can encapsulate an entire Linux distribution inside them. Popular distributions such as [Ubuntu](https://ubuntu.com/), [Fedora](https://fedora.org/), [Debian](https://debian.org/) all have official Docker images available in the hub. Programming languages such as [python](https://hub.docker.com/_/python), [php](https://hub.docker.com/_/php), [go](https://hub.docker.com/_/golang) or run-times like [node](https://hub.docker.com/_/node), [deno](https://hub.docker.com/r/hayd/deno) all have their official images.
+
+These images do not just run some pre-configured program. These are instead configured to run a shell by default. In case of the operating system images it can be something like `sh` or `bash` and in case of the programming languages or run-times, it is usually their default language shell.
+
+As you may have already learned from your previous experiences, shells are interactive programs. Images confiigured to run such a program is an interactive image. These images require a special `-it` option to be passed in the `container run` command.
 
 We can run Ubuntu inside a container using the official [ubuntu](https://hub.docker.com/_/ubuntu) image. If we try to run an Ubuntu container by executing `docker run ubuntu` command, we'll see nothing happens. But if we execute the command with `-it` option as follows:
 
