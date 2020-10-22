@@ -290,32 +290,51 @@ Well, all images are not that simple. Images can encapsulate an entire Linux dis
 
 These images do not just run some pre-configured program. These are instead configured to run a shell by default. In case of the operating system images it can be something like `sh` or `bash` and in case of the programming languages or run-times, it is usually their default language shell.
 
-As you may have already learned from your previous experiences, shells are interactive programs. Images confiigured to run such a program is an interactive image. These images require a special `-it` option to be passed in the `container run` command.
+As you may have already learned from your previous experiences with computers, shells are interactive programs. Images configured to run such a program is an interactive image. These images require a special `-it` option to be passed in the `container run` command.
 
-We can run Ubuntu inside a container using the official [ubuntu](https://hub.docker.com/_/ubuntu) image. If we try to run an Ubuntu container by executing `docker run ubuntu` command, we'll see nothing happens. But if we execute the command with `-it` option as follows:
+As an example, if you run a container using the `ubuntu` image by executing `docker container run ubuntu` you'll see nothing happens. But if you execute the same command with `-it` option, you should land directly on bash inside the Ubuntu container. 
 
 ```text
-docker run -it ubuntu
+docker container run -it ubuntu
+
+# root@dbb1f56b9563:/# cat /etc/os-release
+# NAME="Ubuntu"
+# VERSION="20.04.1 LTS (Focal Fossa)"
+# ID=ubuntu
+# ID_LIKE=debian
+# PRETTY_NAME="Ubuntu 20.04.1 LTS"
+# VERSION_ID="20.04"
+# HOME_URL="https://www.ubuntu.com/"
+# SUPPORT_URL="https://help.ubuntu.com/"
+# BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+# PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+# VERSION_CODENAME=focal
+# UBUNTU_CODENAME=focal
 ```
 
-We should land directly on bash inside the Ubuntu container. In this bash window, we'll be able to do tasks, that we usually do in a regular Ubuntu terminal. I have printed out the OS details by executing the standard `cat /etc/os-release` command:
+As you can see from the output of the `cat /etc/os-release` command, I am indeed interacting with the bash running inside the Ubuntu container.
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-04-at-7.21.01-PM.png)
+The reason behind the necessity of this `-it` option is that the Ubuntu image is configured to start bash upon startup which is an interactive program.
 
-The reason behind the necessity of this `-it` option is that the Ubuntu image is configured to start bash upon startup. Bash is an interactive program – that means if we do not type in any commands, bash won't do anything.
+To interact with a program that is inside a container, you have to let the container know explicitly that you want an interactive session.
 
-To interact with a program that is inside a container, we have to let the container know explicitly that we want an interactive session.
+The `-it` option sets the stage for you to interact with any interactive program inside a container. This option is actually two separate options mashed together.
 
-The `-it` option sets the stage for us to interact with any interactive program inside a container. This option is actually two separate options mashed together.
+* The `-i` option connects you to the input stream of the container, so that you can send inputs to bash.
+* The `-t` option makes sure that you get some good formatting and a native terminal like experience by allocating a pseudo-tty.
 
-* The `-i` option connects us to the input stream of the container, so that we can send inputs to bash.
-* The `-t` option makes sure that we get some good formatting and a native terminal like experience.
+You need to use the `-it` option whenever you want to run a container in interactive mode. Another example can be running the `node` image as follows:
 
-We need to use the `-it` option whenever we want to run a container in interactive mode. Executing `docker run -it node` or `docker run -it python` should land us directly on the node or python [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) program.
+```text
+docker container run -it node
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-05-at-2.07.09-AM.png)
+# Welcome to Node.js v15.0.0.
+# Type ".help" for more information.
+# > ['farhan', 'hasin', 'chowdhury'].map(name => name.toUpperCase())
+# [ 'FARHAN', 'HASIN', 'CHOWDHURY' ]
+```
 
-We can not run any random container in interactive mode. To be eligible for running in interactive mode, the container has to be configured to start an interactive program on startup. Shells, REPLs, CLIs, and so on are examples of some interactive programs.
+As you can see, any valid JavaScript code can be executed in the node shell. Instead of writing `-it` you can instead be more verbose by writing `--interactive --tty` separately.
 
 ## Executing Commands Inside a Running Container
 
