@@ -30,11 +30,11 @@ Even if you get through the entire development phase, what if the person respons
 
 All these issues can be solved if only you could somehow:
 
-* Develop the application inside an isolated environment that matches your final deployment environment.
+* Develop and run the application inside an isolated environment \(known as a container\) that matches your final deployment environment.
 * Put your application inside a single file \(known as an image\) along with all it's dependencies, necessary deployment configurations.
 * And share that image through a central server \(known as a registry\) that is accessible by anyone with the proper authorization.
 
-Your teammates, then will be able to download the image from the registry, run the application as it is within an isolated environment free from the platform specific inconsistencies or even deploy directly on a server given the image comes with all the proper production configurations.
+Your teammates, then will be able to download the image from the registry, run the application as it is within an isolated environment free from the platform specific inconsistencies or even deploy directly on a server, given the image comes with all the proper production configurations.
 
 That is the idea behind containerization. Putting your applications inside a self contained package making it extremely portable and reproducible across various environments.
 
@@ -42,7 +42,7 @@ That is the idea behind containerization. Putting your applications inside a sel
 
 As I've already explained, containerization is an idea that solves myriad of problem in software development by putting things into boxes. This very idea has quite a few implementations. [Docker](https://www.docker.com/) is such an implementation. It's an open-source containerization platform that allows you to containerize your applications, share them using public or private registries and also to [orchestrate](https://docs.docker.com/get-started/orchestration/) them.
 
-Now, Docker is not the only containerization tool on the market, it's just the most popular one. Another containerization engine that I like is called [rkt](https://coreos.com/rkt/) or rocket. Developed by the amazing [CoreOS](https://coreos.com/) team \(now part of [Red Hat](https://www.redhat.com/)\), rkt is a security oriented container engine which takes a pod native approach to containerization and was once the default container engine for [Kubernetes](https://kubernetes.io/).
+Now, Docker is not the only containerization tool on the market, it's just the most popular one. Another containerization engine that I like is called [rkt](https://coreos.com/rkt/) which is short for rocket. Developed by the amazing [CoreOS](https://coreos.com/) team \(now part of [Red Hat](https://www.redhat.com/)\), rkt is a security oriented container engine which takes a pod native approach to containerization and was once the default container engine for [Kubernetes](https://kubernetes.io/).
 
 If you're curious about the other possible choices you have on the containerization scene, you may checkout the [rkt vs other projects](https://coreos.com/rkt/docs/latest/rkt-vs-other-projects.html) page on rkt's official documentation.
 
