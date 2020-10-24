@@ -155,5 +155,9 @@ I've already mentioned in the previous sub-section that each instruction you wri
 * `0a444339d689` was created by `/bin/sh -c apt-get clean && rm -rf /var/lib/apt/lists/*` which was the fourth instruction in your file.
 * Finally the upper most layer `7f16387f7307` was created by `/bin/sh -c #(nop)  CMD ["nginx", "-g", "daemon off;"]` which sets the default command for this image.
 
+As you can see, the image comprises of many read-only layers each recording a new set of change to the state triggered by certain instructions. When you start a container using an image, a new writable layer on top of the other layers. This layer gets destroyed as soon as you delete the container and takes all the changes you made with it.
+
+
+
 
 
