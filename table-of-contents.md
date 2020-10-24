@@ -14,7 +14,7 @@
   * [Registry](hello-world-in-docker.md#registry)
   * [Docker Architecture](hello-world-in-docker.md#docker-architecture)
   * [The Full Picture](hello-world-in-docker.md#the-full-picture)
-* [Manipulating Containers](manipulating-containers.md)
+* [Container Manipulation Basics](manipulating-containers.md)
   * [Running Containers](manipulating-containers.md#running-containers)
   * [Listing Containers](manipulating-containers.md#listing-containers)
   * [Naming and Renaming Containers](manipulating-containers.md#naming-and-renaming-containers)

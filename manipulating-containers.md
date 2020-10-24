@@ -1,4 +1,4 @@
-# Manipulating Containers
+# Container Manipulation Basics
 
 In the previous sections, you've learned about the building blocks of Docker and have also run a container using the `docker run` command. In this section, you'll be learning about container manipulation in a lot more detail. Given container manipulation is one of the most common task you'll be performing every single day, having a proper understanding of the various commands is absolutely crucial.
 
