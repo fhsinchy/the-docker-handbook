@@ -155,7 +155,15 @@ As you can see, the image comprises of many read-only layers each recording a ne
 
 This layering phenomenon that happens every time you work with Docker has been made possible by an amazing technical concept called union file system. Here, union means union in set theory. According to [Wikipedia](https://en.wikipedia.org/wiki/UnionFS) "It allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system. Contents of directories which have the same path within the merged branches will be seen together in a single merged directory, within the new, virtual filesystem."
 
-By utilizing this concept, Docker can avoid data duplication, can use previously created layers as chache for later builds and result in compact, efficient images to be used everywhere.
+By utilizing this concept, Docker can avoid data duplication, can use previously created layers as cache for later builds and result in compact, efficient images to be used everywhere.
+
+## Deeper Into the Image Building Business
+
+In the previous sub-section, you've learned about the `FROM`, `EXPOSE`, `RUN` and `CMD` instructions. In this sub-section you'll be learning a lot more about other instructions.
+
+In this sub-section you'll be again create a custom nginx image but the twist is that you'll be building nginx from source instead of installing it using some package manager such as `apt-get` in the previous example.
+
+To begin rename your old `Dockerfile` to something like `Dockerfile.packaged` indicating that this one installs nginx using a package manager. Create a new file named `Dockerfile.built.v1` which indicates that in this one, you've built nginx from source. The `v1` at the end indicates that there will an even more complex version of this image.
 
 
 
