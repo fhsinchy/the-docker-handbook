@@ -86,12 +86,7 @@ docker image build --file Dockerfile .
 
 Just like the container related commands, the image related commands can be issued using `docker image <command> <options>` format. 
 
-In order to perform an image build, the daemon needs two very specific information. These are as follows:
-
-* Name of the `Dockerfile`
-* The build context
-
-In the issued command above:
+In order to perform an image build, the daemon needs two very specific information. These are name of the `Dockerfile` and the build context. In the issued command above:
 
 * `docker image build` is the actual command for building the image. The daemon finds any file named `Dockerfile` by default so the usage of the `--file` option is redundant here. In case of a differently named file i.e. `Dockerfile.dev`, you must specify the filename.
 * The `.` at the end sets the context for this build. The context means the directory accessible by the daemon during the build process. The concept of a build context will become much clearer in later sub-sections.
@@ -104,6 +99,7 @@ docker container run --detach --name custom-nginx-packaged --publish 8080:80 319
 # ec09d4e1f70c903c3b954c8d7958421cdd1ae3d079b57f929e44131fbf8069a0
 
 docker container ls
+
 # CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
 # ec09d4e1f70c        3199372aa3fc        "nginx -g 'daemon of…"   23 seconds ago      Up 22 seconds       0.0.0.0:8080->80/tcp   custom-nginx-packaged
 ```
@@ -157,7 +153,9 @@ I've already mentioned in the previous sub-section that each instruction you wri
 
 As you can see, the image comprises of many read-only layers each recording a new set of change to the state triggered by certain instructions. When you start a container using an image, a new writable layer on top of the other layers.
 
-This layering phenomenon that happens everytime you work with Docker has been made possible by an amazing technical concept called [Union File System or UnionFS](https://en.wikipedia.org/wiki/UnionFS) in short.
+This layering phenomenon that happens every time you work with Docker has been made possible by an amazing technical concept called union file system. Here, union means union in set theory. According to [Wikipedia](https://en.wikipedia.org/wiki/UnionFS) "It allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system. Contents of directories which have the same path within the merged branches will be seen together in a single merged directory, within the new, virtual filesystem."
+
+By utilizing this concept, Docker can avoid data duplication, can use previously created layers as chache for later builds and result in compact, efficient images to be used everywhere.
 
 
 
