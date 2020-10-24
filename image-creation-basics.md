@@ -381,9 +381,16 @@ Now you should be able to run a container using the `custom-nginx:built-v2` imag
 docker container run --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built-v2
 
 # 90ccdbc0b598dddc4199451b2f30a942249d85a8ed21da3c8d14612f17eed0aa
+
+docker container ls
+
+# CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS              PORTS                  NAMES
+# 90ccdbc0b598        custom-nginx:built-v2   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
 ```
+
+As you can see, a container using the `custom-nginx:built-v2` image has been successfully run. The container should be accessible at `http://127.0.0.1:8080` address now.
 
 ![](.gitbook/assets/nginx-default.png)
 
-
+And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
 
