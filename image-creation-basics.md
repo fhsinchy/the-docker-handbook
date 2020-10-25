@@ -294,7 +294,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 The code is almost identical to the previous code block except a new instruction called `ARG` on line 13, 14 and the usage of an URL with the `ADD` instruction. Explanation for the updated code is as follows:
 
-* The `ARG` instruction lets you declare variables like in other languages. These variables  or arguments can later be accessed using the `${argument name}` syntax. Here, I've put the filename `nginx-1.19.2` and the file extension `tar.gz` in two separate arguments.
+* The `ARG` instruction lets you declare variables like in other languages. These variables  or arguments can later be accessed using the `${argument name}` syntax. Here, I've put the filename `nginx-1.19.2` and the file extension `tar.gz` in two separate arguments. This way I can switch between newer versions of NGINX or the archive format by making a change in just one place.
 * In the `ADD` instruction, I've formed the download URL dynamically using the arguments declared above. The `https://nginx.org/download/${FILENAME}.${EXTENSION}` line will result in something like `https://nginx.org/download/nginx-1.19.2.tar.gz` during the build process. You can change the file version or the extension by changing it in just one place thanks to the `ARG` instruction.
 * The `ADD` instruction doesn't extract files obtained from the internet by default hence, the usage of `tar` on line 18 here.
 
