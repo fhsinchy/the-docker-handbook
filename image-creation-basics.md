@@ -163,12 +163,12 @@ Before diving into writing some code, let's plan out the process first. The imag
 * Get a good base image for building the application i.e. Ubuntu.
 * Install necessary build dependencies on the base image.
 * Copy `nginx-1.19.2.tar.gz` file inside the image.
-* Extract the contents of the archieve and get rid of it.
+* Extract the contents of the archive and get rid of it.
 * Configure the build, compile and install the program using the `make` tool.
 * Get rid of the extracted source code.
 * Run `nginx` executable.
 
-Now that you have plan, begin by renaming your old `Dockerfile` to something like `Dockerfile.packaged` indicating that this one installs nginx using a package manager. Create a new file named `Dockerfile.built` which indicates that in this one, you've built nginx from source. Open up the newly created file and put following content in it:
+Now that you have a plan, let's begin by renaming your old `Dockerfile` to something like `Dockerfile.packaged` indicating that this one installs NGINX using a package manager. Create a new file named `Dockerfile.built` which indicates that in this one, you've built NGINX from source. Open up the newly created file and put following content in it:
 
 ```text
 FROM ubuntu:latest
@@ -205,13 +205,13 @@ CMD ["nginx", "-g", "daemon off;"]
 
 As you can see, the code inside the `Dockerfile.built.v1` reflects the seven steps I talked about beforehand.
 
-* The `FROM` instruction sets Ubuntu as the base image making an ideal environment for building nginx from source.
-* The `RUN` instruction here installs standard package necessary for compiling nginx from source.
-* The `COPY` instruction here is something new. This instruction is responsible for copying the the `nginx-1.19.2.tar.gz` file inside the image. The generic syntax for the `COPY` instruction is `COPY <source> <destination>` where source is in your local filesystem and the destination is inside your image. Here `.` means the working directory of the image which is by default `/` unless set otherwise.
-* The second `RUN` instruction here extracts the contents of the archive using `tar` and gets rid of it afterwards.
-* The archive file contains a directory called `nginx-1.19.2` containing the source code. Hence on the next step, you'll need to cs inside that directory and perform the build process.
+* The `FROM` instruction sets Ubuntu as the base image making an ideal environment for building any application.
+* The `RUN` instruction here installs standard packages necessary for building NGINX from source.
+* The `COPY` instruction here is something new. This instruction is responsible for copying the the `nginx-1.19.2.tar.gz` file inside the image. The generic syntax for the `COPY` instruction is `COPY <source> <destination>` where source is in your local filesystem and the destination is inside your image. The `.` as the destination means the working directory inside the image which is by default `/` unless set otherwise.
+* The second `RUN` instruction here extracts the contents from the archive using `tar` and gets rid of it afterwards.
+* The archive file contains a directory called `nginx-1.19.2` containing the source code. Hence on the next step, you'll need to `cd` inside that directory and perform the build process. You can read the [How to Install Software from Source Code… and Remove it Afterwards](https://itsfoss.com/install-software-from-source-code/) article at [It's Foss](https://itsfoss.com/) to learn more on the topic.
 * Once the build and installation is complete, you remove the `nginx-1.19.2` directory using `rm` command.
-* On the final step you start nginx in single process mode just like you did before.
+* On the final step you start NGINX in single process mode just like you did before.
 
 Now to build an image using this code, execute the following command:
 
@@ -249,7 +249,10 @@ docker image build --file Dockerfile.built --tag custom-nginx:built-v1 .
 # Successfully tagged custom-nginx:built-v1
 ```
 
-Now you should be able to run a container using the `custom-nginx:built-v1` image. This code is alright but there are some places where improvements can be made. One such place is the usage of the `ADD` instruction instead of the `COPY` instruction. Both instructions work identically except the fact that the `ADD` instruction will automatically extract the content of the archive.
+Now you should be able to run a container using the `custom-nginx:built-v1` image. This code is alright but there are some places where improvements can be made. 
+
+* Instead of hard coding the filename like `nginx-1.19.2.tar.gz`, you can create an argument using the `ARG` instruction. This way, you'll be able to change the version or filename by just changing the argument.
+* Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction. Both `COPY` and `ADD` works identically, except the fact that the `ADD` instruction can get files from the internet as well.
 
 Open up the `Dockerfile.built` file and update it's content as follows:
 
