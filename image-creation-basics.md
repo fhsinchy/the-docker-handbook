@@ -252,46 +252,9 @@ docker image build --file Dockerfile.built --tag custom-nginx:built-v1 .
 Now you should be able to run a container using the `custom-nginx:built-v1` image. This code is alright but there are some places where improvements can be made. 
 
 * Instead of hard coding the filename like `nginx-1.19.2.tar.gz`, you can create an argument using the `ARG` instruction. This way, you'll be able to change the version or filename by just changing the argument.
-* Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction. Both `COPY` and `ADD` works identically, except the fact that the `ADD` instruction can get files from the internet as well.
+* Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction. Both `COPY` and `ADD` works identically, except the fact that the `ADD` instruction can get files from the internet as well. Another feature of `ADD` instruction is that if you're adding an archive from local filesystem to the image, it'll be automatically extracted.
 
 Open up the `Dockerfile.built` file and update it's content as follows:
-
-```text
-FROM ubuntu:latest
-
-RUN apt-get update && \
-    apt-get install build-essential\ 
-                    libpcre3 \
-                    libpcre3-dev \
-                    zlib1g \
-                    zlib1g-dev \
-                    libssl-dev \
-                    -y && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-ADD nginx-1.19.2.tar.gz .
-
-RUN cd nginx-1.19.2 && \
-    ./configure \
-        --sbin-path=/usr/bin/nginx \
-        --conf-path=/etc/nginx/nginx.conf \
-        --error-log-path=/var/log/nginx/error.log \
-        --http-log-path=/var/log/nginx/access.log \
-        --with-pcre \
-        --pid-path=/var/run/nginx.pid \
-        --with-http_ssl_module && \
-    make && make install
-
-RUN rm -rf /nginx-1.19.2
-
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-The file is almost the same as it was before except `ADD` instruction has been added on line 13 replacing the `COPY` instruction eliminating the need of extracting the archive manually. Syntax for the `ADD` instruction is same as the `COPY` instruction.
-
-Again, this copy of the code is completely fine but what I prefer is downloading the source code directly from the internet and making the filename dynamic instead of writing commands like `cd nginx-1.19.2` in the code. Luckily, the `ADD` instruction can actually get files from the internet and the `ARG` instruction can be used to create variables.
-
-Open up the code one last time and update it's content as follows:
 
 ```text
 FROM ubuntu:latest
