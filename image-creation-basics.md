@@ -158,9 +158,9 @@ By utilizing this concept, Docker can avoid data duplication, can use previously
 
 In the previous sub-section, you've learned about the `FROM`, `EXPOSE`, `RUN` and `CMD` instructions. In this sub-section you'll be learning a lot more about other instructions.
 
-In this sub-section you'll be again create a custom NGINX image but the twist is that you'll be building nginx from source instead of installing it using some package manager such as `apt-get` in the previous example.
+In this sub-section you'll be again create a custom NGINX image but the twist is that you'll be building NGINX from source instead of installing it using some package manager such as `apt-get` in the previous example.
 
-In order to build nginx from source, you first need the source of NGINX. If you've cloned my projects repository you'll see a file named `nginx-1.19.2.tar.gz` inside the `custom-nginx` directory. You'll use this archive as the source for building NGINX.
+In order to build NGINX from source, you first need the source of NGINX. If you've cloned my projects repository you'll see a file named `nginx-1.19.2.tar.gz` inside the `custom-nginx` directory. You'll use this archive as the source for building NGINX.
 
 Before diving into writing some code, let's plan out the process first. The image process creation process this time can be done in seven steps. These are as follows:
 
