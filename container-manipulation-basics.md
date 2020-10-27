@@ -280,7 +280,7 @@ docker container ls --all
 # 9f21cb777058        fhsinchy/hello-dock   "/docker-entrypoint.…"   12 minutes ago      Up 3 minutes        0.0.0.0:8080->80/tcp   hello-dock-container-2
 ```
 
-If you've been following the article exactly as written so far, you should only see the `hello-dock-container` and `hello-dock-container-2` in the list. I would suggest stopping and removing both containers before going to the next section.
+If you've been following the book exactly as written so far, you should only see the `hello-dock-container` and `hello-dock-container-2` in the list. I would suggest stopping and removing both containers before going to the next section.
 
 ## Running Containers in Interactive Mode
 

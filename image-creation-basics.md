@@ -23,11 +23,11 @@ docker container ls
 # b379ecd5b6b9        nginx               "/docker-entrypoint.…"   8 seconds ago       Up 8 seconds        0.0.0.0:8080->80/tcp   default-nginx
 ```
 
-Now, if you visit `http://127.0.0.1:8080` in the browser, you'll see a default reponse page.
+Now, if you visit `http://127.0.0.1:8080` in the browser, you'll see a default response page.
 
 ![](.gitbook/assets/nginx-default.png)
 
-That's all nice and good, but what if you want to make a custom nginx which functions exactly like the official one, but is built by you? That's completely valid scenario to be honest. In fact, let's do that.
+That's all nice and good, but what if you want to make a custom NGINX which functions exactly like the official one, but is built by you? That's completely valid scenario to be honest. In fact, let's do that.
 
 In order to make a custom NGINX image, you must have a clear picture of what the final state of the image will be. In my opinion the image should as follows:
 
@@ -53,9 +53,15 @@ I hope that you remember that images are multi-layered files. In this file, each
 * Every valid `Dockerfile` starts with a `FROM` instruction. This instruction sets the base image for your resultant image. By setting `ubuntu:latest` as the base image here, you get all the goodness of Ubuntu already available in your custom image hence, you can use things like the `apt-get` command for easy package installation.
 * The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` command explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that you'll learn about in later sub-sections.
 * The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package version and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
-* Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the NGINX executable. The `-g` and `daemon off` are options for NGINX. Running nginx as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
+* Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the NGINX executable. The `-g` and `daemon off` are options for NGINX. Running NGINX as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
 
-Now that you have a valid `Dockerfile` you can build an image out of it. To do so, open up your terminal inside the `custom-nginx` directory and execute following command:
+Now that you have a valid `Dockerfile` you can build an image out of it. Just like the container related commands, the image related commands can be issued using the following syntax:
+
+```text
+docker image <command> <options>
+```
+
+To build an image using the `Dockerfile` you just wrote, open up your terminal inside the `custom-nginx` directory and execute following command:
 
 ```text
 docker image build --file Dockerfile .
@@ -79,9 +85,7 @@ docker image build --file Dockerfile .
 # Successfully built 3199372aa3fc
 ```
 
-Just like the container related commands, the image related commands can be issued using `docker image <command> <options>` format. 
-
-In order to perform an image build, the daemon needs two very specific information. These are name of the `Dockerfile` and the build context. In the issued command above:
+In order to perform an image build, the daemon needs two very specific information. These are the name of the `Dockerfile` and the build context. In the issued command above:
 
 * `docker image build` is the actual command for building the image. The daemon finds any file named `Dockerfile` by default so the usage of the `--file` option is redundant here. In case of a differently named file i.e. `Dockerfile.dev`, you must specify the filename.
 * The `.` at the end sets the context for this build. The context means the directory accessible by the daemon during the build process. The concept of a build context will become much clearer in later sub-sections.
