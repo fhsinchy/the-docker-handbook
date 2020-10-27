@@ -53,7 +53,7 @@ I hope that you remember that images are multi-layered files. In this file, each
 * Every valid `Dockerfile` starts with a `FROM` instruction. This instruction sets the base image for your resultant image. By setting `ubuntu:latest` as the base image here, you get all the goodness of Ubuntu already available in your custom image hence, you can use things like the `apt-get` command for easy package installation.
 * The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` command explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that you'll learn about in later sub-sections.
 * The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package version and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
-* Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the nginx executable. The `-g` and `daemon off` are options for nginx. Running nginx as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
+* Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the NGINX executable. The `-g` and `daemon off` are options for NGINX. Running nginx as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
 
 Now that you have a valid `Dockerfile` you can build an image out of it. To do so, open up your terminal inside the `custom-nginx` directory and execute following command:
 
@@ -103,7 +103,7 @@ This container should behave just like the official one. To verify, visit `http:
 
 ![](.gitbook/assets/nginx-default.png)
 
-Just like containers, you can assign custom identifier to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` option is used in such cases. In order to tag your custom nginx image with `custom-nginx:packaged` you can execute the following command:
+Just like containers, you can assign custom identifier to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
 
 
 
@@ -154,9 +154,9 @@ By utilizing this concept, Docker can avoid data duplication, can use previously
 
 In the previous sub-section, you've learned about the `FROM`, `EXPOSE`, `RUN` and `CMD` instructions. In this sub-section you'll be learning a lot more about other instructions.
 
-In this sub-section you'll be again create a custom nginx image but the twist is that you'll be building nginx from source instead of installing it using some package manager such as `apt-get` in the previous example.
+In this sub-section you'll be again create a custom NGINX image but the twist is that you'll be building nginx from source instead of installing it using some package manager such as `apt-get` in the previous example.
 
-In order to build nginx from source, you first need the source of nginx. If you've cloned my projects repository you'll see a file named `nginx-1.19.2.tar.gz` inside the `custom-nginx` directory. You'll use this archive as the source for building nginx.
+In order to build nginx from source, you first need the source of NGINX. If you've cloned my projects repository you'll see a file named `nginx-1.19.2.tar.gz` inside the `custom-nginx` directory. You'll use this archive as the source for building NGINX.
 
 Before diving into writing some code, let's plan out the process first. The image process creation process this time can be done in seven steps. These are as follows:
 
