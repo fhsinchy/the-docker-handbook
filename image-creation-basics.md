@@ -164,7 +164,7 @@ In order to build NGINX from source, you first need the source of NGINX. If you'
 
 Before diving into writing some code, let's plan out the process first. The image process creation process this time can be done in seven steps. These are as follows:
 
-* Get a good base image for building the application i.e. Ubuntu.
+* Get a good base image for building the application i.e. [ubuntu](https://hub.docker.com/_/ubuntu).
 * Install necessary build dependencies on the base image.
 * Copy `nginx-1.19.2.tar.gz` file inside the image.
 * Extract the contents of the archive and get rid of it.
@@ -363,4 +363,62 @@ As you can see, a container using the `custom-nginx:built-v2` image has been suc
 ![](.gitbook/assets/nginx-default.png)
 
 And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
+
+## Containerizing a JavaScript Application
+
+Now that you've got some idea of creating images, it's time to work with something a bit more relevant. In this sub-section, you'll be working with the source code of the [fhsinchy/hello-dock](https://hub.docker.com/r/fhsinchy/hello-dock) image that you worked with on a previous section. In the process of containerizing this very simple application, you'll be introduced to volumes and multi-staged builds, two of the most important concepts in Docker.
+
+To begin with, open up the directory where you've cloned the repository that came with this article. Code for the `hello-dock` application resides inside the sub-directory with the same name.
+
+```text
+.
+├── index.html
+├── package.json
+├── public
+│   └── favicon.ico
+└── src
+    ├── App.vue
+    ├── assets
+    │   └── docker-handbook-github.webp
+    ├── components
+    │   └── HelloDock.vue
+    ├── index.css
+    └── main.js
+```
+
+This is a very simple JavaScript project powered by the [vitejs/vite](https://github.com/vitejs/vite) project. Don't worry though, you don't need to know JavaScript or vite in order to go through this sub-section. Having a basic understanding of [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) will suffice.
+
+Just like any other project you've done in the previous sub-section, you'll begin by making a plan of how you want this application to run. In my opinion, the plan should be as follows:
+
+* Get a good base image for running JavaScript applications i.e. [node](https://hub.docker.com/_/node).
+* Set the default working directory inside the image.
+* Copy the `package.json` file into the image.
+* Install necessary dependencies.
+* Copy rest of the project files.
+* Start the vite development server by executing `npm run dev` command.
+
+This plan should always come from the developer of the application that you're containerizing. If you're the developer yourself, then you should already have a proper understanding of how this application needs to run. No if  you put the above mentioned plan inside `Dockerfile.dev`, the file should look like as follows:
+
+```text
+FROM node:lts
+
+EXPOSE 8080
+
+WORKDIR /app
+
+COPY ./package.json ./
+RUN npm install
+
+CMD [ "npm", "run", "dev" ]
+```
+
+Explanation for this code is as follows:
+
+* The `FROM` instruction here sets the official Node.js image as the base giving you all the goodness of Node.js necessary to run any JavaScript application. The `lts` tag indicates that you want to use the long term support version of the image. Available tags and necessary documentation for an image is usually found on [node](https://hub.docker.com/_/node) hub page.
+* Then the `WORKDIR` instruction sets the default working directory to `/app` directory. By default the working directory of any image is the root. You don't want any unnecessary files sprayed all over your root directory, do you? Hence you change the default working directory to something more sensible like `/app` or whatever you like. This working directory will be application to any consecutive `COPY`, `ADD`, `RUN` and `CMD` instructions.
+* The `COPY` instruction here copies the `package.json` file which contains information regarding all the necessary dependencies for this application. The `RUN` instruction executes `npm install` command which is the default command for installing dependencies using a `package.json` file in Node.js projects.
+* Finally, the `CMD` instruction here sets the default command for this image which is `npm run dev` written in `exec` form.
+* The vite development server by default runs on port `8080` hence adding an `EXPOSE` command seemed like a good idea, so there you go.
+
+
 
