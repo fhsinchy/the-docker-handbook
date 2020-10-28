@@ -256,7 +256,7 @@ docker image build --file Dockerfile.built --tag custom-nginx:built-v1 .
 Now you should be able to run a container using the `custom-nginx:built-v1` image. This code is alright but there are some places where improvements can be made. 
 
 * Instead of hard coding the filename like `nginx-1.19.2.tar.gz`, you can create an argument using the `ARG` instruction. This way, you'll be able to change the version or filename by just changing the argument.
-* Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction. Both `COPY` and `ADD` works identically, except the fact that the `ADD` instruction can get files from the internet as well. Another feature of the `ADD` instruction is that if you're adding an archive from local filesystem to the image, it'll be automatically extracted.
+* Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction which is capable of adding files from the internet.
 
 Open up the `Dockerfile.built` file and update it's content as follows:
 
@@ -298,7 +298,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 The code is almost identical to the previous code block except a new instruction called `ARG` on line 13, 14 and the usage of the `ADD` instruction on line 16. Explanation for the updated code is as follows:
 
-* The `ARG` instruction lets you declare variables like in other languages. These variables  or arguments can later be accessed using the `${argument name}` syntax. Here, I've put the filename `nginx-1.19.2` and the file extension `tar.gz` in two separate arguments. This way I can switch between newer versions of NGINX or the archive format by making a change in just one place.
+* The `ARG` instruction lets you declare variables like in other languages. These variables  or arguments can later be accessed using the `${argument name}` syntax. Here, I've put the filename `nginx-1.19.2` and the file extension `tar.gz` in two separate arguments. This way I can switch between newer versions of NGINX or the archive format by making a change in just one place. In the code above, I've added default values to the variables. Variable values can be passed as option of the `image build` command as well. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#arg) for more details.
 * In the `ADD` instruction, I've formed the download URL dynamically using the arguments declared above. The `https://nginx.org/download/${FILENAME}.${EXTENSION}` line will result in something like `https://nginx.org/download/nginx-1.19.2.tar.gz` during the build process. You can change the file version or the extension by changing it in just one place thanks to the `ARG` instruction.
 * The `ADD` instruction doesn't extract files obtained from the internet by default hence, the usage of `tar` on line 18 here.
 
@@ -402,12 +402,14 @@ This plan should always come from the developer of the application that you're c
 ```text
 FROM node:lts
 
-EXPOSE 8080
+EXPOSE 3000
 
 WORKDIR /app
 
-COPY ./package.json ./
+COPY ./package.json .
 RUN npm install
+
+COPY . .
 
 CMD [ "npm", "run", "dev" ]
 ```
@@ -416,9 +418,54 @@ Explanation for this code is as follows:
 
 * The `FROM` instruction here sets the official Node.js image as the base giving you all the goodness of Node.js necessary to run any JavaScript application. The `lts` tag indicates that you want to use the long term support version of the image. Available tags and necessary documentation for an image is usually found on [node](https://hub.docker.com/_/node) hub page.
 * Then the `WORKDIR` instruction sets the default working directory to `/app` directory. By default the working directory of any image is the root. You don't want any unnecessary files sprayed all over your root directory, do you? Hence you change the default working directory to something more sensible like `/app` or whatever you like. This working directory will be application to any consecutive `COPY`, `ADD`, `RUN` and `CMD` instructions.
-* The `COPY` instruction here copies the `package.json` file which contains information regarding all the necessary dependencies for this application. The `RUN` instruction executes `npm install` command which is the default command for installing dependencies using a `package.json` file in Node.js projects.
+* The `COPY` instruction here copies the `package.json` file which contains information regarding all the necessary dependencies for this application. The `RUN` instruction executes `npm install` command which is the default command for installing dependencies using a `package.json` file in Node.js projects. The `.` at the end represents the working directory.
+* The second `COPY` instruction copies rest of the content from the current directory \(`.`\) of the host filesystem to the working directory \(`.`\) inside the image.
 * Finally, the `CMD` instruction here sets the default command for this image which is `npm run dev` written in `exec` form.
-* The vite development server by default runs on port `8080` hence adding an `EXPOSE` command seemed like a good idea, so there you go.
+* The vite development server by default runs on port `3000` hence adding an `EXPOSE` command seemed like a good idea, so there you go.
 
+Now, to build an image from this `Dockerfile.dev` you can execute the following command:
 
+```text
+docker image build --file Dockerfile.dev --tag hello-dock:dev .
+
+# Step 1/7 : FROM node:lts
+#  ---> b90fa0d7cbd1
+# Step 2/7 : EXPOSE 3000
+#  ---> Running in 722d639badc7
+# Removing intermediate container 722d639badc7
+#  ---> e2a8aa88790e
+# Step 3/7 : WORKDIR /app
+#  ---> Running in 998e254b4d22
+# Removing intermediate container 998e254b4d22
+#  ---> 6bd4c42892a4
+# Step 4/7 : COPY ./package.json .
+#  ---> 24fc5164a1dc
+# Step 5/7 : RUN npm install
+#  ---> Running in 23b4de3f930b
+### LONG INSTALLATION STUFF GOES HERE ###
+# Removing intermediate container 23b4de3f930b
+#  ---> c17ecb19a210
+# Step 6/7 : COPY . .
+#  ---> afb6d9a1bc76
+# Step 7/7 : CMD [ "npm", "run", "dev" ]
+#  ---> Running in a7ff529c28fe
+# Removing intermediate container a7ff529c28fe
+#  ---> 1792250adb79
+# Successfully built 1792250adb79
+# Successfully tagged hello-dock:dev
+```
+
+Now a container can be run using this image by executing the following command:
+
+```text
+docker container run --detach --publish 3000:3000 --name hello-dock-dev hello-dock:dev
+
+# 21b9b1499d195d85e81f0e8bce08f43a64b63d589c5f15cbbd0b9c0cb07ae268
+```
+
+Now visit `http://127.0.0.1:3000` do see the `hello-dock` application in action.
+
+![](.gitbook/assets/hello-dock-dev.png)
+
+Congratulations on running your first real-world application inside a container.
 
