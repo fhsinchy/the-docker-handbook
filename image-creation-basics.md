@@ -481,7 +481,7 @@ To solve this issue, Docker has something called a [bind mount](https://docs.doc
 
 This way, any changes you make to your local source code will reflect immediately inside the container triggering the hot reload feature of vite development server.
 
-A bind mount can be created by using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container and start a new one by executing the following command:
+A bind mount can be created by using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
 
 ```text
 docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
@@ -493,5 +493,5 @@ The `--volume` option can take three fields separated by colons \(`:`\). The gen
 --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
 ```
 
-The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory
+The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory which if you're following the article properly, should be your `hello-dock` project directory.
 
