@@ -475,3 +475,23 @@ But if you make any change in your code right now, you'll see nothing happening 
 
 ![](.gitbook/assets/local-vs-container-file-system.svg)
 
+To solve this issue, Docker has something called a [bind mount](https://docs.docker.com/storage/bind-mounts/). Using bind mount, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system inside the container, the bind mount can reference the local file system inside the container.
+
+![](.gitbook/assets/bind-mounts.svg)
+
+This way, any changes you make to your local source code will reflect immediately inside the container triggering the hot reload feature of vite development server.
+
+A bind mount can be created by using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container and start a new one by executing the following command:
+
+```text
+docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
+```
+
+The `--volume` option can take three fields separated by colons \(`:`\). The generic syntax for the option is as follows:
+
+```text
+--volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
+```
+
+The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory
+
