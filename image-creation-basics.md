@@ -397,7 +397,7 @@ Just like any other project you've done in the previous sub-section, you'll begi
 * Copy rest of the project files.
 * Start the vite development server by executing `npm run dev` command.
 
-This plan should always come from the developer of the application that you're containerizing. If you're the developer yourself, then you should already have a proper understanding of how this application needs to run. No if  you put the above mentioned plan inside `Dockerfile.dev`, the file should look like as follows:
+This plan should always come from the developer of the application that you're containerizing. If you're the developer yourself, then you should already have a proper understanding of how this application needs to be run. Now if you put the above mentioned plan inside `Dockerfile.dev`, the file should look like as follows:
 
 ```text
 FROM node:lts
@@ -455,7 +455,7 @@ docker image build --file Dockerfile.dev --tag hello-dock:dev .
 # Successfully tagged hello-dock:dev
 ```
 
-Now a container can be run using this image by executing the following command:
+A container can be run using this image by executing the following command:
 
 ```text
 docker container run --detach --publish 3000:3000 --name hello-dock-dev hello-dock:dev
@@ -494,4 +494,14 @@ The `--volume` option can take three fields separated by colons \(`:`\). The gen
 ```
 
 The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory which if you're following the article properly, should be your `hello-dock` project directory.
+
+Another usage of volumes in this project can be with the `node_modules` folder. If you install the dependencies on your local file system and then mount the directory as a volume inside the container, you may face an issue.
+
+That is, the packages installed inside the `node_modules` folder on your local file system may not work properly inside the container. To mitigate this issue you can mount a directory i.e. `docker/packages` from your local file system as the  `node_modules` directory inside the container.
+
+This can be done by executing the following command:
+
+```text
+docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume $(pwd)/docker/packages:/app/node_modules hello-dock:dev
+```
 
