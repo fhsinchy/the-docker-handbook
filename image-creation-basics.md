@@ -495,13 +495,13 @@ The `--volume` option can take three fields separated by colons \(`:`\). The gen
 
 The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory which if you're following the article properly, should be your `hello-dock` project directory.
 
-Another usage of volumes in this project can be with the `node_modules` folder. If you install the dependencies on your local file system and then mount the directory as a volume inside the container, you may face an issue.
+Although the usage of a volume solves the issue of hot reloads, it introduces another one. If you have any previous experience with Node.js, you may know that the dependencies of a Node.js project lives inside the `node_modules` directory on the project root.
 
-That is, the packages installed inside the `node_modules` folder on your local file system may not work properly inside the container. To mitigate this issue you can mount a directory i.e. `docker/packages` from your local file system as the  `node_modules` directory inside the container.
+Now that you're mounting the project root on your local file system as a volume inside the container, the content inside the container gets replaced along with the `node_modules` directory that contains all the dependencies.
 
 This can be done by executing the following command:
 
 ```text
-docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume $(pwd)/docker/packages:/app/node_modules hello-dock:dev
+docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume /app/node_modules hello-dock:dev
 ```
 
