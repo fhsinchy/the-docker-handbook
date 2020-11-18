@@ -499,7 +499,15 @@ Although the usage of a volume solves the issue of hot reloads, it introduces an
 
 Now that you're mounting the project root on your local file system as a volume inside the container, the content inside the container gets replaced along with the `node_modules` directory that contains all the dependencies.
 
-This can be done by executing the following command:
+This problem here can be solved using an anonymous volume. An anonymous volume is identical to a bind mount except the fact that you don't need to specify the source of the volume here. The generic syntax for creating an anonymous volume is as follows:
+
+```text
+--volume <container file system directory absolute path>:<read write access>
+```
+
+Here, Docker will take the entire `node_modules` directory from inside the container and tuck it away in some other directory managed by the Docker daemon on your host file system and will mount that directory as `node_modules` inside the container.
+
+Now, the `hello-dock` container can be started with both volumes by executing the following command:
 
 ```text
 docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume /app/node_modules hello-dock:dev
