@@ -475,16 +475,18 @@ But if you make any change in your code right now, you'll see nothing happening 
 
 ![](.gitbook/assets/local-vs-container-file-system.svg)
 
-To solve this issue, Docker has something called a [bind mount](https://docs.docker.com/storage/bind-mounts/). Using bind mount, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system inside the container, the bind mount can reference the local file system inside the container.
+To solve this issue, Docker has something called [volumes](https://docs.docker.com/storage/volumes/). Using volumes, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system inside the container, the volume can reference the local file system inside the container.
 
 ![](.gitbook/assets/bind-mounts.svg)
 
 This way, any changes you make to your local source code will reflect immediately inside the container triggering the hot reload feature of vite development server.
 
-A bind mount can be created by using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
+A volume can be created by using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
 
 ```text
 docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
+
+# c07ee6ba946b0c6948c2f813290c8218023a01249c4fd008664964e88c646c1f
 ```
 
 The `--volume` option can take three fields separated by colons \(`:`\). The generic syntax for the option is as follows:
@@ -499,17 +501,19 @@ Although the usage of a volume solves the issue of hot reloads, it introduces an
 
 Now that you're mounting the project root on your local file system as a volume inside the container, the content inside the container gets replaced along with the `node_modules` directory that contains all the dependencies.
 
-This problem here can be solved using an anonymous volume. An anonymous volume is identical to a bind mount except the fact that you don't need to specify the source of the volume here. The generic syntax for creating an anonymous volume is as follows:
+This problem here can be solved using an anonymous volume. An anonymous volume is identical to a regular volume except the fact that you don't need to specify the source of the volume here. The generic syntax for creating an anonymous volume is as follows:
 
 ```text
 --volume <container file system directory absolute path>:<read write access>
 ```
 
-Here, Docker will take the entire `node_modules` directory from inside the container and tuck it away in some other directory managed by the Docker daemon on your host file system and will mount that directory as `node_modules` inside the container.
-
-Now, the `hello-dock` container can be started with both volumes by executing the following command:
+So the final command for starting the `hello-dock` container with both volumes should be as follows:
 
 ```text
 docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume /app/node_modules hello-dock:dev
+
+# 53d1cfdb3ef148eb6370e338749836160f75f076d0fbec3c2a9b059a8992de8b
 ```
+
+Here, Docker will take the entire `node_modules` directory from inside the container and tuck it away in some other directory managed by the Docker daemon on your host file system and will mount that directory as `node_modules` inside the container.
 
