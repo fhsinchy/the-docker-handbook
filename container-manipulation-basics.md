@@ -129,7 +129,7 @@ docker container run --detach --publish 8888:80 --name hello-dock-container fhsi
 # b1db06e400c4c5e81a93a64d30acc1bf821bed63af36cab5cdb95d25e114f5fb
 ```
 
-The 8080 port on local network is occupied by the `gifted_sammet` container, that's why you'll have to use a different port number i.e. 8888. Now to verify run the `ls` command:
+The 8080 port on local network is occupied by the `gifted_sammet` container \(the container created in the previous section\), that's why you'll have to use a different port number i.e. 8888. Now to verify run the `ls` command:
 
 ```text
 docker container run ls
@@ -153,9 +153,7 @@ To rename the `gifted_sammet` container to `hello-dock-container-2` execute foll
 docker container rename gifted_sammet hello-dock-container-2
 ```
 
-The command doesn't yield any output but you can verify that the changes have taken place using the `ls` command. The `rename` command works both for running and stopped containers.
-
-I would suggest the third container created using the `hello-dock` image to something like `hello-dock-container-3` so that you'll be more inline with the subsequent sections.
+The command doesn't yield any output but you can verify that the changes have taken place using the `ls` command. The `rename` command works for container both in running state and stopped state.
 
 ## Stopping or Killing a Running Container
 
@@ -185,7 +183,7 @@ docker container kill hello-dock-container-2
 # hello-dock-container-2
 ```
 
-I've used the container name instead of id here to change thing up a bit. You may use whatever you like. You can verify that the container is up once again using the `ls` command.
+You can verify that the container has been killed using the `ls` command.
 
 ## Restarting Containers
 

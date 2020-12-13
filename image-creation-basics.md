@@ -483,7 +483,7 @@ To solve this issue, Docker has something called [volumes](https://docs.docker.c
 
 This way, any changes you make to your local source code will reflect immediately inside the container triggering the hot reload feature of vite development server.
 
-A volume can be created by using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
+A volume can be created using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
 
 ```text
 docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
@@ -497,7 +497,7 @@ The `--volume` option can take three fields separated by colons \(`:`\). The gen
 --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
 ```
 
-The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory which if you're following the article properly, should be your `hello-dock` project directory.
+The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory which if you're following the article properly, should be the absolute path of your `hello-dock` project directory.
 
 Although the usage of a volume solves the issue of hot reloads, it introduces another one. If you have any previous experience with Node.js, you may know that the dependencies of a Node.js project lives inside the `node_modules` directory on the project root.
 
