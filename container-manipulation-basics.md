@@ -46,6 +46,8 @@ docker container run --publish 8080:80 fhsinchy/hello-dock
 
 The command is pretty self-explanatory. The only portion that may require some explanation is the `--publish 8080:80` portion.
 
+### Publishing Ports
+
 As I've stated in an earlier section, containers are isolated environments. Your host system doesn't know anything about what's going on inside a container. Hence, applications running inside a container remains inaccessible from the outside.
 
 To allow access from outside of a container, you must publish the appropriate port inside the container to a port on your local network. The common syntax for the `--publish` option is as follows:
@@ -61,6 +63,8 @@ Now in order to access the application, open up your browser and visit `http://1
 ![](.gitbook/assets/hello-dock.png)
 
 The container can be stopped by simply hitting `ctrl + c` key combination while the terminal window is in focus or closing off the terminal window completely.
+
+### Detached Mode
 
 Another very popular option of the `run` command is the `--detach` command. As you've seen in the example above, in order for the container to keep running, you had to keep the terminal window open. Closing the terminal window also stopped the running container.
 
