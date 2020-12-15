@@ -24,10 +24,9 @@
   * [Restarting Containers](container-manipulation-basics.md#restarting-containers)
   * [Removing Dangling Containers](container-manipulation-basics.md#removing-dangling-containers)
   * [Running Containers in Interactive Mode](container-manipulation-basics.md#running-containers-in-interactive-mode)
+  * [Executing Commands Inside a Container](container-manipulation-basics.md#executing-commands-inside-a-container)
+  * [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images)
   * [Creating Containers Without Running](container-manipulation-basics.md#creating-containers-without-running)
-  * Executing Commands Inside a Running Container
-  * Starting Shell Inside a Running Container
-  * Accessing Logs From a Running Container
 * [Image Creation Basics](image-creation-basics.md)
   * [The Essentials](image-creation-basics.md#the-essentials)
   * [Understanding the Many Layers of an Image](image-creation-basics.md#understanding-the-many-layers-of-an-image)
