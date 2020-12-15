@@ -354,7 +354,7 @@ rmbyext <file extension>
 
 So executing `rmbyext pdf` will delete all PDF files from the directory where the script has been executed as well as from any other nested directory present inside that directory.
 
-Now I've created an executable image for this program. The 
+Now I've created an executable image for this program. The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image contains this script ready to use and using a very familiar syntax.
 
 ## Creating Containers Without Running
 
