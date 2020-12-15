@@ -477,13 +477,15 @@ But if you make any change in your code right now, you'll see nothing happening 
 
 ![](.gitbook/assets/local-vs-container-file-system.svg)
 
-To solve this issue, Docker has something called [volumes](https://docs.docker.com/storage/volumes/). Using volumes, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system inside the container, the volume can reference the local file system inside the container.
+To solve this issue, Docker has something called [volumes](https://docs.docker.com/storage/volumes/). In the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section under [Container Manipulation Basics](container-manipulation-basics.md) section, I said that volumes are used for granting your container access to your local file system.
+
+What that means is, using volumes, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system inside the container, the volume can reference the local file system directly inside the container.
 
 ![](.gitbook/assets/bind-mounts.svg)
 
-This way, any changes you make to your local source code will reflect immediately inside the container triggering the hot reload feature of vite development server.
+This way, any changes you make to your local source code will reflect immediately inside the container triggering the hot reload feature of vite development server. Changes made to the file system inside the container will reflect on your local file system as well and that how the [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image deletes files from local file system.
 
-A volume can be created using the `--volume` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
+A volume can be created using the `--volume` or `-v` option for the `container run` or `container start` commands. Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
 
 ```text
 docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
