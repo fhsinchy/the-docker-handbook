@@ -78,7 +78,7 @@ docker container run --detach --publish 8080:80 fhsinchy/hello-dock
 
 Unlike the previous example, you won't get a wall of text thrown at you this time. Instead what you'll get is the ID of the newly created container.
 
-The order of the options you provide doesn't really matter. If you put the `--publish` option before the `--detach` option, it'll work just the same. One thing that you have to keep in mind in case of the `run` command is that the image name must come at last. If you put anything after the image name then that'll be passed as an argument to the container itself and may result in unexpected situations.
+The order of the options you provide doesn't really matter. If you put the `--publish` option before the `--detach` option, it'll work just the same. One thing that you have to keep in mind in case of the `run` command is that the image name must come at last. If you put anything after the image name then that'll be passed as an argument to the container entrypoint \(explained in the [Executing Commands Inside a Container](container-manipulation-basics.md#executing-commands-inside-a-container) sub-section\) and may result in unexpected situations.
 
 ## Listing Containers
 
@@ -159,7 +159,7 @@ The command doesn't yield any output but you can verify that the changes have ta
 
 Containers running in the foreground can be stopped by simply closing the terminal window or hitting `ctrl + c` key combination. Containers running in the background, however, can not be stopped in the same way.
 
-There are two commands under the `container` command that deals with this task. The first one is the `stop` command. Generic syntax for the command is as follows:
+There are two commands under `container` that deals with this task. The first one is the `stop` command. Generic syntax for the command is as follows:
 
 ```text
 docker container stop <container identifier>
@@ -231,32 +231,6 @@ docker container restart hello-dock-container-2
 Main difference between the two commands is that the `restart` command attempts to stop the target container and then start it back whereas the start command just starts a container.
 
 In case of a stopped container, both commands are exactly same but in case of a running container, you must use `restart` command.
-
-## Executing Commands Inside a Container
-
-In the [Container](hello-world-in-docker.md#container) subsection nested inside the [Hello World in Docker](hello-world-in-docker.md) section of this article, you've seen me executing a command inside an Alpine Linux container. It went something like as follows:
-
-```text
-docker run alpine uname -a
-# Linux f08dbbe9199b 5.8.0-22-generic #23-Ubuntu SMP Fri Oct 9 00:34:40 UTC 2020 x86_64 Linux
-```
-
-In this command, I've executed the `uname -a` command inside an Alpine Linux container. Scenarios like this where all you want is just to execute a certain command inside a certain container is pretty common. So learning the different ways of executing command inside a container is important.
-
-When it comes to custom command execution inside a container, there are two very common scenarios. These scenarios are as follows:
-
-* Executing command inside a container that isn't running.
-* Executing command inside a running container.
-
-Let's begin with the first scenario here. Assume that you want encode a string using the `base64` program which is something available in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [busybox](https://hub.docker.com/_/busybox) and let it do the job.
-
-The generic syntax for encoding a string using `base64` is as follows:
-
-```text
-echo -n my-secret | base64
-
-# bXktc2VjcmV0
-```
 
 ## Removing Dangling Containers
 
@@ -363,6 +337,75 @@ docker container run -it node
 ```
 
 As you can see, any valid JavaScript code can be executed in the node shell. Instead of writing `-it` you can instead be more verbose by writing `--interactive --tty` separately.
+
+## Executing Commands Inside a Container
+
+In the [Container](hello-world-in-docker.md#container) subsection nested inside the [Hello World in Docker](hello-world-in-docker.md) section of this article, you've seen me executing a command inside an Alpine Linux container. It went something like as follows:
+
+```text
+docker run alpine uname -a
+# Linux f08dbbe9199b 5.8.0-22-generic #23-Ubuntu SMP Fri Oct 9 00:34:40 UTC 2020 x86_64 Linux
+```
+
+In this command, I've executed the `uname -a` command inside an Alpine Linux container. Scenarios like this where all you want is just to execute a certain command inside a certain container is pretty common. So learning the different ways of executing command inside a container is important.
+
+When it comes to custom command execution inside a container, there are two very common scenarios. These scenarios are as follows:
+
+* Executing command inside a container that isn't running.
+* Executing command inside a running container.
+
+Let's begin with the first scenario here. Assume that you want encode a string using the `base64` program which is something available in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [busybox](https://hub.docker.com/_/busybox) and let it do the job.
+
+The generic syntax for encoding a string using `base64` is as follows:
+
+```text
+echo -n my-secret | base64
+
+# bXktc2VjcmV0
+```
+
+Now the generic syntax for passing a command to a newly created container is as follows:
+
+```text
+docker container run <image name> <command>
+```
+
+So, in order to perform the base64 encoding using the busybox image, you can execute following command:
+
+```text
+docker container run busybox echo -n my-secret | base64
+
+# bXktc2VjcmV0
+```
+
+What happens here is, in a `run` command, whatever you pass after the image name gets passed to the default entrypoint of the image. An entrypoint is like a gateway to the image. Most of the images except the executable images \(explained in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section\), uses shell or `sh` as the default entrypoint. So any valid shell command can be passed to them as arguments.
+
+Now you know how to execute custom command inside a container. The second scenario is executing a command inside a running container. Assume that you a [Redis](https://redis.io/) container in detached mode using the official [redis](https://hub.docker.com/_/redis) image.
+
+```text
+docker container run --detach --name redis-server redis
+
+# df20eb7205cfe7037fe0c67a358880f5d86f7ccab0d8650711aafdca0b6e67da
+```
+
+Now you would like to access the `redis-cli` program inside the container to perform some queries. You can not just pass `redis-cli` as an argument to the container image like you did in the previous scenario. Instead you'll have to use the `exec` command to execute a custom command inside a running container.
+
+The generic syntax for the `exec` command is as follows:
+
+```text
+docker container exec <container identifier> <command>
+```
+
+To start `redis-cli` inside the `redis-server` container, you can execute the following command:
+
+```text
+docker container exec -it redis-server redis-cli
+
+# 127.0.0.1:6379> flushall
+# OK
+```
+
+Given `redis-cli` is an interactive program, you need to pass the `-it` flag here. In this shell, you'll be able to run any valid [redis command](https://redis.io/commands) such as `flushall` to flush all data.
 
 ## Working With Executable Images
 
