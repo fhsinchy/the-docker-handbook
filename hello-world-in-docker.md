@@ -1,6 +1,6 @@
 # Hello World in Docker
 
-Now that you have Docker up and running on your machine, it's time for you to run your first container. Open up the terminal and run the following command:
+Docker daemon then reaches out to the default public repository which is Docker Hub and looks pulls in the latest version of the image from there indicated by the Now that you have Docker up and running on your machine, it's time for you to run your first container. Open up the terminal and run the following command:
 
 ```text
 docker run hello-world
@@ -47,7 +47,7 @@ docker ps -a
 
 As you can see in the output, a container named `exciting_chebyshev` was run with the container id of `128ec8ceab71` using the `hello-world` image and has `Exited (0) 13 seconds ago` where the `(0)` exit code means no error was produced during the runtime of the container.
 
-Now in order to understand what just happened behind the scenes, you'll have to get familiar with the Docker Architecture and three very fundamental concepts of containerization in general, which are as follows:
+Now in order to understand how the entire thing happened behind the scenes, you'll have to get familiar with the Docker Architecture and three very fundamental concepts which are as follows:
 
 * [Container](hello-world-in-docker.md#container)
 * [Image](hello-world-in-docker.md#image)
@@ -69,17 +69,17 @@ Virtual machines are usually created and managed by a program known as a hypervi
 
 ![](.gitbook/assets/virtual-machines.svg)
 
-Each virtual machine comes with it's own guest operating system which is just as heavy as the host operating system. Application running inside a virtual machine communicates with the guest operating system, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the running application. 
+Each virtual machine comes with it's own guest operating system which is just as heavy as the host operating system. Application running inside a virtual machine communicates with the guest operating system, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the virtual machines. 
 
-As you can see, there is a long chain of communication between applications running inside virtual machines and the physical infrastructure. The application running inside the virtual machine may take only a small amount of resources but the guest operating system adds a noticeable overhead.
+As you can see there is a long chain of communication between applications running inside the virtual machines and the physical infrastructure. The application running inside the virtual machine may take only a small amount of resources but the guest operating system adds a noticeable overhead.
 
 Unlike a virtual machine, a container does the job of virtualization in an intelligent way. Instead of having a complete guest operating system inside a container, it just utilizes the host operating system via the container runtime while maintaining isolation just like a traditional virtual machine.
 
 ![](.gitbook/assets/containers.svg)
 
-The container runtime i.e. Docker sits between the containers and the host operating system ****instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure.
+The container runtime i.e. Docker or rkt sits between the containers and the host operating system ****instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure.
 
-As you may have already understood, containers eliminate the entire guest operating system layer making the containers a lot lighter and less resource hogging.
+As you can see, containers eliminate the entire guest operating system layer making the containers a lot lighter and less resource hogging.
 
 As an demonstration of the point, look at the following code block:
 
@@ -91,31 +91,31 @@ docker run alpine uname -a
 # Linux f08dbbe9199b 5.8.0-22-generic #23-Ubuntu SMP Fri Oct 9 00:34:40 UTC 2020 x86_64 Linux
 ```
 
-In the code block above, I have executed the `uname -a` command on my host operating system to print out the kernel details. Then on the next line I've executed the same command inside a container running [Alpine Linux](https://alpinelinux.org/) inside it. As seen in the output, the container is indeed using the kernel from my host operating system. This goes to prove the point that containers virtualize the host operating system instead of having an operating system of their own.
+In the code block above, I have executed the `uname -a` command on my host operating system to print out the kernel details. Then on the next line I've executed the same command inside a container running [Alpine Linux](https://alpinelinux.org/) inside it. As you can see from the outputs, the container is indeed using the kernel from my host operating system. This goes to prove the point that containers virtualize the host operating system instead of having an operating system of their own.
 
 If you're on a Windows machine, you'll find out that all the containers uses the WSL2 kernel. It happens because WSL2 acts as the back-end for Docker on Windows. On macOS the default back-end is a VM running on [HyperKit](https://github.com/moby/hyperkit) hypervisor.
 
 ## Image
 
-Images are multi-layered self-contained files that act as the template for creating containers. They are like a frozen, read-only copy of a container. Images can be exchanged through registries. 
+Images are multi-layered self-contained files that act as the template for creating Docker containers. They are like a frozen, read-only copy of a container. Images can be exchanged through registries. 
 
-In the past, different container engines had different image formats but later on [Open Container Initiative \(OCI\)](https://opencontainers.org/) defined a standard specification for container images which is complied by the major containerization engines out there. This means that an image built with Docker can be used with Podman without any additional hassle.
+In the past, different container engines had different image formats but later on [Open Container Initiative \(OCI\)](https://opencontainers.org/) defined a standard specification for container images which is complied by the major containerization engines out there.
 
 According to the OCI image format, a container image consists of multiple layer, each layer containing files packed inside tar.gz archives that makes up the container environment in the final layer. A `manifest.json` file contains necessary metadata about the image.
 
-Containers are just images in running state. When you obtain an image from the internet and run a container using that, you essentially create another temporary writable layer on top of the previous read-only ones. This concept will become a lot more clearer in upcoming chapters but for now, just keep in mind that images are multi-layered read-only files carrying your application in a desired state inside them.
+Containers are images in running state. When you obtain an image from the internet and run a container using that, you essentially create another temporary writable layer on top of the previous read-only ones. This concept will become a lot more clearer in upcoming chapters but for now, just keep in mind that images are multi-layered read-only files carrying your application in a desired state inside them.
 
 ## Registry
 
-You've already learned about two very important pieces of the puzzle, _Container_ and _Image_. The final piece is _Registry_. An image registry is a centralized place where you can upload your images and can also download images created by others. [Docker Hub](https://hub.docker.com/) is the default public registry for Docker. Another very popular image registry is [Quay](https://quay.io/) by Red Hat. Throughout this article I'll be using Docker Hub as my registry of choice.
+You've already learned about two very important pieces of the puzzle, _Container_ and _Image_. The final piece is _Registry_. An image registry is a centralized place where you can upload your images and can also download images created by others. [Docker Hub](https://hub.docker.com/) is the default public registry for Docker.
 
 ![](.gitbook/assets/docker-hub.png)
 
-You can share any number of public images on Docker Hub for free. People around the world will be able to download them and use them freely. Images that I've uploaded are available on my profile \([fhsinchy](https://hub.docker.com/u/fhsinchy)\) page.
+You can share any number of public images on Docker Hub completely free. People around the world will be able to download them and use them freely. Images that I've uploaded are available on my [profile](https://hub.docker.com/u/fhsinchy) page.
 
 ![](.gitbook/assets/my-images-on-docker-hub.png)
 
-Apart from Docker Hub or Quay, you can also create your own image repositories for hosting private images. There is also a local registry that runs within your computer that caches images pulled from remote registries.
+Apart from Docker Hub, you can also create your own image repositories for hosting private images. There is also a local registry that runs within your computer that caches images pulled from remote registries.
 
 ## Docker Architecture
 

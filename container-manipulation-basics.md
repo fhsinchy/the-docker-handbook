@@ -12,7 +12,7 @@ In the previous section, you've used `docker run` to create and start a containe
 docker run <image name>
 ```
 
-Although this is a perfectly valid command, there is a better way of dispatching commands to the `docker` client. Prior to version `1.13`, Docker had only the command previously mentioned command syntax. Later on the CLI was [restructured](https://www.docker.com/blog/whats-new-in-docker-1-13/) to have the following syntax:
+Although this is a perfectly valid command, there is a better way of dispatching commands to the `docker` client. Prior to version `1.13`, Docker had only the previously mentioned command syntax. Later on the CLI was [restructured](https://www.docker.com/blog/whats-new-in-docker-1-13/) to have the following syntax:
 
 ```text
 docker <object> <command> <options>
