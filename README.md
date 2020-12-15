@@ -9,7 +9,7 @@ According to the [Stack Overflow Developer Survey - 2020](https://insights.stack
 As in-demand as it may be, getting started can seem a bit intimidating at first. So in this article, we'll be learning everything from basic to intermediate level of containerization. After going through the entire article, you should be able to:
 
 * Containerize \(almost\) any application
-* Upload custom Docker Images to online registries
+* Upload custom Docker Images in Docker Hub
 * Work with multiple containers using Docker Compose
 
 ### Prerequisites
