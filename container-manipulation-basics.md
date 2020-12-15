@@ -232,6 +232,24 @@ Main difference between the two commands is that the `restart` command attempts 
 
 In case of a stopped container, both commands are exactly same but in case of a running container, you must use `restart` command.
 
+## Executing Commands Inside a Container
+
+In the [Container](hello-world-in-docker.md#container) subsection nested inside the [Hello World in Docker](hello-world-in-docker.md) section of this article, you've seen me executing a command inside an Alpine Linux container. It went something like as follows:
+
+```text
+docker run alpine uname -a
+# Linux f08dbbe9199b 5.8.0-22-generic #23-Ubuntu SMP Fri Oct 9 00:34:40 UTC 2020 x86_64 Linux
+```
+
+In this command, I've executed the `uname -a` command inside an Alpine Linux container. Scenarios like this where all you want is just to execute a certain command inside a certain container is pretty common. So learning the different ways of executing command inside a container is important.
+
+When it comes to custom command execution inside a container, there are two very common scenarios. These scenarios are as follows:
+
+* Executing command inside a container that isn't running.
+* Executing command inside a running container.
+
+Let's begin with the first scenario here. Assume that you want encode a string using the `base64` program which is something avaiable in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [Busybox](https://hub.docker.com/_/busybox) or [Ubuntu](https://hub.docker.com/_/ubuntu) and let it do the job.
+
 ## Removing Dangling Containers
 
 As you've already seen, containers that have been stopped or killed remain in the system. These dangling containers can take up space or can even conflict with newer container.
