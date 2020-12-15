@@ -232,6 +232,43 @@ Main difference between the two commands is that the `restart` command attempts 
 
 In case of a stopped container, both commands are exactly same but in case of a running container, you must use `restart` command.
 
+## Creating Containers Without Running
+
+So far in this chapter, you've started containers using the `container run` command which is in reality a combination of two separate commands. These commands are as follows:
+
+* `container create` command creates a container from a given image.
+* `container start` command starts a container that has been already created.
+
+Now, to perform the demonstration shown in the [Running Containers](container-manipulation-basics.md#running-containers) section using these two commands, you can do something like the following:
+
+```text
+docker container create --publish 8080:80 fhsinchy/hello-dock
+
+# 2e7ef5098bab92f4536eb9a372d9b99ed852a9a816c341127399f51a6d053856
+
+docker container ls --all
+
+# CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS               NAMES
+# 2e7ef5098bab        fhsinchy/hello-dock   "/docker-entrypoint.…"   30 seconds ago      Created                                 hello-dock
+```
+
+Evident from the output of `container ls --all` command, a container with the name of `hello-dock` has been created using the `fhsinchy/hello-dock` image. The `STATUS` of the image is `Created` at the moment and given it's not running, it won't be listed without the use of the `--all` option.
+
+```text
+docker container start hello-dock
+
+# hello-dock
+
+docker container ls
+
+# CONTAINER ID        IMAGE                 COMMAND                  CREATED              STATUS              PORTS                  NAMES
+# 2e7ef5098bab        fhsinchy/hello-dock   "/docker-entrypoint.…"   About a minute ago   Up 29 seconds       0.0.0.0:8080->80/tcp   hello-dock
+```
+
+Once the container has been created, it can be started using the `container start` command. Evident from the the `container ls` command, the container `STATUS` has changed from `Created` to `Up 29 seconds` which indicates that the container is now in running state. The port configuration has also showed up in the `PORTS` column which was previously empty.
+
+Although you can get away with the `container run` command for majority of the scenarios, there will be some situations later on in the article that requires the usage of this `container create` command.
+
 ## Removing Dangling Containers
 
 As you've already seen, containers that have been stopped or killed remain in the system. These dangling containers can take up space or can even conflict with newer container.
@@ -409,7 +446,7 @@ Given `redis-cli` is an interactive program, you need to pass the `-it` flag her
 
 ## Working With Executable Images
 
-In the previous section, you've seen images that allow you to interact with them. Apart from these there are also executable images. These images are designed in a way to behave like an executable program.
+In the previous section, I briefly mentioned executable image. These images are designed in a way to behave like an executable program.
 
 Take for example my [rmbyext](https://github.com/fhsinchy/rmbyext) project. This is a simple python script capable of recursively deleting files of given extensions. To learn more about the project, you can checkout the repository:
 
@@ -421,44 +458,48 @@ The generic syntax for using this script is as follows:
 rmbyext <file extension>
 ```
 
-So executing `rmbyext pdf` will delete all PDF files from the directory where the script has been executed as well as from any other nested directory present inside that directory.
-
-Now I've created an executable image for this program. The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image contains this script ready to use and using a very familiar syntax.
-
-## Creating Containers Without Running
-
-So far in this chapter, you've started containers using the `container run` command which is in reality a combination of two separate commands. These commands are as follows:
-
-* `container create` command creates a container from a given image.
-* `container start` command starts a container that has been already created.
-
-Now, to perform the demonstration shown in the [Running Containers](container-manipulation-basics.md#running-containers) section using these two commands, you can do something like the following:
+Now, I have a directory on my computer with following files:
 
 ```text
-docker container create --publish 8080:80 fhsinchy/hello-dock
+.
+├── a.pdf
+├── b.pdf
+├── c.txt
+├── d.pdf
+└── e.txt
 
-# 2e7ef5098bab92f4536eb9a372d9b99ed852a9a816c341127399f51a6d053856
-
-docker container ls --all
-
-# CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS               NAMES
-# 2e7ef5098bab        fhsinchy/hello-dock   "/docker-entrypoint.…"   30 seconds ago      Created                                 hello-dock
+0 directories, 5 files
 ```
 
-Evident from the output of `container ls --all` command, a container with the name of `hello-dock` has been created using the `fhsinchy/hello-dock` image. The `STATUS` of the image is `Created` at the moment and given it's not running, it won't be listed without the use of the `--all` option.
+To delete all the `pdf` files from this directory, I can execute the following command:
 
 ```text
-docker container start hello-dock
+rmbyext pdf
 
-# hello-dock
-
-docker container ls
-
-# CONTAINER ID        IMAGE                 COMMAND                  CREATED              STATUS              PORTS                  NAMES
-# 2e7ef5098bab        fhsinchy/hello-dock   "/docker-entrypoint.…"   About a minute ago   Up 29 seconds       0.0.0.0:8080->80/tcp   hello-dock
+# Removing: PDF
+# b.pdf
+# a.pdf
+# d.pdf
 ```
 
-Once the container has been created, it can be started using the `container start` command. Evident from the the `container ls` command, the container `STATUS` has changed from `Created` to `Up 29 seconds` which indicates that the container is now in running state. The port configuration has also showed up in the `PORTS` column which was previously empty.
+An executable image for this program should be able to take extensions of files as arguments and delete them just like the `rmbyext` program did.
 
-Although you can get away with the `container run` command for majority of the scenarios, there will be some situations later on in the article that requires the usage of this `container create` command.
+The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image behaves in a similar manner. To delete files using this image instead of the program itself, you can execute the following command:
+
+```text
+docker container run -v $(pwd):/zone fhsinchy/rmbyext pdf
+
+# Removing: PDF
+# b.pdf
+# a.pdf
+# d.pdf
+```
+
+The `-v $(pwd):/zone` is a way to grant the image access to your local file system using a volume. Volumes will be explained in great detail later on, for now just understand that this is a way of granting your container access to your local file system.
+
+The difference between a regular image and an executable one is that the entrypoint for an executable image is set to a custom program instead of `sh`, in this case the `rmbyext` program and as you've learned in the previous sub-section, anything you write after the image name in a `run` command gets passed to the entrypoint of the image.
+
+So in the end the `docker container run -v $(pwd):/zone fhsinchy/rmbyext pdf` command translates to `rmbyext pdf` inside the container.
+
+
 
