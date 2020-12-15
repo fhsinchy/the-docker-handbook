@@ -248,7 +248,15 @@ When it comes to custom command execution inside a container, there are two very
 * Executing command inside a container that isn't running.
 * Executing command inside a running container.
 
-Let's begin with the first scenario here. Assume that you want encode a string using the `base64` program which is something avaiable in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [Busybox](https://hub.docker.com/_/busybox) or [Ubuntu](https://hub.docker.com/_/ubuntu) and let it do the job.
+Let's begin with the first scenario here. Assume that you want encode a string using the `base64` program which is something available in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [Busybox](https://hub.docker.com/_/busybox) or [Ubuntu](https://hub.docker.com/_/ubuntu) and let it do the job.
+
+The generic syntax for encoding a string using `base64` is as follows:
+
+```text
+echo -n my-secret | base64
+
+# bXktc2VjcmV0
+```
 
 ## Removing Dangling Containers
 
