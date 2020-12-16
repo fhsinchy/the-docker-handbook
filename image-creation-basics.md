@@ -109,8 +109,6 @@ This container should behave just like the official one. To verify, visit `http:
 
 Just like containers, you can assign custom identifier to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
 
-
-
 ```text
 docker image build --file Dockerfile --tag custom-nginx:packaged .
 ```
@@ -207,7 +205,7 @@ RUN rm -rf /nginx-1.19.2
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-As you can see, the code inside the `Dockerfile.built.v1` reflects the seven steps I talked about beforehand.
+As you can see, the code inside the `Dockerfile.built` reflects the seven steps I talked about beforehand.
 
 * The `FROM` instruction sets Ubuntu as the base image making an ideal environment for building any application.
 * The `RUN` instruction here installs standard packages necessary for building NGINX from source.
@@ -363,4 +361,6 @@ As you can see, a container using the `custom-nginx:built-v2` image has been suc
 ![](.gitbook/assets/nginx-default.png)
 
 And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
+
+## Creating Executable Images
 
