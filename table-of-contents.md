@@ -32,6 +32,7 @@
   * [Understanding the Many Layers of an Image](image-creation-basics.md#understanding-the-many-layers-of-an-image)
   * [Deeper Into the Image Building Business](image-creation-basics.md#deeper-into-the-image-building-business)
   * [Creating Executable Images](image-creation-basics.md#creating-executable-images)
+  * [Sharing Your Images Online](image-creation-basics.md#sharing-your-images-online)
 * [Containerizing a JavaScript Application](containerizing-a-javascript-application.md)
   * [Working with Volumes](containerizing-a-javascript-application.md#working-with-volumes)
   * [Improving the Dockerfile.dev](containerizing-a-javascript-application.md#improving-the-dockerfile-dev)

@@ -416,7 +416,7 @@ Explanation for the instructions in this file is as follows:
 * The `RUN` instruction on line 5 checks for necessary updates, installs git and cleans unnecessary cached data using regular `apt-get` commands. Given this is a Debian image, `apt-get` is available right from the get go.
 * The `RUN` instruction on line 9 installs the `rmbyext` script using git and pip.
 * The third `RUN` instruction on line 11 creates a new user named `human` and sets it as the owner of the `/zone` directory. Here, `human` is a non-root user and given the `/zone` directory is in the root, it doesn't have write access to that directory. Hence the necessity of the `chown` command. You could just create the directory in `/home/human/zone` instead of `/zone` but writing `$(pwd):/zone` seems much easier than writing `$(pwd):/home/human/zone` to me.
-* The `USER` instruction sets `human` as the default user for the image.
+* The `USER` instruction sets `human` as the default user for the image. I've set the user just before setting the entrypoint because if I had set it earlier for say before all the `RUN` instructions, then the installation of the git package and the rmbyext script would have failed for the lack of root permission.
 * Finally on line 16, the `ENTRYPOINT` instruction sets the `rmbyext` script as the entrypoint for this image.
 
 In this entire file, line 16 is the magic that turns this seemingly normal image to an executable one. Now to build the image you can execute following command:
@@ -426,4 +426,6 @@ docker image build --tag rmbyext .
 ```
 
 Here I'm not providing any tag after the image name so the image will be tagged as `latest` by default. You should be able to run the image as you saw in the previous section. Just remember to refer to the actual image name you've set instead of `fhsinchy/rmbyext` here.
+
+## Sharing Your Images Online
 
