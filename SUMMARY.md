@@ -7,6 +7,7 @@
 * [Hello World in Docker](hello-world-in-docker.md)
 * [Container Manipulation Basics](container-manipulation-basics.md)
 * [Image Creation Basics](image-creation-basics.md)
+* [Containerizing a JavaScript Application](containerizing-a-javascript-application.md)
 * [Working with Multi-container Applications using Docker Compose](working-with-multi-container-applications-using-docker-compose.md)
 * [Conclusion](conclusion.md)
 
