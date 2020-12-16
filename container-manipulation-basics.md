@@ -484,7 +484,13 @@ rmbyext pdf
 
 An executable image for this program should be able to take extensions of files as arguments and delete them just like the `rmbyext` program did.
 
-The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image behaves in a similar manner. This image has a copy of the `rmbyext` script and is configured to run the script on the `/zone` directory inside the container. To delete files using this image instead of the program itself, you can execute the following command:
+The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image behaves in a similar manner. This image contains a copy of the `rmbyext` script and is configured to run the script on a directory `/zone` inside the container.
+
+Now the problem is that containers are isolated from your local system, hence the `rmbyext` program running inside the container doesn't have any access to your local file system. So, if somehow you can map the local directory containing the `pdf` files to the `/zone` directory inside the container, the files should be accessible to the container.
+
+One way to grant a container direct access to your local file system is by using a volume. A volume lets you map the content of a local file system directory to a directory inside a container.
+
+Let's first see volumes in action. To delete files using this image instead of the program itself, you can execute the following command:
 
 ```text
 docker container run -v $(pwd):/zone fhsinchy/rmbyext pdf
@@ -495,11 +501,7 @@ docker container run -v $(pwd):/zone fhsinchy/rmbyext pdf
 # d.pdf
 ```
 
-The first thing you may have noticed in the command is the `-v $(pwd):/zone` part. You've already learned that containers are isolated from your local system, hence the `rmbyext` program running inside the container doesn't have any access to your local file system.
-
-As I've already mentioned the image is configured to execute the `rmbyext` program inside the `/zone` directory present inside the container. So, if somehow you can map the local directory containing the `pdf` files to the `/zone` directory inside the container, the files should be accessible to the container.
-
-One way to solve this problem in Docker is using a volume. You can use the `--volume` or `-v` option with the run command to mount on of your local file system directory as a volume inside the container. This way the container will have direct access to that directory through the mounted volume.
+The first thing you may have noticed in the command is the `-v $(pwd):/zone` part. That's how you create a volume in Docker. The `--volume` or `-v` option is valid for the `container run` as well as the `container create` command.
 
 The `--volume` option can take three fields separated by colons \(`:`\). The generic syntax for the option is as follows:
 
@@ -511,7 +513,7 @@ The third field is optional but you must pass the absolute path of your local di
 
 The difference between a regular image and an executable one is that the entrypoint for an executable image is set to a custom program instead of `sh`, in this case the `rmbyext` program and as you've learned in the previous sub-section, anything you write after the image name in a `run` command gets passed to the entrypoint of the image.
 
-So in the end the `docker container run -v $(pwd):/zone fhsinchy/rmbyext pdf` command translates to `rmbyext pdf` inside the container.
+So in the end the `docker container run -v $(pwd):/zone fhsinchy/rmbyext pdf` command translates to `rmbyext pdf` inside the container. Executable images are not that common in the wild but can be very useful in certain cases, hence learning about them is important.
 
 
 
