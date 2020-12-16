@@ -107,13 +107,19 @@ This container should behave just like the official one. To verify, visit `http:
 
 ![](.gitbook/assets/nginx-default.png)
 
-Just like containers, you can assign custom identifier to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
+Just like containers, you can assign custom identifier to your images instead of relying on the randomly generated id.
+
+### Tagging Images
+
+In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
 
 ```text
 docker image build --file Dockerfile --tag custom-nginx:packaged .
 ```
 
-Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. The concept of tagging an image will be discussed even more in later sub-sections.
+Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. Here the part before the colon is the image name and the part after the colon is the tag.
+
+Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If you run a container using the this image the default tag will be `latest` indicating whatever is the latest version of MySQL at the moment. Now if you want another version, you can define that like `docker container run mysql:5.7` indicating you want 5.7 version of MySQL.
 
 ## Understanding the Many Layers of an Image
 
@@ -363,4 +369,61 @@ As you can see, a container using the `custom-nginx:built-v2` image has been suc
 And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
 
 ## Creating Executable Images
+
+In the previous section you've worked with the [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image. In this section you'll learn about making such an executable image. Open up the `rmbyext` directory inside the code repository for this article.
+
+Before you start working on the `Dockerfile` take a moment to plan out what the final output should be. In my opinion it should be something like as follows:
+
+* The image should have python pre-installed.
+* It should contain a copy of my `rmbyext` script.
+* A working directory should be set where the script will be executed.
+* The `rmbyext` script should be set as the entrypoint so the image can take extension names as arguments.
+
+To build the above mentioned image, the following steps should be taken:
+
+* Get a good base image for running python scripts i.e. [python](https://hub.docker.com/_/python).
+* Set-up the working directory to an easily accessible directory.
+* Install git so that the script can be installed from my github repository.
+* Install the script using git and pip.
+* Create and switch to a non-root user.
+* Set `rmbyext` as the entrypoint for this image.
+
+Now create a new `Dockerfile` inside the `rmbyext` directory and put following code in it:
+
+```text
+FROM python:3-buster
+
+WORKDIR /zone
+
+RUN apt-get update && \
+    apt-get install git -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN pip install git+https://github.com/fhsinchy/rmbyext.git#egg=rmbyext
+
+RUN useradd human && \
+    chown -R human /zone
+
+USER human
+
+ENTRYPOINT [ "rmbyext" ]
+```
+
+Explanation for the instructions in this file is as follows:
+
+* The `FROM` instruction sets [python](https://hub.docker.com/_/python) as the base image making an ideal environment for running python scripts. The `3-buster` tags indicates that you want Python 3 installed within a [Debian Buster](https://www.debian.org/releases/buster/) image.
+* The `WORKDIR` instruction sets the default working directory to `/zone` here. The name of the working directory is completely random here. I found zone to be fitting name, you may use anything you want.
+* The `RUN` instruction on line 5 checks for necessary updates, installs git and cleans unnecessary cached data using regular `apt-get` commands. Given this is a Debian image, `apt-get` is available right from the get go.
+* The `RUN` instruction on line 9 installs the `rmbyext` script using git and pip.
+* The third `RUN` instruction on line 11 creates a new user named `human` and sets it as the owner of the `/zone` directory. Here, `human` is a non-root user and given the `/zone` directory is in the root, it doesn't have write access to that directory. Hence the necessity of the `chown` command. You could just create the directory in `/home/human/zone` instead of `/zone` but writing `$(pwd):/zone` seems much easier than writing `$(pwd):/home/human/zone` to me.
+* The `USER` instruction sets `human` as the default user for the image.
+* Finally on line 16, the `ENTRYPOINT` instruction sets the `rmbyext` script as the entrypoint for this image.
+
+In this entire file, line 16 is the magic that turns this seemingly normal image to an executable one. Now to build the image you can execute following command:
+
+```text
+docker image build --tag rmbyext .
+```
+
+Here I'm not providing any tag after the image name so the image will be tagged as `latest` by default. You should be able to run the image as you saw in the previous section. Just remember to refer to the actual image name you've set instead of `fhsinchy/rmbyext` here.
 

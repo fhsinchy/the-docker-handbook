@@ -9,29 +9,19 @@ According to the [Stack Overflow Developer Survey - 2020](https://insights.stack
 As in-demand as it may be, getting started can seem a bit intimidating at first. So in this article, we'll be learning everything from basic to intermediate level of containerization. After going through the entire article, you should be able to:
 
 * Containerize \(almost\) any application
-* Upload custom Docker Images to online registries
+* Upload custom Docker Images in Docker Hub
 * Work with multiple containers using Docker Compose
 
-## Prerequisites
+### Prerequisites
 
 * Familiarity with the Linux Terminal
 * Familiarity with JavaScript \(some of the later projects use JavaScript\)
 
-## Project Code
+### Project Code
 
 Code for the example projects can be found in the following repository:
 
-{% embed url="https://github.com/fhsinchy/docker-handbook-projects/" caption="spare a ⭐ to keep me motivated" %}
+> [fhsinchy/docker-handbook-projects](https://github.com/fhsinchy/docker-handbook-projects) - Project codes used in "The Docker Handbook" 📓
 
 You can find the complete code in the [`containerized`](https://github.com/fhsinchy/docker-handbook-projects/tree/containerized) branch.
-
-## Contributions
-
-This piece of literature is completely open-source and quality contributions are more than welcomed. You can find the full content in the following repository:
-
-{% embed url="https://github.com/fhsinchy/the-docker-handbook" caption="spare a ⭐ to keep me motivated" %}
-
-I usually do my changes and updates on the GitBook version of the book first and then publish them on freeCodeCamp. You can always updated and often incomplete version in the following link:
-
-{% embed url="https://docker.farhan.info/" caption="don\'t forget to leave ratings" %}
 
