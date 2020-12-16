@@ -165,3 +165,35 @@ docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume
 
 Here, Docker will take the entire `node_modules` directory from inside the container and tuck it away in some other directory managed by the Docker daemon on your host file system and will mount that directory as `node_modules` inside the container.
 
+## Improving the Dockerfile.dev
+
+The `Dockerfile.dev` you wrote in the previous section is okay but there are some improvements that can be made. So open up the `Dockerfile.dev` file once again and update it's content to look like as follows:
+
+```text
+FROM node:lts
+
+EXPOSE 3000
+
+USER node
+
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
+
+COPY ./package.json .
+RUN npm install
+
+CMD [ "npm", "run", "dev" ]
+```
+
+Let me explain the changes I've made one by one here:
+
+* On line 5, I've added a new instruction `USER node`. By default Docker runs containers as the root user and according to [Docker and Node.js Best Practices](https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md) this can pose a security threat. So a better idea is to run as a non-root user whenever possible. The node image comes with a non-root user named `node` which you can set as the default user using the `USER` instruction.
+* Given now you're using a non-root user, you do not have write access to the container root hence using `/app` is not possible. So instead of the root, you'll have to use a directory that is writable by the `node` user. On line 7, the `RUN mkdir -p /home/node/app` instruction creates a directory called `app` inside the home directory of the `node` user. The home directory for any non-root user in Linux is usually  `/home/<user name>` by default.
+* On line 9, the `WORKDIR /home/node/app` instruction sets the `/home/node/app` directory as the working directory instead of the `/app` directory.
+* Another change is the removal of the `COPY . .` instruction. This is done because mounting the project root as a volume inside the container working directory makes the `COPY` instruction redundant.
+
+Apart from these four changes, rest of the file remains same. Now rebuild the image and try running a new container with the resultant image.
+
+## Performing Multi-Staged Builds
+

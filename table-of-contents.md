@@ -31,10 +31,11 @@
   * [The Essentials](image-creation-basics.md#the-essentials)
   * [Understanding the Many Layers of an Image](image-creation-basics.md#understanding-the-many-layers-of-an-image)
   * [Deeper Into the Image Building Business](image-creation-basics.md#deeper-into-the-image-building-business)
+  * Creating Executable Images
 * [Containerizing a JavaScript Application](containerizing-a-javascript-application.md)
   * [Working with Volumes](containerizing-a-javascript-application.md#working-with-volumes)
-  * Improving the Dockerfile
-  * Creating Executable Images
+  * [Improving the Dockerfile.dev](containerizing-a-javascript-application.md#improving-the-dockerfile-dev)
+  * [Performing Multi-Staged Builds](containerizing-a-javascript-application.md#performing-multi-staged-builds)
 * [Working with Multi-container Applications using Docker - Compose](working-with-multi-container-applications-using-docker-compose.md)
   * [Compose Basics](working-with-multi-container-applications-using-docker-compose.md#compose-basics)
   * [Listing Services](working-with-multi-container-applications-using-docker-compose.md#listing-services)
