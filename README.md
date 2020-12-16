@@ -33,5 +33,5 @@ This piece of literature is completely open-source and quality contributions are
 
 I usually do my changes and updates on the GitBook version of the book first and then publish them on freeCodeCamp. You can always updated and often incomplete version in the following link:
 
-{% embed url="https://docker.farhan.info/" caption="don\'t forget to share with others" %}
+{% embed url="https://docker.farhan.info/" caption="don\'t forget to leave ratings" %}
 
