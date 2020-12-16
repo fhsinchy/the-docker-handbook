@@ -488,7 +488,7 @@ The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image behaves 
 
 Now the problem is that containers are isolated from your local system, hence the `rmbyext` program running inside the container doesn't have any access to your local file system. So, if somehow you can map the local directory containing the `pdf` files to the `/zone` directory inside the container, the files should be accessible to the container.
 
-One way to grant a container direct access to your local file system is by using a volume. A volume lets you map the content of a local file system directory to a directory inside a container.
+One way to grant a container direct access to your local file system is by using a [volume](https://docs.docker.com/storage/volumes/). A volume lets you map the content of a local file system directory to a directory inside a container.
 
 Let's first see volumes in action. To delete files using this image instead of the program itself, you can execute the following command:
 
