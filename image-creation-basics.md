@@ -429,3 +429,22 @@ Here I'm not providing any tag after the image name so the image will be tagged 
 
 ## Sharing Your Images Online
 
+Now that you know how to make images, it's time to share them with the world. Sharing images online is easy. All you need is an account at any of the online registries. I'll be using [Docker Hub](https://hub.docker.com/) here. Navigate to the [Sign Up](https://hub.docker.com/signup) page and create a free account. A free account allows you to host unlimited public repositories and one private repository.
+
+Once you've created the account, you'll have to sign in to it using the docker cli. So open up your terminal and execute following command to do so:
+
+```text
+docker login
+
+# Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+# Username: fhsinchy
+# Password: 
+# WARNING! Your password will be stored unencrypted in /home/fhsinchy/.docker/config.json.
+# Configure a credential helper to remove this warning. See
+# https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+#
+# Login Succeeded
+```
+
+As seen in the output above, you'll be prompted for your username and password. If you input them properly, you should be logged in to your account successfully.
+
