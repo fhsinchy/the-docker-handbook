@@ -31,7 +31,13 @@ This piece of literature is completely open-source and quality contributions are
 
 {% embed url="https://github.com/fhsinchy/the-docker-handbook" caption="spare a ⭐ to keep me motivated" %}
 
-I usually do my changes and updates on the GitBook version of the book first and then publish them on freeCodeCamp. You can always updated and often incomplete version in the following link:
+I usually do my changes and updates on the GitBook version of the book first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the piece in the following link:
 
 {% embed url="https://docker.farhan.info/" caption="don\'t forget to leave ratings" %}
+
+If you're looking for the complete and stable version of the book then freeCodeCamp will be the best place to go:
+
+{% embed url="https://www.freecodecamp.org/news/the-docker-handbook/" caption="don\'t forget to share with others" %}
+
+Which ever version of the book you end up reading though, don't forget to let me know your opinion. Costructive criticism is always welcomed.
 
