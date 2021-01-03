@@ -37,6 +37,8 @@
   * [Working with Volumes](containerizing-a-javascript-application.md#working-with-volumes)
   * [Improving the Dockerfile.dev](containerizing-a-javascript-application.md#improving-the-dockerfile-dev)
   * [Performing Multi-Staged Builds](containerizing-a-javascript-application.md#performing-multi-staged-builds)
+* Networking In Docker
+  * Working with Multi-container Projects
 * [Working with Multi-container Applications using Docker - Compose](working-with-multi-container-applications-using-docker-compose.md)
   * [Compose Basics](working-with-multi-container-applications-using-docker-compose.md#compose-basics)
   * [Listing Services](working-with-multi-container-applications-using-docker-compose.md#listing-services)
