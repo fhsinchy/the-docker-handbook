@@ -1,4 +1,4 @@
-# Working with Multi-container Applications using Docker Compose
+# Managing Multi-Container Projects using Docker-Compose
 
 So far we've only worked with applications that are comprised of only one container.
 

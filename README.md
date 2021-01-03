@@ -27,17 +27,17 @@ You can find the complete code in the [`containerized`](https://github.com/fhsin
 
 ## Contributions
 
-This piece of literature is completely open-source and quality contributions are more than welcomed. You can find the full content in the following repository:
+This article is completely open-source and quality contributions are more than welcomed. You can find the full content in the following repository:
 
 {% embed url="https://github.com/fhsinchy/the-docker-handbook" caption="spare a ⭐ to keep me motivated" %}
 
-I usually do my changes and updates on the GitBook version of the book first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the piece in the following link:
+I usually do my changes and updates on the GitBook version of the article first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the piece in the following link:
 
 {% embed url="https://docker.farhan.info/" caption="don\'t forget to leave ratings" %}
 
-If you're looking for the complete and stable version of the book then freeCodeCamp will be the best place to go:
+If you're looking for the complete and stable version of the article then freeCodeCamp will be the best place to go:
 
-{% embed url="https://www.freecodecamp.org/news/the-docker-handbook/" caption="don\'t forget to share with others" %}
+{% embed url="https://www.freecodecamp.org/news/the-docker-handbook/" caption="sharing with others may help" %}
 
-Which ever version of the book you end up reading though, don't forget to let me know your opinion. Constructive criticism is always welcomed.
+Which ever version of the article you end up reading though, don't forget to let me know your opinion. Constructive criticism is always welcomed.
 
