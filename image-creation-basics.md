@@ -431,7 +431,7 @@ Here I'm not providing any tag after the image name so the image will be tagged 
 
 Now that you know how to make images, it's time to share them with the world. Sharing images online is easy. All you need is an account at any of the online registries. I'll be using [Docker Hub](https://hub.docker.com/) here. Navigate to the [Sign Up](https://hub.docker.com/signup) page and create a free account. A free account allows you to host unlimited public repositories and one private repository.
 
-Once you've created the account, you'll have to sign in to it using the docker cli. So open up your terminal and execute following command to do so:
+Once you've created the account, you'll have to sign in to it using the docker CLI. So open up your terminal and execute following command to do so:
 
 ```text
 docker login
