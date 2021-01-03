@@ -8,6 +8,7 @@
 * [Container Manipulation Basics](container-manipulation-basics.md)
 * [Image Creation Basics](image-creation-basics.md)
 * [Containerizing a JavaScript Application](containerizing-a-javascript-application.md)
+* [Working With Multi-Container Projects](working-with-multi-container-projects.md)
 * [Managing Multi-Container Projects using Docker-Compose](working-with-multi-container-applications-using-docker-compose.md)
 * [Conclusion](conclusion.md)
 

@@ -258,10 +258,10 @@ docker image build --tag hello-dock:prod .
 # Step 4/9 : RUN npm install
 #  ---> Running in 6dfabf0ee9f8
 # npm WARN deprecated fsevents@2.1.3: Please update to v 2.2.x
-# 
+
 # > esbuild@0.8.29 postinstall /usr/app/node_modules/esbuild
 # > node install.js
-# 
+
 # npm notice created a lockfile as package-lock.json. You should commit this file.
 # npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@~2.1.2 (node_modules/chokidar/node_modules/fsevents):
 # npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.1.3: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
@@ -295,7 +295,7 @@ docker image build --tag hello-dock:prod .
 # - Building production bundle...
 
 # Build completed in 1.71s.
-# 
+
 # Removing intermediate container 4d918cf18584
 #  ---> 187fb3e82d0d
 # Step 7/9 : EXPOSE 80
