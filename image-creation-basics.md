@@ -448,3 +448,76 @@ docker login
 
 As seen in the output above, you'll be prompted for your username and password. If you input them properly, you should be logged in to your account successfully.
 
+As an example, let's share the `custom-nginx` image online. To do so, open up a new terminal window inside the `custom-nginx` project directory. To share an image online, you'll have to tag it following the `<docker hub username>/<image name>:<image tag>` syntax. My username is `fhsinchy` so the command will look like as follows:
+
+```text
+docker image build --tag fhsinchy/custom-nginx:latest --file Dockerfile.built .
+
+# Step 1/9 : FROM ubuntu:latest
+#  ---> d70eaf7277ea
+# Step 2/9 : RUN apt-get update &&     apt-get install build-essential                    libpcre3                     libpcre3-dev                     zlib1g                     zlib1g-dev                     libssl-dev                     -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*
+#  ---> cbe1ced3da11
+### LONG INSTALLATION STUFF GOES HERE ###
+# Step 3/9 : ARG FILENAME="nginx-1.19.2"
+#  ---> Running in 33b62a0e9ffb
+# Removing intermediate container 33b62a0e9ffb
+#  ---> fafc0aceb9c8
+# Step 4/9 : ARG EXTENSION="tar.gz"
+#  ---> Running in 5c32eeb1bb11
+# Removing intermediate container 5c32eeb1bb11
+#  ---> 36efdf6efacc
+# Step 5/9 : ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+# Downloading [==================================================>]  1.049MB/1.049MB
+#  ---> dba252f8d609
+# Step 6/9 : RUN tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION}
+#  ---> Running in 2f5b091b2125
+### LONG EXTRACTION STUFF GOES HERE ###
+# Removing intermediate container 2f5b091b2125
+#  ---> 2c9a325d74f1
+# Step 7/9 : RUN cd ${FILENAME} &&     ./configure         --sbin-path=/usr/bin/nginx         --conf-path=/etc/nginx/nginx.conf         --error-log-path=/var/log/nginx/error.log         --http-log-path=/var/log/nginx/access.log         --with-pcre         --pid-path=/var/run/nginx.pid         --with-http_ssl_module &&     make && make install
+#  ---> Running in 11cc82dd5186
+### LONG CONFIGURATION AND BUILD STUFF GOES HERE ###
+# Removing intermediate container 11cc82dd5186
+#  ---> 6c122e485ec8
+# Step 8/9 : RUN rm -rf /${FILENAME}}
+#  ---> Running in 04102366960b
+# Removing intermediate container 04102366960b
+#  ---> 6bfa35420a73
+# Step 9/9 : CMD ["nginx", "-g", "daemon off;"]
+#  ---> Running in 63ee44b571bb
+# Removing intermediate container 63ee44b571bb
+#  ---> 4ce79556db1b
+# Successfully built 4ce79556db1b
+# Successfully tagged fhsinchy/custom-nginx:latest
+```
+
+In this command the `custom-nginx` is the image name and `latest` is the tag. The image name can be anything you want and can not be changed once you've uploaded the image. The tag can be changed whenever you want and usually reflects the version of the software or different kind of builds.
+
+Take the `node` image as an example. The `node:lts` image refers to the long term support version of Node.js whereas the `node:lts-alpine` version refers to the Node.js version built for Alpine Linux which is much smaller than the regular one.
+
+If you do not give the image any tag, it'll be automatically tagged as `latest`. But that doesn't mean that the `latest` tag will always refer to the latest version. If for some reason you explicitly tag an older version of the image as `latest` then Docker will not make any extra effort to cross check that.
+
+In cases where you forgot to tag an image during build time, or maybe you want to change the tag, you can use the `image tag` command to do that:
+
+```text
+docker image tag <image name>:<image tag> <new image name>:<new iamge tag>
+
+## or ##
+
+docker image tag <image id> <image name>:<image tag>
+```
+
+Once the image has been built, you can them upload that by executing the following command:
+
+```text
+docker image push <image name>:<image tag>
+```
+
+So in my case the command will be as follows:
+
+```text
+docker image push fhsinchy/custom-nginx:latest
+```
+
+Depending on the image size, the upload may take some time. Once it's done you should able to find the image in your docker hub profile page.
+
