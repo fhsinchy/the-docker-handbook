@@ -330,5 +330,5 @@ The running application should be avail able on `http://127.0.0.1:8080` address:
 
 ![](.gitbook/assets/hello-dock-prod.png)
 
-Here you can see my `hello-dock` application in all it's glory.
+Here you can see my `hello-dock` application in all it's glory. Multi-staged builds can be very useful if you're building large applications with a lot of dependencies. If configured properly, images built in multiple stages can be very optimized and compact.
 
