@@ -119,7 +119,7 @@ Apart from Docker Hub or Quay, you can also create your own image repositories f
 
 ## Docker Architecture
 
-Now that you've become familiar with most fundamental concepts regarding containerization and Docker, it's time for you to understand how Docker as a software has been designed.
+Now that you've become familiar with most of the fundamental concepts regarding containerization and Docker, it's time for you to understand how Docker as a software has been designed.
 
 The engine consists of three major components:
 
