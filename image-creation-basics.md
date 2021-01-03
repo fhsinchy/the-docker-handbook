@@ -90,10 +90,19 @@ In order to perform an image build, the daemon needs two very specific informati
 * `docker image build` is the actual command for building the image. The daemon finds any file named `Dockerfile` by default so the usage of the `--file` option is redundant here. In case of a differently named file i.e. `Dockerfile.dev`, you must specify the filename.
 * The `.` at the end sets the context for this build. The context means the directory accessible by the daemon during the build process. The concept of a build context will become much clearer in later sub-sections.
 
+You can use the `image ls` command to list all the images in your local system:
+
+```text
+docker image ls
+
+# REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+# <none>       <none>    3199372aa3fc   7 seconds ago   132MB
+```
+
 Now to run a container using this image, you can use the container run command coupled with the image id that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
 
 ```text
-docker container run --detach --name custom-nginx-packaged --publish 8080:80 3199372aa3fc
+docker container run --rm --detach --name custom-nginx-packaged --publish 8080:80 3199372aa3fc
 
 # ec09d4e1f70c903c3b954c8d7958421cdd1ae3d079b57f929e44131fbf8069a0
 
@@ -352,7 +361,7 @@ docker image build --file Dockerfile.built --tag custom-nginx:built-v2 .
 Now you should be able to run a container using the `custom-nginx:built-v2` image.
 
 ```text
-docker container run --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built-v2
+docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built-v2
 
 # 90ccdbc0b598dddc4199451b2f30a942249d85a8ed21da3c8d14612f17eed0aa
 
@@ -425,7 +434,7 @@ In this entire file, line 16 is the magic that turns this seemingly normal image
 docker image build --tag rmbyext .
 ```
 
-Here I'm not providing any tag after the image name so the image will be tagged as `latest` by default. You should be able to run the image as you saw in the previous section. Just remember to refer to the actual image name you've set instead of `fhsinchy/rmbyext` here.
+Here I'm not providing any tag after the image name so the image will be tagged as `latest` by default. You should be able to run the image as you saw in the previous section. Just remember to refer to the actual image name you've set, instead of `fhsinchy/rmbyext` here.
 
 ## Sharing Your Images Online
 
