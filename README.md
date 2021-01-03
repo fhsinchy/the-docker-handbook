@@ -39,5 +39,5 @@ If you're looking for the complete and stable version of the book then freeCodeC
 
 {% embed url="https://www.freecodecamp.org/news/the-docker-handbook/" caption="don\'t forget to share with others" %}
 
-Which ever version of the book you end up reading though, don't forget to let me know your opinion. Costructive criticism is always welcomed.
+Which ever version of the book you end up reading though, don't forget to let me know your opinion. Constructive criticism is always welcomed.
 
