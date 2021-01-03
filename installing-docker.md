@@ -16,14 +16,11 @@ Now, open up the terminal and execute `docker --version` and `docker-compose --v
 
 ## Installation on Windows
 
-On Windows, the procedure is almost the same, except there are a few extra steps that you’ll need to go through. The installation steps are as follows:  
-
+On Windows, the procedure is almost the same, except there are a few extra steps that you’ll need to go through. The installation steps are as follows:
 
 1. Navigate to [this site](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and follow the instructions for installing WSL2 on Windows 10.
 2. Then navigate to the official [download page](https://www.docker.com/products/docker-desktop) and click the _Download for Windows \(stable\)_ button.
 3. Double click the downloaded installer and go through the installation with the defaults.
-
-
 
 Once the installation is done, start _Docker Desktop_ either from the start menu or your desktop. The docker icon should show up on your taskbar.
 
@@ -54,7 +51,7 @@ Once the installation is done, open up the terminal and execute `docker --versio
 
 ![](.gitbook/assets/docker-and-compose-version-on-linux.png)
 
-Although Docker performs quite well regardless of the platform you’re on, I prefer Linux over the others. Throughout the article, I’ll be switching between [Ubuntu 20.10](https://releases.ubuntu.com/20.10/) and [Fedora 33](https://fedoramagazine.org/announcing-fedora-33/) release.
+Although Docker performs quite well regardless of the platform you’re on, I prefer Linux over the others. Throughout the article, I’ll be switching between my [Ubuntu 20.10](https://releases.ubuntu.com/20.10/) and [Fedora 33](https://fedoramagazine.org/announcing-fedora-33/) workstations.
 
 Another thing that I would like to clarify right from the get go, is that I won't be using any GUI tool for working with Docker throughout the entire article.
 
