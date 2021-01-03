@@ -500,11 +500,11 @@ If you do not give the image any tag, it'll be automatically tagged as `latest`.
 In cases where you forgot to tag an image during build time, or maybe you want to change the tag, you can use the `image tag` command to do that:
 
 ```text
-docker image tag <image name>:<image tag> <new image name>:<new iamge tag>
+docker image tag <image id> <image name>:<image tag>
 
 ## or ##
 
-docker image tag <image id> <image name>:<image tag>
+docker image tag <image name>:<image tag> <new image name>:<new iamge tag>
 ```
 
 Once the image has been built, you can them upload that by executing the following command:
@@ -519,5 +519,5 @@ So in my case the command will be as follows:
 docker image push fhsinchy/custom-nginx:latest
 ```
 
-Depending on the image size, the upload may take some time. Once it's done you should able to find the image in your docker hub profile page.
+Depending on the image size, the upload may take some time. Once it's done you should able to find the image in your hub profile page.
 
