@@ -92,7 +92,7 @@ docker image build --file Dockerfile.dev --tag hello-dock:dev .
 A container can be run using this image by executing the following command:
 
 ```text
-docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev hello-dock:dev
+docker container run --detach --publish 3000:3000 --name hello-dock-dev hello-dock:dev
 
 # 21b9b1499d195d85e81f0e8bce08f43a64b63d589c5f15cbbd0b9c0cb07ae268
 ```
@@ -128,7 +128,7 @@ As you've learned in the previous section, volumes can be created using the `--v
 Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
 
 ```text
-docker container run --rm --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
+docker container run --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
 
 # sh: 1: vite: not found
 # npm ERR! code ELIFECYCLE
@@ -158,7 +158,7 @@ This problem here can be solved using an anonymous volume. An anonymous volume i
 So the final command for starting the `hello-dock` container with both volumes should be as follows:
 
 ```text
-docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume /app/node_modules hello-dock:dev
+docker container run --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume /app/node_modules hello-dock:dev
 
 # 53d1cfdb3ef148eb6370e338749836160f75f076d0fbec3c2a9b059a8992de8b
 ```
@@ -258,10 +258,10 @@ docker image build --tag hello-dock:prod .
 # Step 4/9 : RUN npm install
 #  ---> Running in 6dfabf0ee9f8
 # npm WARN deprecated fsevents@2.1.3: Please update to v 2.2.x
-
+# 
 # > esbuild@0.8.29 postinstall /usr/app/node_modules/esbuild
 # > node install.js
-
+# 
 # npm notice created a lockfile as package-lock.json. You should commit this file.
 # npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@~2.1.2 (node_modules/chokidar/node_modules/fsevents):
 # npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.1.3: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
@@ -295,7 +295,7 @@ docker image build --tag hello-dock:prod .
 # - Building production bundle...
 
 # Build completed in 1.71s.
-
+# 
 # Removing intermediate container 4d918cf18584
 #  ---> 187fb3e82d0d
 # Step 7/9 : EXPOSE 80
@@ -321,7 +321,7 @@ docker image build --tag hello-dock:prod .
 As I've already said in a previous section, the `--file` option is redundant if there is a `Dockerfile` in the context, so I'm omitting that. Once the image has been built, you may run a new container by executing the following command:
 
 ```text
-docker container run --rm --detach --name hello-dock-prod --publish 8080:80 hello-dock:prod
+docker container run --detach --name hello-dock-prod --publish 8080:80 hello-dock:prod
 
 # 224aaba432bb09aca518fdd0365875895c2f5121eb668b2e7b2d5a99c019b953
 ```
