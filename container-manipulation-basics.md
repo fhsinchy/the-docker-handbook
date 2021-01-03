@@ -509,7 +509,7 @@ The `--volume` option can take three fields separated by colons \(`:`\). The gen
 --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
 ```
 
-The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced the the absolute path of your local directory.
+The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced with the absolute path of your local directory.
 
 The difference between a regular image and an executable one is that the entrypoint for an executable image is set to a custom program instead of `sh`, in this case the `rmbyext` program and as you've learned in the previous sub-section, anything you write after the image name in a `run` command gets passed to the entrypoint of the image.
 
