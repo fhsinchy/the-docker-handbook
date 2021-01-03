@@ -54,7 +54,7 @@ Once the installation is done, open up the terminal and execute `docker --versio
 
 ![](.gitbook/assets/docker-and-compose-version-on-linux.png)
 
-Although Docker performs quite well regardless of the platform you’re on, I prefer Linux over the others. Throughout the article, I’ll be on [Ubuntu 20.10](https://releases.ubuntu.com/20.10/) release.
+Although Docker performs quite well regardless of the platform you’re on, I prefer Linux over the others. Throughout the article, I’ll be switching between [Ubuntu 20.10](https://releases.ubuntu.com/20.10/) and [Fedora 33](https://fedoramagazine.org/announcing-fedora-33/) release.
 
 Another thing that I would like to clarify right from the get go, is that I won't be using any GUI tool for working with Docker throughout the entire article.
 

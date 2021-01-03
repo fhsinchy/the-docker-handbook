@@ -4,9 +4,9 @@ According to [IBM](https://www.ibm.com/cloud/learn/containerization#toc-what-is-
 
 In other words, containerization let's you bundle up your software along with all it's dependencies in a self-contained package so that it can be run without going through a troublesome setup process.
 
-Let's consider a real life scenario here. Assume you have developed an awesome book management application that can store information regarding all the books that you own and can also serve the purpose of a book lending system for your friends.
+Let's consider a real life scenario here. Assume you have developed an awesome book management application that can store information regarding all the books you own and can also serve the purpose of a book lending system for your friends.
 
-Now if you make a list of the dependencies, that list will be as follows:
+Now if you make a list of the dependencies, that list may look like as follows:
 
 * Node.js
 * Express.js
@@ -20,7 +20,7 @@ Well theoretically this should be it. But practically there are some other stuff
 * Python 2/3
 * C/C++ tool-chain
 
-Installing Python 2/3 is pretty straight forward regardless of the platform you're on. Setting-up C/C++ tool-chain is pretty easy on Linux but on Windows and Mac, it's a painful task. On Windows, the C++ build tools package measures at gigabytes and takes quite some time to install. On a Mac, you can either install the gigantic [Xcode](https://developer.apple.com/xcode/) application or you install the much smaller [Command Line Tools for Xcode](https://developer.apple.com/downloads/) package. Regardless of the one you install, it still may break on OS updates. In fact, the problem is so prevalent that there are [Installation notes for macOS Catalina](https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md) available on the official repository.
+Installing Python 2/3 is pretty straight forward regardless of the platform you're on. Setting-up C/C++ tool-chain is pretty easy on Linux but on Windows and Mac, it's a painful task. On Windows, the C++ build tools package measures at gigabytes and takes quite some time to install. On a Mac, you can either install the gigantic [Xcode](https://developer.apple.com/xcode/) application or the much smaller [Command Line Tools for Xcode](https://developer.apple.com/downloads/) package. Regardless of the one you install, it still may break on OS updates. In fact, the problem is so prevalent that there are [Installation notes for macOS Catalina](https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md) available on the official repository.
 
 Now let's assume that you've gone through all the hassles of setting up the dependencies and have started working on the project. Does that mean you're out of danger now? Of course not.
 
@@ -32,9 +32,9 @@ All these issues can be solved if only you could somehow:
 
 * Develop and run the application inside an isolated environment \(known as a container\) that matches your final deployment environment.
 * Put your application inside a single file \(known as an image\) along with all it's dependencies, necessary deployment configurations.
-* And share that image through a central server \(known as a registry\) that is accessible by anyone with the proper authorization.
+* And share that image through a central server \(known as a registry\) that is accessible by anyone with proper authorization.
 
-Your teammates, then will be able to download the image from the registry, run the application as it is within an isolated environment free from the platform specific inconsistencies or even deploy directly on a server, given the image comes with all the proper production configurations.
+Your teammates, will then be able to download the image from the registry, run the application as it is within an isolated environment free from the platform specific inconsistencies or even deploy directly on a server, given the image comes with all the proper production configurations.
 
 That is the idea behind containerization. Putting your applications inside a self contained package making it extremely portable and reproducible across various environments.
 
@@ -42,9 +42,7 @@ That is the idea behind containerization. Putting your applications inside a sel
 
 As I've already explained, containerization is an idea that solves myriad of problem in software development by putting things into boxes. This very idea has quite a few implementations. [Docker](https://www.docker.com/) is such an implementation. It's an open-source containerization platform that allows you to containerize your applications, share them using public or private registries and also to [orchestrate](https://docs.docker.com/get-started/orchestration/) them.
 
-Now, Docker is not the only containerization tool on the market, it's just the most popular one. Another containerization engine that I like is called [rkt](https://coreos.com/rkt/) which is short for rocket. Developed by the amazing [CoreOS](https://coreos.com/) team \(now part of [Red Hat](https://www.redhat.com/)\), rkt is a security oriented container engine which takes a pod native approach to containerization and was once the default container engine for [Kubernetes](https://kubernetes.io/).
-
-If you're curious about the other possible choices you have on the containerization scene, you may checkout the [rkt vs other projects](https://coreos.com/rkt/docs/latest/rkt-vs-other-projects.html) page on rkt's official documentation.
+Now, Docker is not the only containerization tool on the market, it's just the most popular one. Another containerization engine that I love is called [Podman](https://podman.io/) developed by Red Hat. Other tools like [Kaniko](https://github.com/GoogleContainerTools/kaniko) by Google, [rkt](https://coreos.com/rkt/) by CoreOS while being amazing, is not ready to be a drop in replacement for Docker yet.
 
 Also, if you want some history lessons, you may read the amazing [A Brief History of Containers: From the 1970s Till Now](https://blog.aquasec.com/a-brief-history-of-containers-from-1970s-chroot-to-docker-2016) article which covers most of the major turning points for the technology.
 
