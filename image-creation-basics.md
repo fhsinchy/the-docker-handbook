@@ -527,14 +527,15 @@ So in my case the command will be as follows:
 ```text
 docker image push fhsinchy/custom-nginx:latest
 
-The push refers to repository [docker.io/fhsinchy/hello-dock]
-79004a3943a7: Pushed 
-1e09835f552f: Mounted from library/nginx 
-c557ef8ec54b: Mounted from library/nginx 
-9fdf28d5d9e1: Mounted from library/nginx 
-dcb1b4f410a8: Mounted from library/nginx 
-87c8a1d8f54f: Mounted from library/nginx 
-latest: digest: sha256:d581a0ffc274b026b742968ba63593706b6f56fbc8975d0baba56dcc1db2bbfc size: 1571
+# The push refers to repository [docker.io/fhsinchy/custom-nginx]
+# 4352b1b1d9f5: Pushed 
+# a4518dd720bd: Pushed 
+# 1d756dc4e694: Pushed 
+# d7a7e2b6321a: Pushed 
+# f6253634dc78: Mounted from library/ubuntu 
+# 9069f84dbbe9: Mounted from library/ubuntu 
+# bacd3af13903: Mounted from library/ubuntu 
+# latest: digest: sha256:ffe93440256c9edb2ed67bf3bba3c204fec3a46a36ac53358899ce1a9eee497a size: 1788
 ```
 
 Depending on the image size, the upload may take some time. Once it's done you should able to find the image in your hub profile page.
