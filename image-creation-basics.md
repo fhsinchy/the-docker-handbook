@@ -513,7 +513,7 @@ docker image tag <image id> <image name>:<image tag>
 
 ## or ##
 
-docker image tag <image name>:<image tag> <new image name>:<new iamge tag>
+docker image tag <image name>:<image tag> <new image name>:<new image tag>
 ```
 
 Once the image has been built, you can them upload that by executing the following command:
