@@ -520,9 +520,9 @@ The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image behaves 
 
 Now the problem is that containers are isolated from your local system, hence the `rmbyext` program running inside the container doesn't have any access to your local file system. So, if somehow you can map the local directory containing the `pdf` files to the `/zone` directory inside the container, the files should be accessible to the container.
 
-One way to grant a container direct access to your local file system is by using a [volume](https://docs.docker.com/storage/volumes/). A volume lets you map the content of a local file system directory to a destination directory inside a container. This way any changes made inside the destination directory inside the container will take effect on your mapped local filesystem directory as well.
+One way to grant a container direct access to your local file system is by using [bind mounts](https://docs.docker.com/storage/bind-mounts/). A bind mount lets you form a two way data binding between the content of a local file system directory and a destination directory inside a container. This way any changes made inside the container directory will take effect on your local directory and vise versa.
 
-Let's first see volumes in action. To delete files using this image instead of the program itself, you can execute the following command:
+Let's see a bond mount in action now. To delete files using this image instead of the program itself, you can execute the following command:
 
 ```text
 docker container run --rm -v $(pwd):/zone fhsinchy/rmbyext pdf
@@ -533,7 +533,7 @@ docker container run --rm -v $(pwd):/zone fhsinchy/rmbyext pdf
 # d.pdf
 ```
 
-As you may have already guessed by seeing the `-v $(pwd):/zone` part in the command, `-v` or `--volume` option is used to create a volume for a container. This option can take three fields separated by colons \(`:`\). The generic syntax for the option is as follows:
+As you may have already guessed by seeing the `-v $(pwd):/zone` part in the command, `-v` or `--volume` option is used to create a bind mount for a container. This option can take three fields separated by colons \(`:`\). The generic syntax for the option is as follows:
 
 ```text
 --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>

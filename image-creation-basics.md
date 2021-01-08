@@ -377,6 +377,8 @@ As you can see, a container using the `custom-nginx:built-v2` image has been suc
 
 And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
 
+## Improving The Dockerfile
+
 ## Creating Executable Images
 
 In the previous section you've worked with the [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image. In this section you'll learn about making such an executable image. Open up the `rmbyext` directory inside the code repository for this article.
