@@ -25,7 +25,15 @@ docker container inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddre
 
 Now given the default port for `postgres` is `5432`, you can very easily access the database server by connecting to `172.17.0.2:5432` from the `notes-api` container.
 
-There are problems in this approach as well. Using IP addresses to reffer to a container is not recommended. Also if the contianer gets destroyed and recreated, the IP address may change. Keeping track of these changing IP addresses can be pretty hectic.
+There are problems in this approach as well. Using IP addresses to refer to a container is not recommended. Also if the container gets destroyed and recreated, the IP address may change. Keeping track of these changing IP addresses can be pretty hectic.
 
 Now that I've dismissed the possible wrong answers to the original question, the correct answer is, **you connect them by putting them under the same network.**
+
+## **Network Basics**
+
+Network in Docker is another logical object like container and image. To list out the networks in your system, execute the following command:
+
+```text
+
+```
 

@@ -484,29 +484,26 @@ Take for example my [rmbyext](https://github.com/fhsinchy/rmbyext) project. This
 
 {% embed url="https://github.com/fhsinchy/rmbyext" caption="spare a ⭐ to keep me motivated" %}
 
-If you have both git and python installed, you can install this script by executing the following command:
-
-```text
-pip install git+https://github.com/fhsinchy/rmbyext.git#egg=rmbyext
-```
-
-Assuming python has been set-up properly on your system, the script should be available anywhere through the terminal. The generic syntax for using this script is as follows:
+The generic syntax for using this script is as follows:
 
 ```text
 rmbyext <file extension>
 ```
 
-To test it out, open up your terminal inside a empty directory and create some files in it with different extensions. You can use the `touch` command to do so. Now, I have a directory on my computer with following files:
+Now, I have a directory on my computer with following files:
 
 ```text
-touch a.pdf b.pdf c.txt d.pdf e.txt
+.
+├── a.pdf
+├── b.pdf
+├── c.txt
+├── d.pdf
+└── e.txt
 
-ls
-
-# a.pdf  b.pdf  c.txt  d.pdf  e.txt
+0 directories, 5 files
 ```
 
-To delete all the `pdf` files from this directory, you can execute the following command:
+To delete all the `pdf` files from this directory, I can execute the following command:
 
 ```text
 rmbyext pdf
@@ -523,9 +520,9 @@ The [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image behaves 
 
 Now the problem is that containers are isolated from your local system, hence the `rmbyext` program running inside the container doesn't have any access to your local file system. So, if somehow you can map the local directory containing the `pdf` files to the `/zone` directory inside the container, the files should be accessible to the container.
 
-One way to grant a container direct access to your local file system is by using [bind mounts](https://docs.docker.com/storage/bind-mounts/). A bind mount lets you form a two way data binding between the content of a local file system directory \(source\) and another directory inside a container \(destination\). This way any changes made destination directory will take effect on the source directory and vise versa.
+One way to grant a container direct access to your local file system is by using [bind mounts](https://docs.docker.com/storage/bind-mounts/). A bind mount lets you form a two way data binding between the content of a local file system directory and a destination directory inside a container. This way any changes made inside the container directory will take effect on your local directory and vise versa.
 
-Let's see a bind mount in action now. To delete files using this image instead of the program itself, you can execute the following command:
+Let's see a bond mount in action now. To delete files using this image instead of the program itself, you can execute the following command:
 
 ```text
 docker container run --rm -v $(pwd):/zone fhsinchy/rmbyext pdf
@@ -542,11 +539,9 @@ As you may have already guessed by seeing the `-v $(pwd):/zone` part in the comm
 --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
 ```
 
-The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container. The source directory in my case is `/home/fhsinchy/the-zone` and given my terminal is opened inside the directory, `$(pwd)` will be replaced with `/home/fhsinchy/the-zone` which contains the previously mentioned `.pdf` and `.txt` files. You can learn more about [command substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) if you want to.
+The third field is optional but you must pass the absolute path of your local directory and the absolute path of the directory inside the container that will reference the local directory. In the command above `$(pwd)` will be replaced with the absolute path of your local directory which in my case contains the previously mentioned `.pdf` and `.txt` files. The `--volume` or `-v` option is valid for the `container run` as well as the `container create` commands. Volumes will be explored in greater detail in the upcoming sections so don't worry if you didn't understand it very well here.
 
-The `--volume` or `-v` option is valid for the `container run` as well as the `container create` commands. Volumes will be explored in greater detail in the upcoming sections so don't worry if you didn't understand it very well here.
-
-The difference between a regular image and an executable one is that the entry-point for an executable image is set to a custom program instead of `sh`, in this case the `rmbyext` program and as you've learned in the previous sub-section, anything you write after the image name in a `run` command gets passed to the entry-point of the image.
+The difference between a regular image and an executable one is that the entrypoint for an executable image is set to a custom program instead of `sh`, in this case the `rmbyext` program and as you've learned in the previous sub-section, anything you write after the image name in a `run` command gets passed to the entrypoint of the image.
 
 So in the end the `docker container run --rm -v $(pwd):/zone fhsinchy/rmbyext pdf` command translates to `rmbyext pdf` inside the container. Executable images are not that common in the wild but can be very useful in certain cases, hence learning about them is important.
 

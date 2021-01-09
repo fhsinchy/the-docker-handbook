@@ -103,29 +103,27 @@ Now visit `http://127.0.0.1:3000` do see the `hello-dock` application in action.
 
 Congratulations on running your first real-world application inside a container. The code you've just written is okay but there is one big issue with it and a few places where it can be improved. Let's begin with the issue first.
 
-## Working with Volumes
-
 If you've worked with any front-end JavaScript framework before, you should know that the development servers in these frameworks usually come with a hot reload feature. That is if you make a change in your code, the server will reload automatically reflecting any changes you've made immediately.
 
 But if you make any change in your code right now, you'll see nothing happening to your application running in the browser. The reason behind this is the fact that you're making changes in the code that you have in your local file system but the application you're seeing in the browser resides inside the container file system.
 
 ![](.gitbook/assets/local-vs-container-file-system.svg)
 
-To solve this issue, you can use [volumes](https://docs.docker.com/storage/volumes/). You've already had a brief encounter of volumes in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section under [Container Manipulation Basics](container-manipulation-basics.md) section.
+To solve this issue, you can again make use of a [bind mount](https://docs.docker.com/storage/bind-mounts/). You've already had a brief encounter of bind mounts in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section under [Container Manipulation Basics](container-manipulation-basics.md) section.
 
-Using volumes, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system, the volume can reference the local file system directly from inside the container.
+Using bind mounts, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system, the bind mount can reference the local file system directly from inside the container.
 
 ![](.gitbook/assets/bind-mounts.svg)
 
-This way, any changes you make to your local source code will reflect immediately inside the container,  triggering the hot reload feature of vite development server. Changes made to the file system inside the container will reflect on your local file system as well and that's how the [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image deletes files from local file system.
+This way, any changes you make to your local source code will reflect immediately inside the container,  triggering the hot reload feature of vite development server. Changes made to the file system inside the container will reflect on your local file system as well.
 
-As you've learned in the previous section, volumes can be created using the `--volume` or `-v` option for the `container run` or `container start` commands. Just to remind you, the generic syntax is as follows: 
+As you've already learned in, bind mounts can be created using the `--volume` or `-v` option for the `container run` or `container start` commands. Just to remind you, the generic syntax is as follows: 
 
 ```text
 --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
 ```
 
-Kill and remove your previously started `hello-dock-dev` container, open up a terminal window inside the `hello-dock` project directory and start a new container by executing the following command:
+Stop your previously started `hello-dock-dev` container, and start a new container by executing the following command:
 
 ```text
 docker container run --rm --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
@@ -149,7 +147,7 @@ That's because although the usage of a volume solves the issue of hot reloads, i
 
 Now that you're mounting the project root on your local file system as a volume inside the container, the content inside the container gets replaced along with the `node_modules` directory containing all the dependencies.  Hence the `vite` package goes missing.
 
-This problem here can be solved using an anonymous volume. An anonymous volume is identical to a regular volume except the fact that you don't need to specify the source of the volume here. The generic syntax for creating an anonymous volume is as follows:
+This problem here can be solved using an anonymous volume. An anonymous volume is identical to a bind mount except the fact that you don't need to specify the source directory here. The generic syntax for creating an anonymous volume is as follows:
 
 ```text
 --volume <container file system directory absolute path>:<read write access>
