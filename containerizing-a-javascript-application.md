@@ -126,7 +126,7 @@ As you've already learned in, bind mounts can be created using the `--volume` or
 Stop your previously started `hello-dock-dev` container, and start a new container by executing the following command:
 
 ```text
-docker container run --rm --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app hello-dock:dev
+docker container run --rm --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/home/node/app hello-dock:dev
 
 # sh: 1: vite: not found
 # npm ERR! code ELIFECYCLE
@@ -156,7 +156,7 @@ This problem here can be solved using an anonymous volume. An anonymous volume i
 So the final command for starting the `hello-dock` container with both volumes should be as follows:
 
 ```text
-docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/app --volume /app/node_modules hello-dock:dev
+docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/home/node/app --volume /home/node/app/node_modules hello-dock:dev
 
 # 53d1cfdb3ef148eb6370e338749836160f75f076d0fbec3c2a9b059a8992de8b
 ```
