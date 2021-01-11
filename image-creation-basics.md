@@ -52,7 +52,7 @@ I hope that you remember that images are multi-layered files. In this file, each
 
 * Every valid `Dockerfile` starts with a `FROM` instruction. This instruction sets the base image for your resultant image. By setting `ubuntu:latest` as the base image here, you get all the goodness of Ubuntu already available in your custom image hence, you can use things like the `apt-get` command for easy package installation.
 * The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` command explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that you'll learn about in later sub-sections.
-* The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package version and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
+* The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package version and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here, are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
 * Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the NGINX executable. The `-g` and `daemon off` are options for NGINX. Running NGINX as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
 
 Now that you have a valid `Dockerfile` you can build an image out of it. Just like the container related commands, the image related commands can be issued using the following syntax:
@@ -116,11 +116,9 @@ This container should behave just like the official one. To verify, visit `http:
 
 ![](.gitbook/assets/nginx-default.png)
 
-Just like containers, you can assign custom identifier to your images instead of relying on the randomly generated id.
-
 ### Tagging Images
 
-In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
+Just like containers, you can assign custom identifiers to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
 
 ```text
 docker image build --file Dockerfile --tag custom-nginx:packaged .
@@ -128,7 +126,7 @@ docker image build --file Dockerfile --tag custom-nginx:packaged .
 
 Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. Here the part before the colon is the image name and the part after the colon is the tag.
 
-Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If you run a container using the this image the default tag will be `latest` indicating whatever is the latest version of MySQL at the moment. Now if you want another version, you can define that like `docker container run mysql:5.7` indicating you want 5.7 version of MySQL.
+Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If you run a container using this image the default tag will be `latest` indicating whatever is the latest version of MySQL at the moment is. Now if you want another version, you can define that like `docker container run mysql:5.7` indicating you want 5.7 version of MySQL.
 
 ## Understanding the Many Layers of an Image
 
