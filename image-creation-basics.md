@@ -13,7 +13,7 @@ As I've already explained in the [Hello World in Docker](hello-world-in-docker.m
 In order to create an image using one of your application you must have a clear vision of what you want from the image. Take the official [nginx](https://hub.docker.com/_/nginx) image for example. You can start a container using this image simply by executing the following command:
 
 ```text
-docker container run --detach --name default-nginx --publish 8080:80 nginx
+docker container run --rm --detach --name default-nginx --publish 8080:80 nginx
 
 # b379ecd5b6b9ae27c144e4fa12bdc5d0635543666f75c14039eea8d5f38e3f56
 
@@ -29,7 +29,7 @@ Now, if you visit `http://127.0.0.1:8080` in the browser, you'll see a default r
 
 That's all nice and good, but what if you want to make a custom NGINX which functions exactly like the official one, but is built by you? That's completely valid scenario to be honest. In fact, let's do that.
 
-In order to make a custom NGINX image, you must have a clear picture of what the final state of the image will be. In my opinion the image should as follows:
+In order to make a custom NGINX image, you must have a clear picture of what the final state of the image will be. In my opinion the image should be as follows:
 
 * The image should have NGINX pre-installed which can be done using a package manager or can be built from source.
 * The image should start NGINX automatically upon running.
