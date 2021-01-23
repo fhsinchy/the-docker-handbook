@@ -138,7 +138,7 @@ Nothing will change except the fact that you can now refer to your image as `cus
 
 Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If you run a container using this image the default tag will be `latest` indicating whatever is the latest version of MySQL at the moment is. Now if you want another version, you can define that like `docker container run mysql:5.7` indicating you want 5.7 version of MySQL.
 
-## Listing Images
+## Listing and Removing Images
 
 Just like the `container ls` command, you can use the `image ls` command to list all the images in your local system:
 
@@ -150,22 +150,23 @@ docker image ls
 # custom-nginx   packaged   f8837621b99d   4 minutes ago   132MB
 ```
 
-Now to run a container using this image, you can use the container run command coupled with the image id that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
+Images listed here can be deleted using the `image rm` command. The generic syntax is as follows:
 
 ```text
-docker container run --rm --detach --name custom-nginx-packaged --publish 8080:80 3199372aa3fc
-
-# ec09d4e1f70c903c3b954c8d7958421cdd1ae3d079b57f929e44131fbf8069a0
-
-docker container ls
-
-# CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-# ec09d4e1f70c        3199372aa3fc        "nginx -g 'daemon of…"   23 seconds ago      Up 22 seconds       0.0.0.0:8080->80/tcp   custom-nginx-packaged
+docker image rm <image identifier>
 ```
 
-This container should behave just like the official one. To verify, visit `http://127.0.0.1:8080` and you should see the default response page.
+The identifier can be the image ID or image repository. If you use the repository, you'll have to identify the tag as well. To delete the `custom-nginx:packaged` image, you may execute the following command:
 
-![](.gitbook/assets/nginx-default.png)
+```text
+docker image rm custom-nginx:packaged
+
+# Untagged: custom-nginx:packaged
+# Deleted: sha256:f8837621b99d3388a9e78d9ce49fbb773017f770eea80470fb85e0052beae242
+# Deleted: sha256:fdc6cdd8925ac25b9e0ed1c8539f96ad89ba1b21793d061e2349b62dd517dadf
+# Deleted: sha256:c20e4aa46615fe512a4133089a5cd66f9b7da76366c96548790d5bf865bd49c4
+# Deleted: sha256:6d6460a744475a357a2b631a4098aa1862d04510f3625feb316358536fcd8641
+```
 
 ## Understanding the Many Layers of an Image
 
