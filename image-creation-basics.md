@@ -140,13 +140,14 @@ Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If 
 
 ## Listing Images
 
-You can use the `image ls` command to list all the images in your local system:
+Just like the `container ls` command, you can use the `image ls` command to list all the images in your local system:
 
 ```text
 docker image ls
 
-# REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
-# <none>       <none>    3199372aa3fc   7 seconds ago   132MB
+# REPOSITORY     TAG        IMAGE ID       CREATED         SIZE
+# <none>         <none>     3199372aa3fc   7 seconds ago   132MB
+# custom-nginx   packaged   f8837621b99d   4 minutes ago   132MB
 ```
 
 Now to run a container using this image, you can use the container run command coupled with the image id that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
