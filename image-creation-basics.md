@@ -90,15 +90,6 @@ In order to perform an image build, the daemon needs two very specific informati
 * `docker image build` is the actual command for building the image. The daemon finds any file named `Dockerfile` by default so the usage of the `--file` option is redundant here. In case of a differently named file i.e. `Dockerfile.dev`, you must specify the filename.
 * The `.` at the end sets the context for this build. The context means the directory accessible by the daemon during the build process. The concept of a build context will become much clearer in later sub-sections.
 
-You can use the `image ls` command to list all the images in your local system:
-
-```text
-docker image ls
-
-# REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
-# <none>       <none>    3199372aa3fc   7 seconds ago   132MB
-```
-
 Now to run a container using this image, you can use the container run command coupled with the image id that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
 
 ```text
@@ -127,6 +118,34 @@ docker image build --file Dockerfile --tag custom-nginx:packaged .
 Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. Here the part before the colon is the image name and the part after the colon is the tag.
 
 Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If you run a container using this image the default tag will be `latest` indicating whatever is the latest version of MySQL at the moment is. Now if you want another version, you can define that like `docker container run mysql:5.7` indicating you want 5.7 version of MySQL.
+
+## Listing Images
+
+You can use the `image ls` command to list all the images in your local system:
+
+```text
+docker image ls
+
+# REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+# <none>       <none>    3199372aa3fc   7 seconds ago   132MB
+```
+
+Now to run a container using this image, you can use the container run command coupled with the image id that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
+
+```text
+docker container run --rm --detach --name custom-nginx-packaged --publish 8080:80 3199372aa3fc
+
+# ec09d4e1f70c903c3b954c8d7958421cdd1ae3d079b57f929e44131fbf8069a0
+
+docker container ls
+
+# CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
+# ec09d4e1f70c        3199372aa3fc        "nginx -g 'daemon of…"   23 seconds ago      Up 22 seconds       0.0.0.0:8080->80/tcp   custom-nginx-packaged
+```
+
+This container should behave just like the official one. To verify, visit `http://127.0.0.1:8080` and you should see the default response page.
+
+![](.gitbook/assets/nginx-default.png)
 
 ## Understanding the Many Layers of an Image
 
