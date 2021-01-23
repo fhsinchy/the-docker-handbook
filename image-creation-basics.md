@@ -109,7 +109,15 @@ This container should behave just like the official one. To verify, visit `http:
 
 ## Tagging Images
 
-Just like containers, you can assign custom identifiers to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
+Just like containers, you can assign custom identifiers to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. Generic syntax for the option is as follows:
+
+```text
+--tag <image repository>:<image tag>
+```
+
+The repository is usually known as the image name and tag indicates a certain build or version. Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If you want to run a container using a specific version of MySQL i.e. 5.7, you can execute `docker container run mysql:5.7` where `mysql` is the image repository and `5.7` is the tag.
+
+In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
 
 ```text
 docker image build --file Dockerfile --tag custom-nginx:packaged .
@@ -134,9 +142,7 @@ docker image build --file Dockerfile --tag custom-nginx:packaged .
 # Successfully tagged custom-nginx:packaged
 ```
 
-Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. Here the part before the colon is the image name and the part after the colon is the tag.
-
-Take the official [mysql](https://hub.docker.com/_/mysql) image for example. If you run a container using this image the default tag will be `latest` indicating whatever is the latest version of MySQL at the moment is. Now if you want another version, you can define that like `docker container run mysql:5.7` indicating you want 5.7 version of MySQL.
+Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. You'll learn more about tagging in [Sharing Your Images Online](image-creation-basics.md#sharing-your-images-online) sub-section.
 
 ## Listing and Removing Images
 
