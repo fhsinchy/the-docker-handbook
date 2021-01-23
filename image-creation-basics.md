@@ -1,4 +1,4 @@
-# Image Creation Basics
+# Image Manipulation Basics
 
 Now that you've a solid understanding of running containers using images available publicly, it's time for you to learn about creating your very own images.
 
@@ -6,7 +6,7 @@ In this section, you'll learn the fundamentals of creating images, running conta
 
 I would suggest you install [Visual Studio Code](https://code.visualstudio.com/) with the official [Docker Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) from the marketplace. This will greatly help your development experience.
 
-## The Essentials
+## Image Creation Basics
 
 As I've already explained in the [Hello World in Docker](hello-world-in-docker.md#image) section, images are multi-layered self-contained files that act as the template for creating Docker containers. They are like a frozen, read-only copy of a container.
 
@@ -171,7 +171,7 @@ docker image rm custom-nginx:packaged
 You can also use the `image prune` command to cleanup all un-tagged images as follows:
 
 ```text
-docker image prune -f
+docker image prune --force
 
 # Deleted Images:
 # deleted: sha256:ba9558bdf2beda81b9acc652ce4931a85f0fc7f69dbc91b4efc4561ef7378aff
@@ -181,6 +181,8 @@ docker image prune -f
 
 # Total reclaimed space: 59.19MB
 ```
+
+The `--force` or `-f` option skips any confirmation questions. You can also use the `--all` or `-a` option to remove all cached images in your local registry.
 
 ## Understanding the Many Layers of an Image
 
