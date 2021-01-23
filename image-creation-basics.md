@@ -113,6 +113,25 @@ Just like containers, you can assign custom identifiers to your images instead o
 
 ```text
 docker image build --file Dockerfile --tag custom-nginx:packaged .
+
+# Sending build context to Docker daemon  1.055MB
+# Step 1/4 : FROM ubuntu:latest
+#  ---> f63181f19b2f
+# Step 2/4 : EXPOSE 80
+#  ---> Running in 53ab370b9efc
+# Removing intermediate container 53ab370b9efc
+#  ---> 6d6460a74447
+# Step 3/4 : RUN apt-get update &&     apt-get install nginx -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*
+#  ---> Running in b4951b6b48bb
+### LONG INSTALLATION STUFF GOES HERE ###
+# Removing intermediate container b4951b6b48bb
+#  ---> fdc6cdd8925a
+# Step 4/4 : CMD ["nginx", "-g", "daemon off;"]
+#  ---> Running in 3bdbd2af4f0e
+# Removing intermediate container 3bdbd2af4f0e
+#  ---> f8837621b99d
+# Successfully built f8837621b99d
+# Successfully tagged custom-nginx:packaged
 ```
 
 Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. Here the part before the colon is the image name and the part after the colon is the tag.
