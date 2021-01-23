@@ -168,6 +168,20 @@ docker image rm custom-nginx:packaged
 # Deleted: sha256:6d6460a744475a357a2b631a4098aa1862d04510f3625feb316358536fcd8641
 ```
 
+You can also use the `image prune` command to cleanup all un-tagged images as follows:
+
+```text
+docker image prune -f
+
+# Deleted Images:
+# deleted: sha256:ba9558bdf2beda81b9acc652ce4931a85f0fc7f69dbc91b4efc4561ef7378aff
+# deleted: sha256:ad9cc3ff27f0d192f8fa5fadebf813537e02e6ad472f6536847c4de183c02c81
+# deleted: sha256:f1e9b82068d43c1bb04ff3e4f0085b9f8903a12b27196df7f1145aa9296c85e7
+# deleted: sha256:ec16024aa036172544908ec4e5f842627d04ef99ee9b8d9aaa26b9c2a4b52baa
+
+# Total reclaimed space: 59.19MB
+```
+
 ## Understanding the Many Layers of an Image
 
 From the very beginning of this article, I've been saying that images are multi-layered files. In this sub-section I'll demonstrate the various layers of a file and how they play an important role in the build process of an image. For this demonstration, I'll be using the `custom-nginx:packaged` image from the previous sub-section.
