@@ -116,7 +116,7 @@ This container should behave just like the official one. To verify, visit `http:
 
 ![](.gitbook/assets/nginx-default.png)
 
-### Tagging Images
+## Tagging Images
 
 Just like containers, you can assign custom identifiers to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
 
