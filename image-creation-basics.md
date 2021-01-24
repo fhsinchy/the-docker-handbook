@@ -239,7 +239,7 @@ This layering phenomenon that happens every time you work with Docker has been m
 
 By utilizing this concept, Docker can avoid data duplication, can use previously created layers as cache for later builds and result in compact, efficient images to be used everywhere.
 
-## Deeper Into the Image Building Business
+## Building NGINX From Source
 
 In the previous sub-section, you've learned about the `FROM`, `EXPOSE`, `RUN` and `CMD` instructions. In this sub-section you'll be learning a lot more about other instructions.
 

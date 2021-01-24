@@ -31,7 +31,7 @@
   * [Image Creation Basics](image-creation-basics.md#image-creation-basics)
   * [Listing and Removing Images](image-creation-basics.md#listing-and-removing-images)
   * [Understanding the Many Layers of an Image](image-creation-basics.md#understanding-the-many-layers-of-an-image)
-  * [Deeper Into the Image Building Business](image-creation-basics.md#deeper-into-the-image-building-business)
+  * [Building NGINX From Source](image-creation-basics.md#building-nginx-from-source)
   * [Creating Executable Images](image-creation-basics.md#creating-executable-images)
   * [Sharing Your Images Online](image-creation-basics.md#sharing-your-images-online)
 * [Containerizing a JavaScript Application](containerizing-a-javascript-application.md)
