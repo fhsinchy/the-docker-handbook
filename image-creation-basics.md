@@ -617,7 +617,51 @@ docker image ls
 
 As you can see, the image size has gone from being 343MB to 81.6MB. The official image is 133MB. This is a pretty optimized build. But there is one thing that we can do better.
 
-As you can see in the `Dockerfile` code above, the source code 
+As you can see in the `Dockerfile` code above, the source code archive is being downloaded using an `ADD` instruction and is being removed inside the `RUN` instruction. I've already told that if files are being added and removed in separate layers, their size is still added to the final image.
+
+So instead of using an `ADD` instruction, you can instead use [curl](https://curl.se/) to download the file inside a `RUN` instruction. Open up the `Dockerfile` and update its content as follows:
+
+```text
+FROM ubuntu:latest
+
+EXPOSE 80
+
+ARG FILENAME="nginx-1.19.2"
+ARG EXTENSION="tar.gz"
+
+RUN apt-get update && \
+    apt-get install build-essential \ 
+                    libpcre3 \
+                    libpcre3-dev \
+                    zlib1g \
+                    zlib1g-dev \
+                    libssl-dev \
+                    curl \
+                    -y && \
+    curl https://nginx.org/download/${FILENAME}.${EXTENSION} -o ${FILENAME}.${EXTENSION} && \
+    tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
+    cd ${FILENAME} && \
+    ./configure \
+        --sbin-path=/usr/bin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-pcre \
+        --pid-path=/var/run/nginx.pid \
+        --with-http_ssl_module && \
+    make && make install && \
+    cd / && rm -rfv /${FILENAME} && \
+    apt-get remove build-essential \ 
+                    libpcre3-dev \
+                    zlib1g-dev \
+                    libssl-dev \
+                    curl \
+                    -y && \
+    apt-get autoremove -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+CMD ["nginx", "-g", "daemon off;"]
+```
 
 ## Creating Executable Images
 
