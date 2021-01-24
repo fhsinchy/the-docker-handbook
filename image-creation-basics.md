@@ -257,7 +257,7 @@ Before diving into writing some code, let's plan out the process first. The imag
 * Get rid of the extracted source code.
 * Run `nginx` executable.
 
-Now that you have a plan, let's begin by renaming your old `Dockerfile` to something like `Dockerfile.packaged` indicating that this one installs NGINX using a package manager. Create a new file named `Dockerfile.built` which indicates that in this one, you've built NGINX from source. Open up the newly created file and put following content in it:
+Now that you have a plan, let's begin by opening up old `Dockerfile` and update its contet as follows:
 
 ```text
 FROM ubuntu:latest
@@ -292,7 +292,7 @@ RUN rm -rf /nginx-1.19.2
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-As you can see, the code inside the `Dockerfile.built` reflects the seven steps I talked about beforehand.
+As you can see, the code inside the `Dockerfile` reflects the seven steps I talked about beforehand.
 
 * The `FROM` instruction sets Ubuntu as the base image making an ideal environment for building any application.
 * The `RUN` instruction here installs standard packages necessary for building NGINX from source.
@@ -305,7 +305,7 @@ As you can see, the code inside the `Dockerfile.built` reflects the seven steps 
 Now to build an image using this code, execute the following command:
 
 ```text
-docker image build --file Dockerfile.built --tag custom-nginx:built-v1 .
+docker image build --file Dockerfile --tag custom-nginx:built .
 
 # Step 1/7 : FROM ubuntu:latest
 #  ---> d70eaf7277ea
@@ -335,15 +335,15 @@ docker image build --file Dockerfile.built --tag custom-nginx:built-v1 .
 # Removing intermediate container 3110c7fdbd57
 #  ---> eae55f7369d3
 # Successfully built eae55f7369d3
-# Successfully tagged custom-nginx:built-v1
+# Successfully tagged custom-nginx:built
 ```
 
-Now you should be able to run a container using the `custom-nginx:built-v1` image. This code is alright but there are some places where improvements can be made. 
+Now you should be able to run a container using the `custom-nginx:built` image. This code is alright but there are some places where improvements can be made. 
 
 * Instead of hard coding the filename like `nginx-1.19.2.tar.gz`, you can create an argument using the `ARG` instruction. This way, you'll be able to change the version or filename by just changing the argument.
 * Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction which is capable of adding files from the internet.
 
-Open up the `Dockerfile.built` file and update it's content as follows:
+Open up the `Dockerfile` file and update it's content as follows:
 
 ```text
 FROM ubuntu:latest
@@ -390,7 +390,7 @@ The code is almost identical to the previous code block except a new instruction
 Rest of the code is almost unchanged. You should be able to infer the usage of the arguments by yourself now. Finally let's try to build an image from this updated code.
 
 ```text
-docker image build --file Dockerfile.built --tag custom-nginx:built-v2 .
+docker image build --file Dockerfile --tag custom-nginx:built .
 
 # Step 1/9 : FROM ubuntu:latest
 #  ---> d70eaf7277ea
@@ -427,20 +427,20 @@ docker image build --file Dockerfile.built --tag custom-nginx:built-v2 .
 # Removing intermediate container 63ee44b571bb
 #  ---> 4ce79556db1b
 # Successfully built 4ce79556db1b
-# Successfully tagged custom-nginx:built-v2
+# Successfully tagged custom-nginx:built
 ```
 
-Now you should be able to run a container using the `custom-nginx:built-v2` image.
+Now you should be able to run a container using the `custom-nginx:built` image.
 
 ```text
-docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built-v2
+docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built
 
 # 90ccdbc0b598dddc4199451b2f30a942249d85a8ed21da3c8d14612f17eed0aa
 
 docker container ls
 
-# CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS              PORTS                  NAMES
-# 90ccdbc0b598        custom-nginx:built-v2   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
+# CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS                  NAMES
+# 90ccdbc0b598        custom-nginx:built   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
 ```
 
 As you can see, a container using the `custom-nginx:built-v2` image has been successfully run. The container should be accessible at `http://127.0.0.1:8080` address now.
@@ -449,7 +449,175 @@ As you can see, a container using the `custom-nginx:built-v2` image has been suc
 
 And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
 
-## Improving The Dockerfile
+## Optimizing Images
+
+The image you built in the last sub-section is functional but very unoptimized. To prove my point let's  have a look at the size of the image using the docker `image ls` command:
+
+```text
+docker image ls
+
+# REPOSITORY         TAG       IMAGE ID       CREATED          SIZE
+# custom-nginx       built     1f3aaf40bb54   16 minutes ago   343MB
+```
+
+For an image that contains only NGINX, that's too much. If you pull the official image and check it's size you'll see how small it is:
+
+```text
+docker image pull nginx:stable
+
+# stable: Pulling from library/nginx
+# a076a628af6f: Pull complete 
+# 45d7b5d3927d: Pull complete 
+# 5e326fece82e: Pull complete 
+# 30c386181b68: Pull complete 
+# b15158e9ebbe: Pull complete 
+# Digest: sha256:ebd0fd56eb30543a9195280eb81af2a9a8e6143496accd6a217c14b06acd1419
+# Status: Downloaded newer image for nginx:stable
+# docker.io/library/nginx:stable
+
+docker image ls
+
+# REPOSITORY         TAG       IMAGE ID       CREATED          SIZE
+# custom-nginx       built     1f3aaf40bb54   25 minutes ago   343MB
+# nginx              stable    b9e1dc12387a   11 days ago      133MB
+```
+
+This is happening because in our `Dockerfile` we have a lot of garbage. Let's have a look at the `Dockerfile` first:
+
+```text
+FROM ubuntu:latest
+
+RUN apt-get update && \
+    apt-get install build-essential\ 
+                    libpcre3 \
+                    libpcre3-dev \
+                    zlib1g \
+                    zlib1g-dev \
+                    libssl-dev \
+                    -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ARG FILENAME="nginx-1.19.2"
+ARG EXTENSION="tar.gz"
+
+ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+
+RUN tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION}
+
+RUN cd ${FILENAME} && \
+    ./configure \
+        --sbin-path=/usr/bin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-pcre \
+        --pid-path=/var/run/nginx.pid \
+        --with-http_ssl_module && \
+    make && make install
+
+RUN rm -rf /${FILENAME}}
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. So a better idea can be to uninstall the package once the build process is done. Update your `Dockerfile` as follows:
+
+```text
+FROM ubuntu:latest
+
+EXPOSE 80
+
+ARG FILENAME="nginx-1.19.2"
+ARG EXTENSION="tar.gz"
+
+ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+
+RUN apt-get update && \
+    apt-get install build-essential \ 
+                    libpcre3 \
+                    libpcre3-dev \
+                    zlib1g \
+                    zlib1g-dev \
+                    libssl-dev \
+                    -y && \
+    tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
+    cd ${FILENAME} && \
+    ./configure \
+        --sbin-path=/usr/bin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-pcre \
+        --pid-path=/var/run/nginx.pid \
+        --with-http_ssl_module && \
+    make && make install && \
+    cd / && rm -rfv /${FILENAME} && \
+    apt-get remove build-essential \ 
+                    libpcre3-dev \
+                    zlib1g-dev \
+                    libssl-dev \
+                    -y && \
+    apt-get autoremove -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+As you can see, on line 10 a single `RUN` instruction is doing all the necessary heavy-lifting. The exact chain of events is as follows:
+
+* From line 10 to line 17, all the necessary packages are being installed.
+* On line 18, the source code is being extracted and the the downloaded archive gets removed.
+* From line 19 to line 28, NGINX is configured, built and installed on the system.
+* On line 29, the extracted files from the downloaded archive gets removed.
+* From line 30 to line 36, all the unnecessary packages are being uninstalled and cache cleared. The `libpcre3` and `zlib1g` packages are needed for running NGINX hence they're kept.
+
+You may ask why am I doing so much inside a single `RUN` instruction instead of nicely splitting them into multiple instructions like we did previously. Well that's a mistake. If you install packages and then remove them in separate `RUN` instructions, they'll live in separate layers of the image. Although the final image will not have the removed packages, their size will still be added to the final image given they exist in one of the layers consisting the image. So make sure you make these kind of changes on a single layer.
+
+Let's build an image using this `Dockerfile` and see the differences shall we:
+
+```text
+docker image build --file Dockerfile --tag custom-nginx:built .
+
+# Sending build context to Docker daemon  1.057MB
+# Step 1/7 : FROM ubuntu:latest
+#  ---> f63181f19b2f
+# Step 2/7 : EXPOSE 80
+#  ---> Running in 006f39b75964
+# Removing intermediate container 006f39b75964
+#  ---> 6943f7ef9376
+# Step 3/7 : ARG FILENAME="nginx-1.19.2"
+#  ---> Running in ffaf89078594
+# Removing intermediate container ffaf89078594
+#  ---> 91b5cdb6dabe
+# Step 4/7 : ARG EXTENSION="tar.gz"
+#  ---> Running in d0f5188444b6
+# Removing intermediate container d0f5188444b6
+#  ---> 9626f941ccb2
+# Step 5/7 : ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+# Downloading [==================================================>]  1.049MB/1.049MB
+#  ---> a8e8dcca1be8
+# Step 6/7 : RUN apt-get update &&     apt-get install build-essential                     libpcre3                     libpcre3-dev                     zlib1g                     zlib1g-dev                     libssl-dev                     -y &&     tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} &&     cd ${FILENAME} &&     ./configure         --sbin-path=/usr/bin/nginx         --conf-path=/etc/nginx/nginx.conf         --error-log-path=/var/log/nginx/error.log         --http-log-path=/var/log/nginx/access.log         --with-pcre         --pid-path=/var/run/nginx.pid         --with-http_ssl_module &&     make && make install &&     cd / && rm -rfv /${FILENAME} &&     apt-get remove build-essential                     libpcre3-dev                     zlib1g-dev                     libssl-dev                     -y &&     apt-get autoremove -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*
+#  ---> Running in e5675cad1260
+### LONG INSTALLATION AND BUILD STUFF GOES HERE ###
+# Removing intermediate container e5675cad1260
+#  ---> dc7e4161f975
+# Step 7/7 : CMD ["nginx", "-g", "daemon off;"]
+#  ---> Running in b579e4600247
+# Removing intermediate container b579e4600247
+#  ---> 512aa6a95a93
+# Successfully built 512aa6a95a93
+# Successfully tagged custom-nginx:built
+
+docker image ls
+
+# REPOSITORY         TAG       IMAGE ID       CREATED              SIZE
+# custom-nginx       built     512aa6a95a93   About a minute ago   81.6MB
+# nginx              stable    b9e1dc12387a   11 days ago          133MB
+```
+
+As you can see, the image size has gone from being 343MB to 81.6MB. The official image is 133MB. This is a pretty optimized build. But there is one thing that we can do better.
+
+As you can see in the `Dockerfile` code above, the source code 
 
 ## Creating Executable Images
 
