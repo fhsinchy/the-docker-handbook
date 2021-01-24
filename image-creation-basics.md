@@ -619,9 +619,9 @@ As you can see, the image size has gone from being 343MB to 81.6MB. The official
 
 ## Embracing Alpine Linux
 
-If you've been fiddling around with containers for sometime now, you may have heard about something called [Alpine Linux](https://alpinelinux.org/) which is a full-featured Linux distribution like [Ubuntu](https://ubuntu.com/), [Debian](https://www.debian.org/) or [Fedora](https://getfedora.org/). But the good thing about Alpine is that it's built around musl libc and busybox and is extremely lightweight. Where the latest ubuntu image weighs at around 28MB, alpine is just 2.8MB. Apart from the lightweight nature, Alpine is also secure and is much better fit for creating containers than the other distributions.
+If you've been fiddling around with containers for sometime now, you may have heard about something called [Alpine Linux](https://alpinelinux.org/) which is a full-featured Linux distribution like [Ubuntu](https://ubuntu.com/), [Debian](https://www.debian.org/) or [Fedora](https://getfedora.org/). But the good thing about Alpine is that it's built around `musl` `libc` and `busybox` and is extremely lightweight. Where the latest ubuntu image weighs at around 28MB, alpine is just 2.8MB. Apart from the lightweight nature, Alpine is also secure and is much better fit for creating containers than the other distributions.
 
-Although not as user friendly as the other commercial distributions, the transition is still very simple. In this sub-section you'll learn about recreating the custom-nginx image by using the alpine image as its base.
+Although not as user friendly as the other commercial distributions, the transition is still very simple. In this sub-section you'll learn about recreating the `custom-nginx` image by using the alpine image as its base.
 
 Open up your `Dockerfile` and update its content as follows:
 
@@ -664,6 +664,41 @@ As you can see, the code is almost identical except a few changes. I'll be listi
 * Instead of using `apt-get install` for installing packages, we use `apk add` and the `--no-cache` option means that the downloaded package won't be cached. Likewise `apk del` is used instead of `apt-get remove` to uninstall packages.
 * The `--virtual` option for `apk add` command is used for bundling a bunch of packages into a single virtual package for easier management. Packages that are needed only for building the program is labeled as `.build-deps` which is then removed on line 29 by executing `apk del .build-deps` command. You can learn more about [virtuals](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html#_virtuals) in the official docs.
 * The packages names are a bit different here. Usually every Linux distribution has its package repository available to everyone where you can search for packages. If you know the packages required for a certain task then you can just head over to the designated repository for a distribution and search for it. You can look up Alpine Linux packages on [https://pkgs.alpinelinux.org/packages](https://pkgs.alpinelinux.org/packages) link.
+
+Now build a new image using this `Dockerfile` and see the difference in file size:
+
+```text
+docker image build --file Dockerfile --tag custom-nginx:built .
+
+# Sending build context to Docker daemon  1.055MB
+# Step 1/7 : FROM alpine:latest
+#  ---> 7731472c3f2a
+# Step 2/7 : EXPOSE 80
+#  ---> Running in 8336cfaaa48d
+# Removing intermediate container 8336cfaaa48d
+#  ---> d448a9049d01
+# Step 3/7 : ARG FILENAME="nginx-1.19.2"
+#  ---> Running in bb8b2eae9d74
+# Removing intermediate container bb8b2eae9d74
+#  ---> 87ca74f32fbe
+# Step 4/7 : ARG EXTENSION="tar.gz"
+#  ---> Running in aa09627fe48c
+# Removing intermediate container aa09627fe48c
+#  ---> 70cb557adb10
+# Step 5/7 : ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+# Downloading [==================================================>]  1.049MB/1.049MB
+#  ---> b9790ce0c4d6
+# Step 6/7 : RUN apk add --no-cache pcre zlib &&     apk add --no-cache             --virtual .build-deps             build-base             pcre-dev             zlib-dev             openssl-dev &&     tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} &&     cd ${FILENAME} &&     ./configure         --sbin-path=/usr/bin/nginx         --conf-path=/etc/nginx/nginx.conf         --error-log-path=/var/log/nginx/error.log         --http-log-path=/var/log/nginx/access.log         --with-pcre         --pid-path=/var/run/nginx.pid         --with-http_ssl_module &&     make && make install &&     cd / && rm -rfv /${FILENAME} &&     apk del .build-deps
+#  ---> Running in 0b301f64ffc1
+### LONG INSTALLATION AND BUILD STUFF GOES HERE ###
+
+docker image ls
+
+# REPOSITORY         TAG       IMAGE ID       CREATED         SIZE
+# custom-nginx       built     3e186a3c6830   8 seconds ago   12.8MB
+```
+
+Where the ubuntu version was 81.6MB, the alpine one has come down to 12.8MB which is a massive gain.
 
 ## Creating Executable Images
 
