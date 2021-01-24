@@ -142,7 +142,19 @@ docker image build --file Dockerfile --tag custom-nginx:packaged .
 # Successfully tagged custom-nginx:packaged
 ```
 
-Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string. You'll learn more about tagging in [Sharing Your Images Online](image-creation-basics.md#sharing-your-images-online) sub-section.
+Nothing will change except the fact that you can now refer to your image as `custom-nginx:packaged` instead of some long random string.
+
+In cases where you forgot to tag an image during build time, or maybe you want to change the tag, you can use the `image tag` command to do that:
+
+```text
+docker image tag <image id> <image repository>:<image tag>
+
+## or ##
+
+docker image tag <image repository>:<image tag> <new image repository>:<new image tag>
+```
+
+You'll learn more about tagging in [Sharing Your Images Online](image-creation-basics.md#sharing-your-images-online) sub-section.
 
 ## Listing and Removing Images
 
@@ -519,6 +531,12 @@ docker login
 
 As seen in the output above, you'll be prompted for your username and password. If you input them properly, you should be logged in to your account successfully.
 
+In order to share an image online, the image has to be tagged. You've already learned about tagging in a previous sub-section. Just to refresh your memory, the generic syntax for the `--tag` or `-t` option is as follows:
+
+```text
+--tag <image repository>:<image tag>
+```
+
 As an example, let's share the `custom-nginx` image online. To do so, open up a new terminal window inside the `custom-nginx` project directory. To share an image online, you'll have to tag it following the `<docker hub username>/<image name>:<image tag>` syntax. My username is `fhsinchy` so the command will look like as follows:
 
 ```text
@@ -562,26 +580,16 @@ docker image build --tag fhsinchy/custom-nginx:latest --file Dockerfile.built .
 # Successfully tagged fhsinchy/custom-nginx:latest
 ```
 
-In this command the `custom-nginx` is the image name and `latest` is the tag. The image name can be anything you want and can not be changed once you've uploaded the image. The tag can be changed whenever you want and usually reflects the version of the software or different kind of builds.
+In this command the `fhsinchy/custom-nginx` is the image repository and `latest` is the tag. The image name can be anything you want and can not be changed once you've uploaded the image. The tag can be changed whenever you want and usually reflects the version of the software or different kind of builds.
 
 Take the `node` image as an example. The `node:lts` image refers to the long term support version of Node.js whereas the `node:lts-alpine` version refers to the Node.js version built for Alpine Linux which is much smaller than the regular one.
 
 If you do not give the image any tag, it'll be automatically tagged as `latest`. But that doesn't mean that the `latest` tag will always refer to the latest version. If for some reason you explicitly tag an older version of the image as `latest` then Docker will not make any extra effort to cross check that.
 
-In cases where you forgot to tag an image during build time, or maybe you want to change the tag, you can use the `image tag` command to do that:
-
-```text
-docker image tag <image id> <image name>:<image tag>
-
-## or ##
-
-docker image tag <image name>:<image tag> <new image name>:<new image tag>
-```
-
 Once the image has been built, you can them upload that by executing the following command:
 
 ```text
-docker image push <image name>:<image tag>
+docker image push <image repository>:<image tag>
 ```
 
 So in my case the command will be as follows:
