@@ -615,30 +615,33 @@ docker image ls
 # nginx              stable    b9e1dc12387a   11 days ago          133MB
 ```
 
-As you can see, the image size has gone from being 343MB to 81.6MB. The official image is 133MB. This is a pretty optimized build. But there is one thing that we can do better.
+As you can see, the image size has gone from being 343MB to 81.6MB. The official image is 133MB. This is a pretty optimized build but we can go a bit further in the next sub-section.
 
-As you can see in the `Dockerfile` code above, the source code archive is being downloaded using an `ADD` instruction and is being removed inside the `RUN` instruction. I've already told that if files are being added and removed in separate layers, their size is still added to the final image.
+## Embracing Alpine Linux
 
-So instead of using an `ADD` instruction, you can instead use [curl](https://curl.se/) to download the file inside a `RUN` instruction. Open up the `Dockerfile` and update its content as follows:
+If you've been fiddling around with containers for sometime now, you may have heard about something called [Alpine Linux](https://alpinelinux.org/) which is a full-featured Linux distribution like [Ubuntu](https://ubuntu.com/), [Debian](https://www.debian.org/) or [Fedora](https://getfedora.org/). But the good thing about Alpine is that it's built around musl libc and busybox and is extremely lightweight. Where the latest ubuntu image weighs at around 28MB, alpine is just 2.8MB. Apart from the lightweight nature, Alpine is also secure and is much better fit for creating containers than the other distributions.
+
+Although not as user friendly as the other commercial distributions, the transition is still very simple. In this sub-section you'll learn about recreating the custom-nginx image by using the alpine image as its base.
+
+Open up your `Dockerfile` and update its content as follows:
 
 ```text
-FROM ubuntu:latest
+FROM alpine:latest
 
 EXPOSE 80
 
 ARG FILENAME="nginx-1.19.2"
 ARG EXTENSION="tar.gz"
 
-RUN apt-get update && \
-    apt-get install build-essential \ 
-                    libpcre3 \
-                    libpcre3-dev \
-                    zlib1g \
-                    zlib1g-dev \
-                    libssl-dev \
-                    curl \
-                    -y && \
-    curl https://nginx.org/download/${FILENAME}.${EXTENSION} -o ${FILENAME}.${EXTENSION} && \
+ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+
+RUN apk add --no-cache pcre zlib && \
+    apk add --no-cache \
+            --virtual .build-deps \
+            build-base \ 
+            pcre-dev \
+            zlib-dev \
+            openssl-dev && \
     tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
     cd ${FILENAME} && \
     ./configure \
@@ -651,17 +654,16 @@ RUN apt-get update && \
         --with-http_ssl_module && \
     make && make install && \
     cd / && rm -rfv /${FILENAME} && \
-    apt-get remove build-essential \ 
-                    libpcre3-dev \
-                    zlib1g-dev \
-                    libssl-dev \
-                    curl \
-                    -y && \
-    apt-get autoremove -y && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apk del .build-deps
 
 CMD ["nginx", "-g", "daemon off;"]
 ```
+
+As you can see, the code is almost identical except a few changes. I'll be listing the changes and will be explaining them as I go:
+
+* Instead of using `apt-get install` for installing packages, we use `apk add` and the `--no-cache` option means that the downloaded package won't be cached. Likewise `apk del` is used instead of `apt-get remove` to uninstall packages.
+* The `--virtual` option for `apk add` command is used for bundling a bunch of packages into a single virtual package for easier management. Packages that are needed only for building the program is labeled as `.build-deps` which is then removed on line 29 by executing `apk del .build-deps` command. You can learn more about [virtuals](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html#_virtuals) in the official docs.
+* The packages names are a bit different here. Usually every Linux distribution has its package repository available to everyone where you can search for packages. If you know the packages required for a certain task then you can just head over to the designated repository for a distribution and search for it. You can look up Alpine Linux packages on [https://pkgs.alpinelinux.org/packages](https://pkgs.alpinelinux.org/packages) link.
 
 ## Creating Executable Images
 
