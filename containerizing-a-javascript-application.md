@@ -157,6 +157,8 @@ That's because although the usage of a volume solves the issue of hot reloads, i
 
 Now that you're mounting the project root on your local file system as a volume inside the container, the content inside the container gets replaced along with the `node_modules` directory containing all the dependencies.  Hence the `vite` package goes missing.
 
+## Working With Anonymous Volumes
+
 This problem here can be solved using an anonymous volume. An anonymous volume is identical to a bind mount except the fact that you don't need to specify the source directory here. The generic syntax for creating an anonymous volume is as follows:
 
 ```text
@@ -191,13 +193,9 @@ This approach is a completely valid approach but the problem is that the `node` 
 This way your image only contains the files that are needed and becomes really handy. This approach is a multi-staged build. To perform such a build, create a new `Dockerfile` inside your `hello-dock` project directory and put following content in there:
 
 ```text
-FROM node:lts as builder
+FROM node:lts-alpine as builder
 
-USER node
-
-RUN mkdir -p /home/node/app
-
-WORKDIR /home/node/app
+WORKDIR /app
 
 COPY ./package.json ./
 RUN npm install
@@ -205,11 +203,11 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM nginx:stable
+FROM nginx:stable-alpine
 
 EXPOSE 80
 
-COPY --from=builder /home/node/app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 ```
 
 As you can see the `Dockerfile` looks a lot like your previous ones with a few oddities. Explanation for this file is as follows:
