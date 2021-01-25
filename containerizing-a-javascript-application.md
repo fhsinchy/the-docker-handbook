@@ -212,20 +212,20 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 As you can see the `Dockerfile` looks a lot like your previous ones with a few oddities. Explanation for this file is as follows:
 
-* Line 1 starts the first stage of the build using `node:lts` as the base image. The `as builder` syntax assigns a name to this stage so that it can be referred to as later on.
+* Line 1 starts the first stage of the build using `node:lts-alpine` as the base image. The `as builder` syntax assigns a name to this stage so that it can be referred to as later on.
 * From line 3 to line 13, it's standard stuff that you've seen many times before. The `RUN npm run build` command actually compiles the entire application and tucks it inside `/home/node/app/dist` directory where `/home/node/app` is the working directory and `/dist` is the default output directory for `vite` applications.
-* Line 15 starts the second stage of the build using `nginx:stable` as the base image.
-* The nginx server runs on port 80 by default hence the line `EXPOSE 80` is added.
-* The last line is a `COPY` instruction. The `--from=builder` part indicates that you want to copy some files from the `builder` stage. After that it's a standard copy instruction where `/home/node/app/dist` is the source and `/usr/share/nginx/html` is the destination. The destination used here is the default site path for nginx so any static file you put inside there will be automatically served by nginx.
+* Line 15 starts the second stage of the build using `nginx:stable-alpine` as the base image.
+* The NGINX server runs on port 80 by default hence the line `EXPOSE 80` is added.
+* The last line is a `COPY` instruction. The `--from=builder` part indicates that you want to copy some files from the `builder` stage. After that it's a standard copy instruction where `/app/dist` is the source and `/usr/share/nginx/html` is the destination. The destination used here is the default site path for NGINX so any static file you put inside there will be automatically served.
 
 As you can see the resultant image is a `nginx` base image containing only the files necessary for running the application. To build this image execute following command:
 
 ```text
 docker image build --tag hello-dock:prod .
 
-# Step 1/9 : FROM node:lts as builder
+# Step 1/9 : FROM node:lts-alpine as builder
 #  ---> 72aaced1868f
-# Step 2/9 : WORKDIR /usr/app
+# Step 2/9 : WORKDIR /app
 #  ---> Running in e361c5c866dd
 # Removing intermediate container e361c5c866dd
 #  ---> 241b4b97b34c
@@ -235,7 +235,7 @@ docker image build --tag hello-dock:prod .
 #  ---> Running in 6dfabf0ee9f8
 # npm WARN deprecated fsevents@2.1.3: Please update to v 2.2.x
 
-# > esbuild@0.8.29 postinstall /usr/app/node_modules/esbuild
+# > esbuild@0.8.29 postinstall /app/node_modules/esbuild
 # > node install.js
 
 # npm notice created a lockfile as package-lock.json. You should commit this file.
@@ -259,7 +259,7 @@ docker image build --tag hello-dock:prod .
 # Step 6/9 : RUN npm run build
 #  ---> Running in 4d918cf18584
 
-# > hello-dock@0.0.0 build /usr/app
+# > hello-dock@0.0.0 build /app
 # > vite build
 
 # - Building production bundle...
@@ -278,7 +278,7 @@ docker image build --tag hello-dock:prod .
 #  ---> Running in b3aab5cf5975
 # Removing intermediate container b3aab5cf5975
 #  ---> d6fcc058cfda
-# Step 8/9 : FROM nginx:stable
+# Step 8/9 : FROM nginx:stable-alpine
 # stable: Pulling from library/nginx
 # 6ec7b7d162b2: Already exists 
 # 43876acb2da3: Pull complete 
@@ -288,13 +288,13 @@ docker image build --tag hello-dock:prod .
 # Digest: sha256:2eea9f5d6fff078ad6cc6c961ab11b8314efd91fb8480b5d054c7057a619e0c3
 # Status: Downloaded newer image for nginx:stable
 #  ---> 05f64a802c26
-# Step 9/9 : COPY --from=builder /usr/app/dist /usr/share/nginx/html
+# Step 9/9 : COPY --from=builder /app/dist /usr/share/nginx/html
 #  ---> 8c6dfc34a10d
 # Successfully built 8c6dfc34a10d
 # Successfully tagged hello-dock:prod
 ```
 
-As I've already said in a previous section, the `--file` option is redundant if there is a `Dockerfile` in the context, so I'm omitting that. Once the image has been built, you may run a new container by executing the following command:
+Once the image has been built, you may run a new container by executing the following command:
 
 ```text
 docker container run --rm --detach --name hello-dock-prod --publish 8080:80 hello-dock:prod
