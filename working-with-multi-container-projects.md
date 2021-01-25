@@ -50,7 +50,28 @@ You should see three networks in your system. Now look at the `DRIVER` column of
 * `overlay` - This is used for connecting multiple Docker daemons across computers and is out of the scope of this article.
 * `macvlan` - Allows assignment of MAC addresses to containers making them function like physical devices in a network.
 
-There are also third-party plugins taht allow you to integrate Docker with specialized network stacks. Out of the five mentioned above, you'll only work with `bridge` networking driver in this article.
+There are also third-party plugins that allow you to integrate Docker with specialized network stacks. Out of the five mentioned above, you'll only work with `bridge` networking driver in this article.
 
 ## Creating a User-Defined Bridge
+
+Before you start creating your own bridge, I would like to take some time to discuss the default bridge network that comes with Docker. Let's begin by listing all the networks on your system:
+
+```text
+docker network ls
+
+# NETWORK ID     NAME      DRIVER    SCOPE
+# c2e59f2b96bd   bridge    bridge    local
+# 124dccee067f   host      host      local
+# 506e3822bf1f   none      null      local
+```
+
+As you can see, Docker comes with a default bridge network named `bridge`. Any container you run will be automatically attached to this bridge network:
+
+```text
+docker container run --rm --detach --name hello-dock --publish 8080:80 fhsinchy/hello-dock
+# a37f723dad3ae793ce40f97eb6bb236761baa92d72a2c27c24fc7fda0756657d
+
+docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' bridge
+# hello-dock
+```
 
