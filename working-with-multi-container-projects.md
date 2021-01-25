@@ -31,9 +31,26 @@ Now that I've dismissed the possible wrong answers to the original question, the
 
 ## **Network Basics**
 
-Network in Docker is another logical object like container and image. To list out the networks in your system, execute the following command:
+Network in Docker is another logical object like container and image. Just like the other two, there is a plethora of commands under the `docker network` group for manipulating networks. To list out the networks in your system, execute the following command:
 
 ```text
+docker network ls
 
+# NETWORK ID     NAME      DRIVER    SCOPE
+# c2e59f2b96bd   bridge    bridge    local
+# 124dccee067f   host      host      local
+# 506e3822bf1f   none      null      local
 ```
+
+You should see three networks in your system. Now look at the `DRIVER` column of the table here. These drivers are can be treated as the type of network. By default Docker has five networking drivers. They are as follows:
+
+* `bridge` - The default networking driver in Docker. This can e used when multiple containers are running in standard mode and needs to communicate with each other.
+* `host` - Removes the network isolation completely. Any container running under a `host` network is basically attached to the network of the host system.
+* `none` - This driver disables networking for containers altogether. I haven't' found any use-case for this yet.
+* `overlay` - This is used for connecting multiple Docker daemons across computers and is out of the scope of this article.
+* `macvlan` - Allows assignment of MAC addresses to containers making them function like physical devices in a network.
+
+There are also third-party plugins taht allow you to integrate Docker with specialized network stacks. Out of the five mentioned above, you'll only work with `bridge` networking driver in this article.
+
+## Creating a User-Defined Bridge
 
