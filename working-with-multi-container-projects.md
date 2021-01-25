@@ -75,3 +75,59 @@ docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' bridge
 # hello-dock
 ```
 
+Containers attached to the default bridge network can communicate with each others using IP addresses which I have already discouraged on the previous sub-section.
+
+A user-defined bridge however has some extra feature over the default one. According to the official [docs](https://docs.docker.com/network/bridge/#differences-between-user-defined-bridges-and-the-default-bridge) on this topic, some of the notable extra features are as follows:
+
+* **User-defined bridges provide automatic DNS resolution between containers:** This means containers attached to the same network can communicate with each others using the container name. So if you have two containers named `notes-api` and `notes-db` the the API container will be able to connect to the database container using the `notes-db` name.
+* **User-defined bridges provide better isolation:** All containers are attached to the default bridge network by default which can cause conflicts among them. Attaching containers to a user-defined bridge can ensure better isolation.
+* **Containers can be attached and detached from user-defined networks on the fly:** During a container’s lifetime, you can connect or disconnect it from user-defined networks on the fly. To remove a container from the default bridge network, you need to stop the container and recreate it with different network options.
+
+Now that you've learned quite a lot about a user-defined network, it's time to create one for yourself. A network can be created using the `network create` command. The generic syntax for the command is as follows:
+
+```text
+docker network create <network name>
+```
+
+To create a network with the name `notes-api-network` execute following command:
+
+```text
+docker network create notes-api-network
+
+# 7bd5f351aa892ac6ec15fed8619fc3bbb95a7dcdd58980c28304627c8f7eb070
+
+docker network ls
+
+# NETWORK ID     NAME                DRIVER    SCOPE
+# be0cab667c4b   bridge              bridge    local
+# 124dccee067f   host                host      local
+# 506e3822bf1f   none                null      local
+# 7bd5f351aa89   notes-api-network   bridge    local
+```
+
+As you can see a new network has been created with the given name. No container is currently attached to this network. In the next sub-section, you'll learn about attaching containers to a network.
+
+## Attaching Containers to a Network
+
+There are mostly two ways of attaching a container to a network. You can use the `network connect` command to attach a container to a network. Generic syntax for the command is as follows:
+
+```text
+docker network connect <network name> <container name>
+```
+
+To connect the `hello-dock` container to the `notes-api-network` network, you can execute the following command:
+
+```text
+docker network connect notes-api-network hello-dock
+
+docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' notes-api-network
+
+# hello-dock
+
+docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' bridge
+
+# hello-dock
+```
+
+As you can see from the outputs of the two `network inspect` commands, the `hello-dock` container is now attached to both the `notes-api-network` as well as the default `bridge` network.
+
