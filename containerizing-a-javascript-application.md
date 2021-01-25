@@ -2,6 +2,8 @@
 
 Now that you've got some idea of creating images, it's time to work with something a bit more relevant. In this sub-section, you'll be working with the source code of the [fhsinchy/hello-dock](https://hub.docker.com/r/fhsinchy/hello-dock) image that you worked with on a previous section. In the process of containerizing this very simple application, you'll be introduced to volumes and multi-staged builds, two of the most important concepts in Docker.
 
+## Writing The Development Dockerfile
+
 To begin with, open up the directory where you've cloned the repository that came with this article. Code for the `hello-dock` application resides inside the sub-directory with the same name.
 
 ```text
@@ -34,11 +36,15 @@ Just like any other project you've done in the previous sub-section, you'll begi
 This plan should always come from the developer of the application that you're containerizing. If you're the developer yourself, then you should already have a proper understanding of how this application needs to be run. Now if you put the above mentioned plan inside `Dockerfile.dev`, the file should look like as follows:
 
 ```text
-FROM node:lts
+FROM node:lts-alpine
 
 EXPOSE 3000
 
-WORKDIR /app
+USER node
+
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
 
 COPY ./package.json .
 RUN npm install
@@ -50,12 +56,14 @@ CMD [ "npm", "run", "dev" ]
 
 Explanation for this code is as follows:
 
-* The `FROM` instruction here sets the official Node.js image as the base giving you all the goodness of Node.js necessary to run any JavaScript application. The `lts` tag indicates that you want to use the long term support version of the image. Available tags and necessary documentation for an image is usually found on [node](https://hub.docker.com/_/node) hub page.
-* Then the `WORKDIR` instruction sets the default working directory to `/app` directory. By default the working directory of any image is the root. You don't want any unnecessary files sprayed all over your root directory, do you? Hence you change the default working directory to something more sensible like `/app` or whatever you like. This working directory will be application to any consecutive `COPY`, `ADD`, `RUN` and `CMD` instructions.
+* The `FROM` instruction here sets the official Node.js image as the base giving you all the goodness of Node.js necessary to run any JavaScript application. The `lts-alpine` tag indicates that you want to use the Alpine variant, long term support version of the image. Available tags and necessary documentation for the image can be found on [node](https://hub.docker.com/_/node) hub page.
+* The `USER` instruction sets the default user for the image to `node`. By default Docker runs containers as the root user and according to [Docker and Node.js Best Practices](https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md) this can pose a security threat. So a better idea is to run as a non-root user whenever possible. The node image comes with a non-root user named `node` which you can set as the default user using the `USER` instruction.
+* The `RUN mkdir -p /home/node/app` instruction creates a directory called `app` inside the home directory of the `node` user. The home directory for any non-root user in Linux is usually  `/home/<user name>` by default.
+* Then the `WORKDIR` instruction sets the default working directory to the newly created `/home/node/app` directory. By default the working directory of any image is the root. You don't want any unnecessary files sprayed all over your root directory, do you? Hence you change the default working directory to something more sensible like `/home/node/app` or whatever you like. This working directory will be applicable to any consecutive `COPY`, `ADD`, `RUN` and `CMD` instructions.
 * The `COPY` instruction here copies the `package.json` file which contains information regarding all the necessary dependencies for this application. The `RUN` instruction executes `npm install` command which is the default command for installing dependencies using a `package.json` file in Node.js projects. The `.` at the end represents the working directory.
 * The second `COPY` instruction copies rest of the content from the current directory \(`.`\) of the host filesystem to the working directory \(`.`\) inside the image.
 * Finally, the `CMD` instruction here sets the default command for this image which is `npm run dev` written in `exec` form.
-* The vite development server by default runs on port `3000` hence adding an `EXPOSE` command seemed like a good idea, so there you go.
+* The `vite` development server by default runs on port `3000` hence adding an `EXPOSE` command seemed like a good idea, so there you go.
 
 Now, to build an image from this `Dockerfile.dev` you can execute the following command:
 
@@ -162,36 +170,6 @@ docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev --v
 ```
 
 Here, Docker will take the entire `node_modules` directory from inside the container and tuck it away in some other directory managed by the Docker daemon on your host file system and will mount that directory as `node_modules` inside the container.
-
-## Improving the Dockerfile.dev
-
-The `Dockerfile.dev` you wrote in the previous section is okay but there are some improvements that can be made. So open up the `Dockerfile.dev` file once again and update it's content to look like as follows:
-
-```text
-FROM node:lts
-
-EXPOSE 3000
-
-USER node
-
-RUN mkdir -p /home/node/app
-
-WORKDIR /home/node/app
-
-COPY ./package.json .
-RUN npm install
-
-CMD [ "npm", "run", "dev" ]
-```
-
-Let me explain the changes I've made one by one here:
-
-* On line 5, I've added a new instruction `USER node`. By default Docker runs containers as the root user and according to [Docker and Node.js Best Practices](https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md) this can pose a security threat. So a better idea is to run as a non-root user whenever possible. The node image comes with a non-root user named `node` which you can set as the default user using the `USER` instruction.
-* Given now you're using a non-root user, you do not have write access to the container root hence using `/app` is not possible. So instead of the root, you'll have to use a directory that is writable by the `node` user. On line 7, the `RUN mkdir -p /home/node/app` instruction creates a directory called `app` inside the home directory of the `node` user. The home directory for any non-root user in Linux is usually  `/home/<user name>` by default.
-* On line 9, the `WORKDIR /home/node/app` instruction sets the `/home/node/app` directory as the working directory instead of the `/app` directory.
-* Another change is the removal of the `COPY . .` instruction. This is done because mounting the project root as a volume inside the container working directory makes the `COPY` instruction redundant.
-
-Apart from these four changes, rest of the file remains same. Now rebuild the image and try running a new container with the resultant image.
 
 ## Performing Multi-Staged Builds
 
