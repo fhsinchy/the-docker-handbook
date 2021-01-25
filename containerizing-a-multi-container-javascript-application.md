@@ -158,7 +158,7 @@ As you've learned in the previous section, the containers have to be attached to
 docker network create notes-api-network
 ```
 
-Now attach the `notes-api-db` container to this network by excuting the following command:
+Now attach the `notes-api-db` container to this network by executing the following command:
 
 ```text
 docker network connect notes-ap-network notes-api-db
