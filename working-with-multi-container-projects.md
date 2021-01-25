@@ -112,7 +112,7 @@ As you can see a new network has been created with the given name. No container 
 There are mostly two ways of attaching a container to a network. You can use the `network connect` command to attach a container to a network. Generic syntax for the command is as follows:
 
 ```text
-docker network connect <network name> <container name>
+docker network connect <network identifier> <container identifier>
 ```
 
 To connect the `hello-dock` container to the `skynet` network, you can execute the following command:
@@ -134,28 +134,71 @@ As you can see from the outputs of the two `network inspect` commands, the `hell
 The second way of attaching container to a network is by using the `--network` option for `container run` or `container create` commands. The generic syntax for the option is as follows:
 
 ```text
-run --network <network name>
+run --network <network identifier>
 ```
 
 To run another `hello-dock` container to the attached to the same network, you can execute the following command:
 
 ```text
-docker container run --network skynet --rm --detach --name hello-dock-2 --publish 8080:80 fhsinchy/hello-dock
+docker container run --network skynet --rm --name alpine-box -it alpine sh
 
-# 15af6d7bd8b3026c4d8251d6f674aac8325d27b342c7121fd579a5087b4922fd
+# lands you into alpine linux shell
 
-docker network inspect --format='{{range .Containers}} {{.Name}} {{end}}' skynet
+/ # ping hello-dock
 
-#  hello-dock-2  hello-dock
+# PING hello-dock (172.18.0.2): 56 data bytes
+# 64 bytes from 172.18.0.2: seq=0 ttl=64 time=0.191 ms
+# 64 bytes from 172.18.0.2: seq=1 ttl=64 time=0.103 ms
+# 64 bytes from 172.18.0.2: seq=2 ttl=64 time=0.139 ms
+# 64 bytes from 172.18.0.2: seq=3 ttl=64 time=0.142 ms
+# 64 bytes from 172.18.0.2: seq=4 ttl=64 time=0.146 ms
+# 64 bytes from 172.18.0.2: seq=5 ttl=64 time=0.095 ms
+# 64 bytes from 172.18.0.2: seq=6 ttl=64 time=0.181 ms
+# 64 bytes from 172.18.0.2: seq=7 ttl=64 time=0.138 ms
+# 64 bytes from 172.18.0.2: seq=8 ttl=64 time=0.158 ms
+# 64 bytes from 172.18.0.2: seq=9 ttl=64 time=0.137 ms
+# 64 bytes from 172.18.0.2: seq=10 ttl=64 time=0.145 ms
+# 64 bytes from 172.18.0.2: seq=11 ttl=64 time=0.138 ms
+# 64 bytes from 172.18.0.2: seq=12 ttl=64 time=0.085 ms
+
+--- hello-dock ping statistics ---
+13 packets transmitted, 13 packets received, 0% packet loss
+round-trip min/avg/max = 0.085/0.138/0.191 ms
 ```
 
-Now the network container two containers in total. The usage of the `--network` option paired with the `container create` command should be pretty self explanatory at this point so I'm not going to demonstrate that here.
+As you can see, running `ping hello-dock` from inside the `alpine-box` container works because both of the containers are under the same user-defined bridge network and automatic DNS resolution is working.
+
+Keep in mind though, in order for the automatic DNS resolution to work you must assign custom names to the containers. Using the randomly generated name will not work.
 
 ## Detaching Containers from a Network
 
 In the previous sub-section you've learned about attaching containers to a network. In this sub-section, you'll learn about how to detach them. The `network disconnect` command can be used for this task. The generic syntax for the command is as follows:
 
 ```text
-docker network disconnect <network name> <container names>
+docker network disconnect <network identifier> <container identifier>
 ```
+
+To detach the `hello-dock` container from the `skynet` network, you can execute the following command:
+
+```text
+docker network disconnect skynet hello-dock
+```
+
+Just like the `network connect` command, the `network disconnect` command doesn't give any output either.
+
+## Getting Rid of Networks
+
+Just like the other logical objects in Docker, networks can be removed using the `network rm` command. The generic syntax for the command is as follows:
+
+```text
+docker network rm <network identifier>
+```
+
+To remove the `skynet` network from your system, you can execute the following command:
+
+```text
+docker network rm skynet
+```
+
+You can also use the `network prune` command to remove any unused networks from your system. The command also has the `-f` or `--force` and `-a` or `--all` options.
 
