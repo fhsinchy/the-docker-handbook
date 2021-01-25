@@ -18,9 +18,9 @@ The reason is that when you're saying `127.0.0.1` inside the `notes-api` contain
 The second solution you may think is finding the exact IP address of the `postgres` container using `container inspect` command and use that with the port. Assuming the name of the `postgres` container is `notes-api-db-server` you can easily get the IP address by executing the following command:
 
 ```text
-docker container inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' notes-api-db-server
+docker container inspect --format='{{range .NetworkSettings.Networks}} {{.IPAddress}} {{end}}' notes-api-db-server
 
-# 172.17.0.2
+#  172.17.0.2
 ```
 
 Now given the default port for `postgres` is `5432`, you can very easily access the database server by connecting to `172.17.0.2:5432` from the `notes-api` container.
@@ -89,20 +89,20 @@ Now that you've learned quite a lot about a user-defined network, it's time to c
 docker network create <network name>
 ```
 
-To create a network with the name `notes-api-network` execute following command:
+To create a network with the name `skynet` execute following command:
 
 ```text
-docker network create notes-api-network
+docker network create skynet
 
 # 7bd5f351aa892ac6ec15fed8619fc3bbb95a7dcdd58980c28304627c8f7eb070
 
 docker network ls
 
-# NETWORK ID     NAME                DRIVER    SCOPE
-# be0cab667c4b   bridge              bridge    local
-# 124dccee067f   host                host      local
-# 506e3822bf1f   none                null      local
-# 7bd5f351aa89   notes-api-network   bridge    local
+# NETWORK ID     NAME     DRIVER    SCOPE
+# be0cab667c4b   bridge   bridge    local
+# 124dccee067f   host     host      local
+# 506e3822bf1f   none     null      local
+# 7bd5f351aa89   skynet   bridge    local
 ```
 
 As you can see a new network has been created with the given name. No container is currently attached to this network. In the next sub-section, you'll learn about attaching containers to a network.
@@ -115,19 +115,47 @@ There are mostly two ways of attaching a container to a network. You can use the
 docker network connect <network name> <container name>
 ```
 
-To connect the `hello-dock` container to the `notes-api-network` network, you can execute the following command:
+To connect the `hello-dock` container to the `skynet` network, you can execute the following command:
 
 ```text
-docker network connect notes-api-network hello-dock
+docker network connect skynet hello-dock
 
-docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' notes-api-network
+docker network inspect --format='{{range .Containers}} {{.Name}} {{end}}' skynet
 
-# hello-dock
+#  hello-dock
 
-docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' bridge
+docker network inspect --format='{{range .Containers}} {{.Name}} {{end}}' bridge
 
-# hello-dock
+#  hello-dock
 ```
 
-As you can see from the outputs of the two `network inspect` commands, the `hello-dock` container is now attached to both the `notes-api-network` as well as the default `bridge` network.
+As you can see from the outputs of the two `network inspect` commands, the `hello-dock` container is now attached to both the `skynet` as well as the default `bridge` network.
+
+The second way of attaching container to a network is by using the `--network` option for `container run` or `container create` commands. The generic syntax for the option is as follows:
+
+```text
+run --network <network name>
+```
+
+To run another `hello-dock` container to the attached to the same network, you can execute the following command:
+
+```text
+docker container run --network skynet --rm --detach --name hello-dock-2 --publish 8080:80 fhsinchy/hello-dock
+
+# 15af6d7bd8b3026c4d8251d6f674aac8325d27b342c7121fd579a5087b4922fd
+
+docker network inspect --format='{{range .Containers}} {{.Name}} {{end}}' skynet
+
+#  hello-dock-2  hello-dock
+```
+
+Now the network container two containers in total. The usage of the `--network` option paired with the `container create` command should be pretty self explanatory at this point so I'm not going to demonstrate that here.
+
+## Detaching Containers from a Network
+
+In the previous sub-section you've learned about attaching containers to a network. In this sub-section, you'll learn about how to detach them. The `network disconnect` command can be used for this task. The generic syntax for the command is as follows:
+
+```text
+docker network disconnect <network name> <container names>
+```
 
