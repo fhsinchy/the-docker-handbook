@@ -10,6 +10,6 @@
 * [Containerizing a JavaScript Application](containerizing-a-javascript-application.md)
 * [Network Manipulation Basics](working-with-multi-container-projects.md)
 * [Containerizing a Multi-container JavaScript Application](containerizing-a-multi-container-javascript-application.md)
-* [Managing Multi-Container Projects using Docker-Compose](working-with-multi-container-applications-using-docker-compose.md)
+* [Composing Projects using Docker-Compose](working-with-multi-container-applications-using-docker-compose.md)
 * [Conclusion](conclusion.md)
 

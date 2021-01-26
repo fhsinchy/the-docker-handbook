@@ -6,7 +6,7 @@ In this project there are two containers in total that you'll have to connect us
 
 ## Running the Database Server
 
-The database server in this project is a simple PostgreSQL server and uses the official [postgres](https://hub.docker.com/_/postgres) image. According to the official docs, in order to run a container with this image, you must provide the `POSTGRES_PASSWORD` environment variable. Apart from this one, I'll also provide a name for the default database using the `POSTGRES_DB` environment variable. PostgreSQL by default listens on `5432` port, so you need to publish that as well.
+The database server in this project is a simple PostgreSQL server and uses the official [postgres](https://hub.docker.com/_/postgres) image. According to the official docs, in order to run a container with this image, you must provide the `POSTGRES_PASSWORD` environment variable. Apart from this one, I'll also provide a name for the default database using the `POSTGRES_DB` environment variable. PostgreSQL by default listens on `5432` port so you need to publish that as well.
 
 To run the database server you can execute the following command:
 
@@ -35,7 +35,7 @@ Although the container is running, there is a small problem. Databases like Post
 
 Previously you've worked with bind mounts and anonymous volumes. A named volume is very similar to an anonymous volume except the fact that you can refer to a named volume using its name. Volumes are also logical objects in Docker and can be manipulated using the CLI. The `volume create` command can be used for creating a named volume.
 
-The generic syntax for the command is as follows:
+Generic syntax for the command is as follows:
 
 ```text
 docker volume create <volume name>
@@ -54,7 +54,7 @@ docker volume ls
 # local     notes-db-data
 ```
 
-This volume can now be mounted to `/var/lib/postgresql/data` inside the `notes-db` container. To do so, stop and remove the `notes-db` container:
+This volume can now be mounted as `/var/lib/postgresql/data` directory inside the `notes-db` container. To do so, stop and remove the `notes-db` container:
 
 ```text
 docker container stop notes-db
@@ -81,7 +81,7 @@ docker container run \
 # 37755e86d62794ed3e67c19d0cd1eba431e26ab56099b92a3456908c1d346791
 ```
 
-Now inspect the `notes-db` container to make sure that the mounting was successful:
+Now inspect the `notes-db` container to make sure that the mounting was succesful:
 
 ```text
 docker container inspect --format='{{range .Mounts}} {{ .Name }} {{end}}' notes-db
@@ -89,11 +89,11 @@ docker container inspect --format='{{range .Mounts}} {{ .Name }} {{end}}' notes-
 #  notes-db-data
 ```
 
-Now the data will safely stored inside the `notes-db-data` volume and can be reused in the future. A bind mount can also be used instead of a named volume here, but I prefer a named volume in such scenarios.
+Now the data will safely stored inside the `notes-db-data` volume and can be reused in the future. A bind mount can also be used instead of a named volume here but I prefer a named volume in such scenarios.
 
 ## Accessing Logs From a Container
 
-In order to see the logs from a container, you can use the `container logs` command. The generic syntax for the command is as follows:
+In order to see the logs from a container, you can use the `container logs` command. Generic syntax for the command is as follows:
 
 ```text
 docker container logs <container identifier>
@@ -181,7 +181,7 @@ Now the database server is complete ready to be bugged by the API.
 
 ## Writing The Dockerfile
 
-Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory, and you'll find a `Dockerfile` in there.
+Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory and you'll find a `Dockerfile` in there.
 
 ```text
 # stage one
@@ -213,9 +213,9 @@ CMD [ "node", "bin/www" ]
 
 This is a multi-staged build. The first stage is used for building and installing the dependencies using `node-gyp` and the second stage is for running the application. I'll go through the steps briefly:
 
-* Stage 1 uses `node:lts-alpine` as its base and uses `builder` as the stage name.
+* Stage 1 uses `node:lts-alpine` as it's base and uses `builder` as the stage name.
 * On line 5, we install `python`, `make` and `g++`. The `node-gyp` tool requires these three packages to run.
-* On line 7, we set `/app` directory as the `WORKDIR` .
+* On line 7, we set the `WORKDIR` to `/app` directory.
 * On line 9 and 10, we copy the `package.json` file to the `WORKDIR` and installs all the dependencies.
 * Stage 2 also uses `node-lts:alpine` as the base.
 * On line 16, we set the `NODE_ENV` environment variable to `production`. This is important for the API to run properly.
@@ -408,7 +408,7 @@ docker container run \
 
 You should be able to understand this long command by yourself, I'll go through the environment variables briefly. The `notes-api` application requires three environment variables to be set. They are as follows:
 
-* `DB_HOST` - This is the host of the database server. Given both the database server and the API is attached to the same user-defined bridge network, the database server can be refereed to using its container name which is `notes-db` in this case.
+* `DB_HOST` - This is the host of the database server. Given both the database server and the api is attached to the same user-defined bridge network, the database server can be refereed to using its container name which is `notes-db` in this case.
 * `DB_DATABASE` - The database that this API will use. On [Running the Database Server](containerizing-a-multi-container-javascript-application.md#running-the-database-server) we set the default database name to `notesdb` using the `POSTGRES_DB` environment variable. We'll use that here.
 * `DB_PASSWORD` - Password for connecting to the database. This was also set on [Running the Database Server](containerizing-a-multi-container-javascript-application.md#running-the-database-server) sub-section using the `POSTGRES_PASSWORD` environment variable.
 
@@ -422,7 +422,7 @@ docker container ls
 # 37755e86d627   postgres:12   "docker-entrypoint.s…"   17 hours ago     Up 14 minutes   5432/tcp                 notes-db
 ```
 
-The container is running now. There is one last thing that you'll have to do. You'll have to run the database migration necessary for setting up the database tables, and you can do that by executing `npm run db:migrate` command inside the container.
+The container is running now. There is one last thing that you'll have to do. You'll have to run the database migration necessary for setting up the database tables and you can do that by executing `npm run db:migrate` command inside the container.
 
 You've already learned how to execute commands inside a running container using the `container exec` command. To refresh your memory, the generic syntax for the `exec` command is as follows:
 
@@ -505,5 +505,5 @@ If you're getting permission denied error than execute `chmod +x` on the scripts
 chmod +x boot.sh build.sh destroy.sh shutdown.sh
 ```
 
-I'm not going to explain these scripts because they're simple `if-else` statement along with some Docker commands that you've already seen many times. If you have some understanding of the Linux shell, you should be able to understand the scripts as well.
+I'm not going to explain these scripts because they're simple `if-else` statement along with some Docker commands that you've already seen many times. If you have some understanding of Linux shell, you should be able to understand the scripts as well.
 

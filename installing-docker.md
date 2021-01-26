@@ -8,7 +8,7 @@ On a mac, all you have to do is navigate to the official [download page](https:/
 
 ![](.gitbook/assets/drag-docker-in-applications-directory.png)
 
-You can start Docker by simply double-clicking the application icon. Once the application start, you'll see the Docker icon appear on your menu-bar.
+You can start Docker by simply double clicking the application icon. Once the application start, you'll see the Docker icon appear on your menu-bar.
 
 ![](.gitbook/assets/docker-icon-in-menubar.png)
 
@@ -20,7 +20,7 @@ On Windows, the procedure is almost the same, except there are a few extra steps
 
 1. Navigate to [this site](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and follow the instructions for installing WSL2 on Windows 10.
 2. Then navigate to the official [download page](https://www.docker.com/products/docker-desktop) and click the _Download for Windows \(stable\)_ button.
-3. Double-click the downloaded installer and go through the installation with the defaults.
+3. Double click the downloaded installer and go through the installation with the defaults.
 
 Once the installation is done, start _Docker Desktop_ either from the start menu or your desktop. The docker icon should show up on your taskbar.
 
