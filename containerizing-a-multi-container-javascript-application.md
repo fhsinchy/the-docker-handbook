@@ -71,7 +71,7 @@ Now run a new container and assign the volume using the `--volume` or `-v` optio
 ```text
 docker container run \
     --detach \
-    --volume notes-api-db-data:/var/lib/postgresql/data
+    --volume notes-api-db-data:/var/lib/postgresql/data \
     --name=notes-db \
     --env POSTGRES_DB=notesdb \
     --env POSTGRES_PASSWORD=secret \
@@ -508,5 +508,11 @@ make destroy
 # all data have been destroyed
 ```
 
+If you're getting permission denied error than execute `chmod +x` on the scripts:
 
+```text
+chmod +x boot.sh build.sh destroy.sh shutdown.sh
+```
+
+I'm not going to explain these scripts because they're simple `if-else` statement along with some Docker commands that you've already seen many times. If you have some understanding of Linux shell, you should be able to understand the scripts as well.
 
