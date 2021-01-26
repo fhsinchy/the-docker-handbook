@@ -1,4 +1,4 @@
-# Composing Projects using Docker-Compose
+# Composing Projects Using Docker-Compose
 
 In the previous section, you've learned about managing a multi-container project and the difficulties of it. Instead of writing so many commands, there is an easier to manage multi-container projects, a tool called [Docker Compose](https://docs.docker.com/compose/).
 
@@ -170,9 +170,9 @@ volumes:
 
 Any named volume used in any of the services has to be defined here. If you don't define a name, the volume will be named following the `<project directory name>_<volume key>` and the key here is `db-data`. You can learn about the different options for volume configuration in the official [docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes).
 
-## Upping and Downing Composed a Application
+## Starting Services
 
-Once the YAML file has been written, you can use the `up` command to build necessary images, and starting the containers in one go.
+There are a few ways of starting services defined in a YAML file. The first command that you'll learn about is the `up` command. The `up` command builds any missing images, creates containers and starts them in one go:
 
 ```text
 docker-compose --file docker-compose.yaml up --detach
@@ -234,21 +234,26 @@ Step 5/13 : RUN npm install
 
 The `--detach` or `-d` option here functions same as the one you've seen before. The `--file` or `-f` option is only needed if the YAML file is note named `docker-compose.yaml` but I've used here for demonstration purpose.
 
-## Running Services in Detached Mode
+Apart from the the `up` command there is the `start` command. The main difference between these two is the `start` command doesn't create missing containers, only starts existing containers. It's basically same as the `container start` command.
 
-As I've already mentioned, services are containers and like any other container, services can be run in the background. To run services in detached mode you can use the the `-d` or `--detach` option with the `up` command.
+The `--build` option for the `up` command forces a rebuild of the images. There are some other options for the `up` command that you can see on official [docs](https://docs.docker.com/compose/reference/up/).
 
-To start the current application in detached mode, execute the following command:
+## Stopping Services
+
+For stopping services, there are two approaches that you can take. The first one is the `down` command. The `down` command stops all running containers and removes them from the system. It also removes any networks:
 
 ```text
-docker-compose up -d
+docker-compose down --volumes
+
+# Stopping notes-api-dev ... done
+# Stopping notes-db-dev  ... done
+# Removing notes-api-dev ... done
+# Removing notes-db-dev  ... done
+# Removing network notes-api_default
+# Removing volume notes-db-dev-data
 ```
 
-This time you shouldn't see the long wall of text that you saw in the previous sub-section.
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-4.40.37-PM.png)
-
-You should still be able to access the API at the `http://127.0.0.1:3000` address.
+The `--volumes` option indicates that you want to remove any named volume defined in the `volumes` block.
 
 ## Listing Services
 
