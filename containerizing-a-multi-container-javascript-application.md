@@ -13,7 +13,7 @@ To run the database server you can execute the following command:
 ```text
 docker container run \
     --detach \
-    --name=notes-api-db \
+    --name=notes-db \
     --env POSTGRES_DB=notesdb \
     --env POSTGRES_PASSWORD=secret \
     --network=notes-api-network \
@@ -24,7 +24,7 @@ docker container run \
 docker container ls
 
 # CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS              PORTS      NAMES
-# a7b287d34d96   postgres:12   "docker-entrypoint.s…"   About a minute ago   Up About a minute   5432/tcp   notes-api-db
+# a7b287d34d96   postgres:12   "docker-entrypoint.s…"   About a minute ago   Up About a minute   5432/tcp   notes-db
 ```
 
 The `--env` option for the `container run` and `container create` commands can be used for providing environment variables to a container. As you can see, the database container has been created successfully and is running now.
@@ -44,45 +44,52 @@ docker volume create <volume name>
 To create a volume named `notes-api-db-data` you can execute the following command:
 
 ```text
-docker volume create notes-api-db-data
+docker volume create notes-db-data
 
-# notes-api-db-data
+# notes-db-data
 
 docker volume ls
 
 # DRIVER    VOLUME NAME
-# local     notes-api-db-data
+# local     notes-db-data
 ```
 
 This volume can now be mounted as `/var/lib/postgresql/data` directory inside the `notes-api-db` container. To do so, stop and remove the `notes-api-db` container:
 
 ```text
-docker container stop notes-api-db
+docker container stop notes-db
 
-# notes-api-db
+# notes-db
 
-docker container rm notes-api-db
+docker container rm notes-db
 
-# notes-api-db
+# notes-db
 ```
 
 Now run a new container and assign the volume using the `--volume` or `-v` option.
 
 ```text
-docker container run --detach --volume notes-api-db-data:/var/lib/postgresql/data --name=notes-api-db --env POSTGRES_DB=notesdb --env POSTGRES_PASSWORD=secret postgres:12
+docker container run \
+    --detach \
+    --volume notes-api-db-data:/var/lib/postgresql/data
+    --name=notes-db \
+    --env POSTGRES_DB=notesdb \
+    --env POSTGRES_PASSWORD=secret \
+    --network=notes-api-network \
+    postgres:12
 
 # 37755e86d62794ed3e67c19d0cd1eba431e26ab56099b92a3456908c1d346791
 ```
 
-Now inspect the `notes-api-db` container to make sure that the mounting was succesful:
+Now inspect the `notes-db` container to make sure that the mounting was succesful:
 
 ```text
-docker container inspect --format='{{range .Mounts}} {{ .Name }} {{end}}' notes-api-db
+docker container inspect --format='{{range .Mounts}} {{ .Name }} {{end}}' notes-db
 
-#  notes-api-db-data
+#  notes-db-data
 ```
 
-Now the data will safely stored inside the `notes-api-db-data` volume and can be reused in the future. A bind mount can also be used instead of a named volume here but I prefer a named volume in such scenarios.
+Now the data will safely stored inside the `notes-db-data` volume and can be reused in the future. A bind mount can also be used instead of a named volume here but I prefer a named volume in such scenarios.
 
 ## Accessing Logs From a Container
 
@@ -92,10 +99,10 @@ In order to see the logs from a container, you can use the `container logs` comm
 docker container logs <container identifier>
 ```
 
-To access the logs from the `notes-api-db` container, you can execute the following commnad:
+To access the logs from the `notes-db` container, you can execute the following command:
 
 ```text
-docker container logs notes-api-db
+docker container logs notes-db
 
 # The files belonging to this database system will be owned by user "postgres".
 # This user must also own the server process.
@@ -167,7 +174,7 @@ docker network create notes-api-network
 Now attach the `notes-api-db` container to this network by executing the following command:
 
 ```text
-docker network connect notes-ap-network notes-api-db
+docker network connect notes-ap-network notes-db
 ```
 
 Now the database server is complete ready to be bugged by the API.
@@ -307,7 +314,7 @@ docker image build --tag notes-api .
 Before you run a container using this image, make sure the database container is running, and is attached to the `notes-api-network`. 
 
 ```text
-docker container inspect notes-api-db
+docker container inspect notes-db
 
 # [
 #     {
@@ -329,8 +336,8 @@ docker container inspect notes-api-db
 #         "Mounts": [
 #             {
 #                 "Type": "volume",
-#                 "Name": "notes-api-db-data",
-#                 "Source": "/var/lib/docker/volumes/notes-api-db-data/_data",
+#                 "Name": "notes-db-data",
+#                 "Source": "/var/lib/docker/volumes/notes-db-data/_data",
 #                 "Destination": "/var/lib/postgresql/data",
 #                 "Driver": "local",
 #                 "Mode": "z",
@@ -381,7 +388,7 @@ docker container inspect notes-api-db
 
 ```
 
-I've shortened the output for easy viewing here. On my system, the `notes-api-db` container is running, uses the `notes-api-db-data` volume and is attached to the `notes-api-network` bridge.
+I've shortened the output for easy viewing here. On my system, the `notes-db` container is running, uses the `notes-db-data` volume and is attached to the `notes-api-network` bridge.
 
 Once you're assured that everything is in place, you can run a new container by executing the following command:
 
@@ -389,7 +396,7 @@ Once you're assured that everything is in place, you can run a new container by 
 docker container run \
     --detach \
     --name=notes-api \
-    --env DB_HOST=notes-api-db \
+    --env DB_HOST=notes-db \
     --env DB_DATABASE=notesdb \
     --env DB_PASSWORD=secret \
     --publish=3000:3000 \
@@ -402,7 +409,7 @@ docker container run \
 
 You should be able to understand this long command by yourself, I'll go through the environment variables briefly. The `notes-api` application requires three environment variables to be set. They are as follows:
 
-* `DB_HOST` - This is the host of the database server. Given both the database server and the api is attached to the same user-defined bridge network, the database server can be refereed to using its container name which is `notes-api-db` in this case.
+* `DB_HOST` - This is the host of the database server. Given both the database server and the api is attached to the same user-defined bridge network, the database server can be refereed to using its container name which is `notes-db` in this case.
 * `DB_DATABASE` - The database that this API will use. On [Running the Database Server](containerizing-a-multi-container-javascript-application.md#running-the-database-server) we set the default database name to `notesdb` using the `POSTGRES_DB` environment variable. We'll use that here.
 * `DB_PASSWORD` - Password for connecting to the database. This was also set on [Running the Database Server](containerizing-a-multi-container-javascript-application.md#running-the-database-server) sub-section using the `POSTGRES_PASSWORD` environment variable.
 
@@ -413,7 +420,7 @@ docker container ls
 
 # CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                    NAMES
 # f9ece420872d   notes-api     "docker-entrypoint.s…"   12 minutes ago   Up 12 minutes   0.0.0.0:3000->3000/tcp   notes-api
-# 37755e86d627   postgres:12   "docker-entrypoint.s…"   17 hours ago     Up 14 minutes   5432/tcp                 notes-api-db
+# 37755e86d627   postgres:12   "docker-entrypoint.s…"   17 hours ago     Up 14 minutes   5432/tcp                 notes-db
 ```
 
 The container is running now. There is one last thing that you'll have to do. You'll have to run the database migration necessary for setting up the database tables and you can do that by executing `npm run db:migrate` command inside the container.
@@ -446,7 +453,22 @@ The API has five routes in total that you can see inside the `/notes/api/api/api
 
 The project also contains a `Dockerfile.dev` file that allows hot reload functionality like the one you worked with in [Containerizing a JavaScript Application](containerizing-a-javascript-application.md) section. I'll leave the `Dockerfile.dev` for you to understand by yourself.
 
-## Destroying The Application
+## Writing Management Scripts
+
+Managing a multi-container project along with the network and volumes and stuff means writing a lot of commands. To simplify the process, I usually take help of simple [shell scripts](https://opensource.com/article/17/1/getting-started-shell-scripting) and a [Makefile](https://opensource.com/article/18/8/what-how-makefile). You'll fine three shell scripts in the `notes-api` directory. They are as follows:
+
+* `boot.sh` - Used for starting the containers if they already exist.
+* `build.sh` - Creates and runs the containers. It also creates the images, volumes and networks if necessary.
+* `destroy.sh` - Removes all images, containers, volumes and networks associated with this project.
+* `stop.sh` - Stops all running containers.
+
+There is also a `Makefile` that contains four targets named `start`, `stop`, `build` and `destroy` each invoking the previously mentioned shell scripts.
+
+If the container is in running state in your system, executing `make stop` should stop all the containers. executing `make destroy` should stop the containers and remove everything:
+
+```text
+make destroy
+```
 
 
 
