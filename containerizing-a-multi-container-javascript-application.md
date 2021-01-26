@@ -41,7 +41,7 @@ Generic syntax for the command is as follows:
 docker volume create <volume name>
 ```
 
-To create a volume named `notes-api-db-data` you can execute the following command:
+To create a volume named `notes-db-data` you can execute the following command:
 
 ```text
 docker volume create notes-db-data
@@ -54,7 +54,7 @@ docker volume ls
 # local     notes-db-data
 ```
 
-This volume can now be mounted as `/var/lib/postgresql/data` directory inside the `notes-api-db` container. To do so, stop and remove the `notes-api-db` container:
+This volume can now be mounted as `/var/lib/postgresql/data` directory inside the `notes-db` container. To do so, stop and remove the `notes-db` container:
 
 ```text
 docker container stop notes-db
@@ -71,7 +71,7 @@ Now run a new container and assign the volume using the `--volume` or `-v` optio
 ```text
 docker container run \
     --detach \
-    --volume notes-api-db-data:/var/lib/postgresql/data \
+    --volume notes-db-data:/var/lib/postgresql/data \
     --name=notes-db \
     --env POSTGRES_DB=notesdb \
     --env POSTGRES_PASSWORD=secret \
@@ -171,10 +171,10 @@ As you've learned in the previous section, the containers have to be attached to
 docker network create notes-api-network
 ```
 
-Now attach the `notes-api-db` container to this network by executing the following command:
+Now attach the `notes-db` container to this network by executing the following command:
 
 ```text
-docker network connect notes-ap-network notes-db
+docker network connect notes-api-network notes-db
 ```
 
 Now the database server is complete ready to be bugged by the API.
@@ -458,7 +458,7 @@ Managing a multi-container project along with the network and volumes and stuff 
 
 * `boot.sh` - Used for starting the containers if they already exist.
 * `build.sh` - Creates and runs the containers. It also creates the images, volumes and networks if necessary.
-* `destroy.sh` - Removes all images, containers, volumes and networks associated with this project.
+* `destroy.sh` - Removes all containers, volumes and networks associated with this project.
 * `stop.sh` - Stops all running containers.
 
 There is also a `Makefile` that contains four targets named `start`, `stop`, `build` and `destroy` each invoking the previously mentioned shell scripts.
@@ -476,7 +476,10 @@ make destroy
 # stopping db container --->
 # notes-db
 # db container stopped --->
-# all containers have been stopped./destroy.sh
+
+# shutdown script finished
+
+# ./destroy.sh
 # removing api container --->
 # notes-api
 # api container removed --->
@@ -484,27 +487,16 @@ make destroy
 # removing db container --->
 # notes-db
 # db container removed --->
+
 # removing db data volume --->
 # notes-db-data
 # db data volume removed --->
+
 # removing network --->
 # notes-api-network
 # network removed --->
-# removing api image --->
-# Untagged: notes-api:latest
-# Deleted: sha256:4b1d0671f5c326f47a63e58391d337123c446da5efd0a6cfd3f582b770813064
-# Deleted: sha256:85997f864620c8d22d3afe63ce4c616c0429c2908c220d1fdc722bf9d5f21a94
-# Deleted: sha256:c6f02cac01245a464427af949dd74e846231a02dd4bf27cc0cb1b500602c3ab5
-# Deleted: sha256:7cc2acb57d8515060e5d418211a55943f62ddab52bf155723b9bccaebf305d7c
-# Deleted: sha256:4a49a0137e986e5e67c182949786f3d37154db9fbb6fdd147936cd0d3027777f
-# Deleted: sha256:2883cdb7c77ac7dba75f2b052fedcd5ac95020817b4643fe0a569d7a3595cfc5
-# Deleted: sha256:5908373dfc751d9ccc602c7a181e19054b0543bdddf6a4d139e67c4261afba08
-# Deleted: sha256:d09680fde41011658c5ec266624fe96b0cf39bced4236e90f715e72ce6c94280
-# Deleted: sha256:0f4045152b1c683efb09aecae584d930af4812846be952341954032275884edd
-# Deleted: sha256:31f62da179293291edc97aeeafd3ead9b1c0033a884d3dee1f5578028b87317c
-# Deleted: sha256:1f0206f2f050ab383e20aa611eebe1da9f4dd08d50bc65ef29a9ce8bdb5b1afe
-# api image removed --->
-# all data have been destroyed
+
+# destroy script finished
 ```
 
 If you're getting permission denied error than execute `chmod +x` on the scripts:
