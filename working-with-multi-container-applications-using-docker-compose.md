@@ -54,24 +54,7 @@ In the world of compose, each container that makes up the application is known a
 
 Just like the Docker daemon uses a `Dockerfile` for building images, Docker Compose uses `docker-compose.yaml` file to read service definitions from.
 
-Head over to the `notes-api` directory, create a new file called `docker-compose.yaml` and put following code in there:
-
-```text
-
-```
-
-Using Compose is basically a three-step process:
-
-1. Define your app’s environment with a `Dockerfile` so it can be reproduced anywhere.
-2. Define the services that make up your application in a YAML file so they can be run together in an isolated environment.
-3. Run `docker-compose up` and Compose starts and runs your entire app.
-
-Services are basically containers with some additional stuff. Before we start writing your first YML file together, let's list out the services needed to run this application. There are only two:
-
-1. `api` - an Express application container run using the `Dockerfile.dev` file in the project root.
-2. `db` - a PostgreSQL instance, run using the official [postgres](https://hub.docker.com/_/postgres) image.
-
-Create a new `docker-compose.yml` file in the project root and let's define your first service together. You can use `.yml` or `.yaml` extension. Both work just fine. We'll write the code first and then I'll break down the code line-by-line. Code for the `db` service is as follows:
+Head to the `notes-api` directory and create a new `docker-compose.yaml` file. Put following code into the newly created file:
 
 ```text
 version: "3.8"
@@ -157,6 +140,7 @@ api:
 
 * The `api` service doesn't come with a pre-built image instead what it has is a build configuration. Under the `build` block we define the context and the name of the Dockerfile for building an image. You should have a understanding of context and Dockerfile by now so I won't spend time explaining those.
 * The `image` key holds the name of the image to be built. If not assigned the image will be named following the `<project directory name>_<service name>` syntax.
+* Inside the `environment` map, the `DB_HOST` variable demonstrates a feature of Compose. That is, you can refer to another service in the same application by using its name. So the `db` here, will be replaced by the IP address of the `api` service container. The `DB_DATABASE` and `DB_PASSWORD` variables have to match up with `POSTGRES_DB` and `POSTGRES_PASSWORD` respectively from the `db` service definition.
 * In the `volumes` map, you can see an anonymous volume and a bind mount described. The syntax is identical to what you've seen in previous sections.
 * The `ports` map defines any port mapping. The syntax, `<host port>:<container port>` is identical to the `--publish` option you used before.
 
@@ -169,6 +153,8 @@ volumes:
 ```
 
 Any named volume used in any of the services has to be defined here. If you don't define a name, the volume will be named following the `<project directory name>_<volume key>` and the key here is `db-data`. You can learn about the different options for volume configuration in the official [docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes).
+
+> One thing that you should be careful about is, every `docker-compose` command should be run within the directory where the YAML file exists.
 
 ## Starting Services
 
@@ -187,17 +173,17 @@ docker-compose --file docker-compose.yaml up --detach
 # Step 2/13 : RUN apk add --no-cache python make g++
 #  ---> Running in 197056ec1964
 ### LONG INSTALLATION STUFF GOES HERE ###
-Removing intermediate container 197056ec1964
- ---> 6609935fe50b
-Step 3/13 : WORKDIR /app
- ---> Running in 17010f65c5e7
-Removing intermediate container 17010f65c5e7
- ---> b10d12e676ad
-Step 4/13 : COPY ./package.json .
- ---> 600d31d9362e
-Step 5/13 : RUN npm install
- ---> Running in a14afc8c0743
- ### LONG INSTALLATION STUFF GOES HERE ###
+# Removing intermediate container 197056ec1964
+#  ---> 6609935fe50b
+# Step 3/13 : WORKDIR /app
+#  ---> Running in 17010f65c5e7
+# Removing intermediate container 17010f65c5e7
+#  ---> b10d12e676ad
+# Step 4/13 : COPY ./package.json .
+#  ---> 600d31d9362e
+# Step 5/13 : RUN npm install
+#  ---> Running in a14afc8c0743
+### LONG INSTALLATION STUFF GOES HERE ###
 #  Removing intermediate container a14afc8c0743
 #  ---> 952d5d86e361
 # Step 6/13 : FROM node:lts-alpine
@@ -238,6 +224,73 @@ Apart from the the `up` command there is the `start` command. The main differenc
 
 The `--build` option for the `up` command forces a rebuild of the images. There are some other options for the `up` command that you can see on official [docs](https://docs.docker.com/compose/reference/up/).
 
+## Listing Services
+
+Although service containers started by Compose can be listed using the `container ls` command, there is the `ps` command for listing containers defined in the YAML only. 
+
+```text
+docker-compose ps
+
+#     Name                   Command               State           Ports         
+# -------------------------------------------------------------------------------
+# notes-api-dev   docker-entrypoint.sh ./nod ...   Up      0.0.0.0:3000->3000/tcp
+# notes-db-dev    docker-entrypoint.sh postgres    Up      5432/tcp
+```
+
+It's not as informative as the `container ls` output, but useful when you have tons of containers running simultaneously.
+
+## Executing Commands Inside a Running Service
+
+I hope you remember from the previous section that you have to run some migration scripts to create the database tables for this API. Just like the `container exec` command, there is an `exec` command for Compose. Generic syntax for the command is as follows:
+
+```text
+docker-compose exec <service name> <command>
+```
+
+To execute the `npm run db:migrate` command inside the `api` service, you can execute the following command:
+
+```text
+docker-compose exec api npm run db:migrate
+
+# > notes-api@ db:migrate /home/node/app
+# > knex migrate:latest
+# 
+# Using environment: development
+# Batch 1 run: 1 migrations
+```
+
+Unlike the `container exec` command, you don't need to pass the `-it` flag for interactive sessions. `docker-compose` does that automatically.
+
+## Accessing Logs From a Running Service
+
+You can also use the `logs` command to retrieve logs from a running service. The generic syntax for the command is as follows:
+
+```text
+docker-compose logs <service name>
+```
+
+To access the logs from the `api` service execute the following command:
+
+```text
+docker-compose logs api
+
+# Attaching to notes-api-dev
+# notes-api-dev | [nodemon] 2.0.7
+# notes-api-dev | [nodemon] reading config ./nodemon.json
+# notes-api-dev | [nodemon] to restart at any time, enter `rs`
+# notes-api-dev | [nodemon] or send SIGHUP to 1 to restart
+# notes-api-dev | [nodemon] ignoring: *.test.js
+# notes-api-dev | [nodemon] watching path(s): *.*
+# notes-api-dev | [nodemon] watching extensions: js,mjs,json
+# notes-api-dev | [nodemon] starting `node bin/www`
+# notes-api-dev | [nodemon] forking
+# notes-api-dev | [nodemon] child pid: 19
+# notes-api-dev | [nodemon] watching 18 files
+# notes-api-dev | app running -> http://127.0.0.1:3000
+```
+
+This is just a portion from the log output. You can kind of hook into the output stream of the service and get the logs in real-time by using the `-f` or `--follow` option. Any later log will show up instantly in the terminal as long as you don't exit by pressing `ctrl + c` key combination or closing the window. The container will keep running even if you exit out of the log window.
+
 ## Stopping Services
 
 For stopping services, there are two approaches that you can take. The first one is the `down` command. The `down` command stops all running containers and removes them from the system. It also removes any networks:
@@ -253,99 +306,9 @@ docker-compose down --volumes
 # Removing volume notes-db-dev-data
 ```
 
-The `--volumes` option indicates that you want to remove any named volume defined in the `volumes` block.
+The `--volumes` option indicates that you want to remove any named volume defined in the `volumes` block. You can learn about the additional options for the `down` command in the official [docs](https://docs.docker.com/compose/reference/down/).
 
-## Listing Services
-
-Just like the `docker ps` command, Compose has a `ps` command of its own. The main difference is the `docker-compose ps` command only lists containers part of a certain application. To list all the containers running as part of the `notes-api` application, run the following command in the project root:
-
-```text
-docker-compose ps
-```
-
-Running the command inside the project directory is important. Otherwise it won't execute. Output from the command should be as follows:
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-4.47.58-PM.png)
-
-The `ps` command for Compose shows services in any state by default. Usage of an option like `-a` or `--all` is unnecessary.
-
-## Executing Commands Inside a Running Service
-
-Assume that our `notes-api` application is running and you want to access the `psql` CLI application inside the `db` service. There is a command called `exec` to do that. Generic syntax for the command is as follows:
-
-```text
-docker-compose exec <service name> <command>
-```
-
-Service names can be found in the `docker-compose.yml` file. The generic syntax for starting the `psql` CLI application is as follows:
-
-```text
-psql <database> <username>
-```
-
-Now to start the `psql` application inside the `db` service where the database name is `notesdb` and the user is `psql`, the following command should be executed:
-
-```text
-docker-compose exec db psql notesdb postgres
-```
-
-You should directly land on the `psql` application:![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-5.29.07-PM.png)Output from `docker-compose exec db psql notesdb postgres` command
-
-You can run any valid [postgres command](https://www.postgresql.org/docs/10/app-psql.html) here. To exit out of the program write `\q` and hit enter.
-
-## Starting Shell Inside a Running Service
-
-You can also start a shell inside a running container using the `exec` command. Generic syntax of the command should be as follows:
-
-```text
-docker-compose exec <service name> sh
-```
-
-You can use `bash` in place of `sh` if the container comes with that. To start a shell inside the `api` service, the command should be as follows:
-
-```text
-docker-compose exec api sh
-```
-
-This should land you directly on the shell inside the `api` service.
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-5.41.11-PM.png)
-
-In there, you can execute any valid shell command. You can exit by executing the `exit` command.
-
-#### Accessing Logs From a Running Service <a id="accessing-logs-from-a-running-service"></a>
-
-If you want to view logs from a container, the dashboard can be really helpful.
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-5.48.38-PM.png)
-
-You can also use the `logs` command to retrieve logs from a running service. The generic syntax for the command is as follows:
-
-```text
-docker-compose logs <service name>
-```
-
-To access the logs from the `api` service execute the following command:
-
-```text
-docker-compose logs api
-```
-
-You should see a wall of text appear on your terminal window.
-
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-6.13.39-PM.png)
-
-This is just a portion from the log output. You can kind of hook into the output stream of the service and get the logs in real-time by using the `-f` or `--follow` option. Any later log will show up instantly in the terminal as long as you don't exit by pressing `ctrl + c` key combination or closing the window. The container will keep running even if you exit out of the log window.
-
-## Stopping Running Services
-
-Services running in the foreground can be stopped by closing the terminal window or hitting the `ctrl + c` key combination. For stopping services in in the background, there are a number of commands available. I'll explain each of them one by one.
-
-* `docker-compose stop` - attempts to stop the running services gracefully by sending a `SIGTERM` signal to them. If the services don't stop within a grace period, a `SIGKILL` signal is sent.
-* `docker-compose kill` - stops the running services immediately by sending a `SIGKILL` signal. A `SIGKILL` signal can not be ignored by a recipient.
-* `docker-compose down` - attempts to stop the running services gracefully by sending a `SIGTERM` signal and removes the containers afterwards.
-
-If you want to keep the containers for the services you can use the `stop` command. If you want to removes the containers as well use the `down` command.
+Another command for stopping services is the `stop` command which functions identically to the `container stop` command. It stops all the containers for the application and keeps the contianers. These containers can later be started with the `start` or `up` command.
 
 ## Composing a Full-stack Application
 
