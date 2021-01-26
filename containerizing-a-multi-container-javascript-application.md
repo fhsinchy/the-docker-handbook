@@ -223,7 +223,7 @@ This is a multi-staged build. The first stage is used for building and installin
 * On line 22, we copy all the project files and on line 23 we copy the `node_modules` directory from the `builder` stage. This directory contains all the built dependencies necessary for running the application.
 * On line 25, we set the default command.
 
-To build an image from this `Dockerfile`, execute following command inside the `api` directory:
+To build an image from this `Dockerfile`, you can execute the following command:
 
 ```text
 docker image build --tag notes-api .
@@ -404,7 +404,6 @@ docker container run \
     notes-api
     
 # f9ece420872de99a060b954e3c236cbb1e23d468feffa7fed1e06985d99fb919
-
 ```
 
 You should be able to understand this long command by yourself, I'll go through the environment variables briefly. The `notes-api` application requires three environment variables to be set. They are as follows:
@@ -451,7 +450,7 @@ The API has five routes in total that you can see inside the `/notes/api/api/api
 
 {% embed url="https://github.com/fhsinchy/create-node-rocket-api" caption="spare a ⭐ to keep me motivated" %}
 
-The project also contains a `Dockerfile.dev` file that allows hot reload functionality like the one you worked with in [Containerizing a JavaScript Application](containerizing-a-javascript-application.md) section. I'll leave the `Dockerfile.dev` for you to understand by yourself.
+The project also contains a `Dockerfile.dev` file that you'll be using in the next section.
 
 ## Writing Management Scripts
 
@@ -464,7 +463,7 @@ Managing a multi-container project along with the network and volumes and stuff 
 
 There is also a `Makefile` that contains four targets named `start`, `stop`, `build` and `destroy` each invoking the previously mentioned shell scripts.
 
-If the container is in running state in your system, executing `make stop` should stop all the containers. executing `make destroy` should stop the containers and remove everything:
+If the container is in running state in your system, executing `make stop` should stop all the containers. executing `make destroy` should stop the containers and remove everything. Make sure you're running the scripts inside the `notes-api` directory:
 
 ```text
 make destroy
