@@ -15,7 +15,7 @@ As in-demand as it may be, getting started can seem a bit intimidating at first.
 ## Prerequisites
 
 * Familiarity with the Linux Terminal
-* Familiarity with JavaScript \(some of the later projects use JavaScript\)
+* Familiarity with JavaScript \(some later projects use JavaScript\)
 
 ## Project Code
 
@@ -31,7 +31,7 @@ This article is completely open-source and quality contributions are more than w
 
 {% embed url="https://github.com/fhsinchy/the-docker-handbook" caption="spare a ⭐ to keep me motivated" %}
 
-I usually do my changes and updates on the GitBook version of the article first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the piece in the following link:
+I usually do my changes and updates on the GitBook version of the article first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the article in the following link:
 
 {% embed url="https://docker.farhan.info/" caption="don\'t forget to leave ratings" %}
 

@@ -2,7 +2,7 @@
 
 According to [IBM](https://www.ibm.com/cloud/learn/containerization#toc-what-is-co-r25Smlqq) - "Containerization involves encapsulating or packaging up software code and all its dependencies so that it can run uniformly and consistently on any infrastructure."
 
-In other words, containerization let's you bundle up your software along with all it's dependencies in a self-contained package so that it can be run without going through a troublesome setup process.
+In other words, containerization lets you bundle up your software along with all its dependencies in a self-contained package so that it can be run without going through a troublesome setup process.
 
 Let's consider a real life scenario here. Assume you have developed an awesome book management application that can store information regarding all the books you own and can also serve the purpose of a book lending system for your friends.
 
@@ -31,16 +31,16 @@ Even if you get through the entire development phase, what if the person respons
 All these issues can be solved if only you could somehow:
 
 * Develop and run the application inside an isolated environment \(known as a container\) that matches your final deployment environment.
-* Put your application inside a single file \(known as an image\) along with all it's dependencies, necessary deployment configurations.
+* Put your application inside a single file \(known as an image\) along with all its dependencies, necessary deployment configurations.
 * And share that image through a central server \(known as a registry\) that is accessible by anyone with proper authorization.
 
 Your teammates, will then be able to download the image from the registry, run the application as it is within an isolated environment free from the platform specific inconsistencies or even deploy directly on a server, given the image comes with all the proper production configurations.
 
-That is the idea behind containerization. Putting your applications inside a self contained package making it extremely portable and reproducible across various environments.
+That is the idea behind containerization. Putting your applications inside a self-contained package making it extremely portable and reproducible across various environments.
 
 #### Now the question is "What role does Docker play here?"
 
-As I've already explained, containerization is an idea that solves myriad of problem in software development by putting things into boxes. This very idea has quite a few implementations. [Docker](https://www.docker.com/) is such an implementation. It's an open-source containerization platform that allows you to containerize your applications, share them using public or private registries and also to [orchestrate](https://docs.docker.com/get-started/orchestration/) them.
+As I've already explained, containerization is an idea that solves a myriad of problem in software development by putting things into boxes. This very idea has quite a few implementations. [Docker](https://www.docker.com/) is such an implementation. It's an open-source containerization platform that allows you to containerize your applications, share them using public or private registries and also to [orchestrate](https://docs.docker.com/get-started/orchestration/) them.
 
 Now, Docker is not the only containerization tool on the market, it's just the most popular one. Another containerization engine that I love is called [Podman](https://podman.io/) developed by Red Hat. Other tools like [Kaniko](https://github.com/GoogleContainerTools/kaniko) by Google, [rkt](https://coreos.com/rkt/) by CoreOS while being amazing, is not ready to be a drop in replacement for Docker yet.
 

@@ -1,6 +1,6 @@
 # Network Manipulation Basics
 
-So far in this article, you've only worked with single container projects. But in real life, majority of the projects that you'll have to work with will have at least more than one container and to be honest, working with a bunch of containers can be a little difficult if you don't understand the nuances of container isolation. So in this section of the article you'll get familiar with basic networking with Docker and will work hands on with a small multi-container project.
+So far in this article, you've only worked with single container projects. But in real life, the majority of projects that you'll have to work with will have at least more than one container and to be honest, working with a bunch of containers can be a little difficult if you don't understand the nuances of container isolation. So in this section of the article you'll get familiar with basic networking with Docker and will work hands on with a small multi-container project.
 
 Well you've already learned in the previous section that containers are isolated environments. Now consider a scenario where you have a `notes-api` application powered by [Express.js](https://expressjs.com/) and a [PostgreSQL](https://www.postgresql.org/) database server running in two separate containers.
 
@@ -9,7 +9,7 @@ These two containers are completely isolated from each other and oblivious about
 You may think of two possible solution to this problem. They are as follows:
 
 * Accessing the database server using an exposed port.
-* Accessing the database server using it's IP address and default port.
+* Accessing the database server using its IP address and default port.
 
 The first one is exposing a port from the `postgres` container and the `notes-api` will connect through that. Assuming that the exposed port from the `postgres` container is 5432. Now if you try to connect to `127.0.0.1:5432` from inside the `notes-api` container, you'll find that the `notes-api` can't find the database server at all.
 
@@ -25,7 +25,7 @@ docker container inspect --format='{{range .NetworkSettings.Networks}} {{.IPAddr
 
 Now given the default port for `postgres` is `5432`, you can very easily access the database server by connecting to `172.17.0.2:5432` from the `notes-api` container.
 
-There are problems in this approach as well. Using IP addresses to refer to a container is not recommended. Also if the container gets destroyed and recreated, the IP address may change. Keeping track of these changing IP addresses can be pretty hectic.
+There are problems in this approach as well. Using IP addresses to refer to a container is not recommended. Also, if the container gets destroyed and recreated, the IP address may change. Keeping track of these changing IP addresses can be pretty hectic.
 
 Now that I've dismissed the possible wrong answers to the original question, the correct answer is, **you connect them by putting them under a user-defined bridge network.**
 
@@ -42,7 +42,7 @@ docker network ls
 # 506e3822bf1f   none      null      local
 ```
 
-You should see three networks in your system. Now look at the `DRIVER` column of the table here. These drivers are can be treated as the type of network. By default Docker has five networking drivers. They are as follows:
+You should see three networks in your system. Now look at the `DRIVER` column of the table here. These drivers are can be treated as the type of network. By default, Docker has five networking drivers. They are as follows:
 
 * `bridge` - The default networking driver in Docker. This can e used when multiple containers are running in standard mode and needs to communicate with each other.
 * `host` - Removes the network isolation completely. Any container running under a `host` network is basically attached to the network of the host system.
@@ -77,9 +77,9 @@ docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' bridge
 
 Containers attached to the default bridge network can communicate with each others using IP addresses which I have already discouraged on the previous sub-section.
 
-A user-defined bridge however has some extra feature over the default one. According to the official [docs](https://docs.docker.com/network/bridge/#differences-between-user-defined-bridges-and-the-default-bridge) on this topic, some of the notable extra features are as follows:
+A user-defined bridge however has some extra feature over the default one. According to the official [docs](https://docs.docker.com/network/bridge/#differences-between-user-defined-bridges-and-the-default-bridge) on this topic, some notable extra features are as follows:
 
-* **User-defined bridges provide automatic DNS resolution between containers:** This means containers attached to the same network can communicate with each others using the container name. So if you have two containers named `notes-api` and `notes-db` the the API container will be able to connect to the database container using the `notes-db` name.
+* **User-defined bridges provide automatic DNS resolution between containers:** This means containers attached to the same network can communicate with each others using the container name. So if you have two containers named `notes-api` and `notes-db` the API container will be able to connect to the database container using the `notes-db` name.
 * **User-defined bridges provide better isolation:** All containers are attached to the default bridge network by default which can cause conflicts among them. Attaching containers to a user-defined bridge can ensure better isolation.
 * **Containers can be attached and detached from user-defined networks on the fly:** During a container’s lifetime, you can connect or disconnect it from user-defined networks on the fly. To remove a container from the default bridge network, you need to stop the container and recreate it with different network options.
 
@@ -89,7 +89,7 @@ Now that you've learned quite a lot about a user-defined network, it's time to c
 docker network create <network name>
 ```
 
-To create a network with the name `skynet` execute following command:
+To create a network with the name `skynet` execute the following command:
 
 ```text
 docker network create skynet
@@ -109,7 +109,7 @@ As you can see a new network has been created with the given name. No container 
 
 ## Attaching Containers to a Network
 
-There are mostly two ways of attaching a container to a network. You can use the `network connect` command to attach a container to a network. Generic syntax for the command is as follows:
+There are mostly two ways of attaching a container to a network. You can use the `network connect` command to attach a container to a network. The generic syntax for the command is as follows:
 
 ```text
 docker network connect <network identifier> <container identifier>
@@ -129,9 +129,9 @@ docker network inspect --format='{{range .Containers}} {{.Name}} {{end}}' bridge
 #  hello-dock
 ```
 
-As you can see from the outputs of the two `network inspect` commands, the `hello-dock` container is now attached to both the `skynet` as well as the default `bridge` network.
+As you can see from the outputs of the two `network inspect` commands, the `hello-dock` container is now attached to both the `skynet` and the default `bridge` network.
 
-The second way of attaching container to a network is by using the `--network` option for `container run` or `container create` commands. The generic syntax for the option is as follows:
+The second way of attaching a container to a network is by using the `--network` option for `container run` or `container create` commands. The generic syntax for the option is as follows:
 
 ```text
 run --network <network identifier>
