@@ -166,3 +166,46 @@ docker network connect notes-ap-network notes-api-db
 
 Now the database server is complete ready to be bugged by the API.
 
+## Writing The Development Dockerfile
+
+Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory and create a new `Dockerfile.dev` in there. Code for the `Dockerfile.dev` is as follows:
+
+```text
+# stage one
+FROM node:lts-alpine as builder
+
+# install dependencies for node-gyp
+RUN apk add --no-cache python make g++
+
+WORKDIR /app
+
+COPY ./package.json .
+RUN npm install
+
+# stage two
+FROM node:lts-alpine
+
+ENV NODE_ENV=development
+
+USER node
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
+
+COPY . .
+COPY --from=builder /app/node_modules /home/node/app/node_modules
+
+CMD [ "./node_modules/.bin/nodemon", "--config", "nodemon.json", "bin/www" ]
+```
+
+This is a multi-staged build. The first stage is used for building and installing the dependencies using `node-gyp` and the second stage is for running the application. I'll go through the steps briefly:
+
+* Stage 1 uses `node:lts-alpine` as it's base and uses `builder` as the stage name.
+* On line 5, we install `python`, `make` and `g++`. The `node-gyp` tool requires these three packages to run.
+* On line 7, we set the `WORKDIR` to `/app` directory.
+* On line 9 and 10, we copy the `package.json` file to the `WORKDIR` and installs all the dependencies.
+* Stage 2 also uses `node-lts:alpine` as the base.
+* On line 15, we set the `NODE_ENV` environment variable to `development`. This is important for the API to run properly in development mode.
+* From line 17 to line 19, we set the default user to `node`, create the `/home/node/app` directory and set that as the `WORKDIR`.
+* On line 21, we copy all the project files and on line 22 we copy the `node_modules` directory from stage 1. This directory contains all the built dependencies necessary for running the application.
+* On line 24, we set the default command. `nodemon` is a tool that provides auto-reload functionality for Node.js applications.
+
