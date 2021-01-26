@@ -312,31 +312,31 @@ Another command for stopping services is the `stop` command which functions iden
 
 ## Composing a Full-stack Application
 
-In this sub-section, we'll be adding a front-end application to our notes API and turn it into a complete application. I won't be explaining any of the `Dockerfile.dev` files in this sub-section \(except the one for the `nginx` service\) as they are identical to some of the others you've already seen in previous sub-sections.
+In this sub-section, we'll be adding a front-end to our notes API and turn it into a complete fullstack application. I won't be explaining any of the `Dockerfile.dev` files in this sub-section \(except the one for the `nginx` service\) as they are identical to some of the others you've already seen in previous sub-sections.
 
-If you've cloned the project code repository, then go inside the `fullstack-notes-application` directory. Each directory inside the project root contains the code for each services and the corresponding Dockerfile.
+If you've cloned the project code repository, then go inside the `fullstack-notes-application` directory. Each directory inside the project root contains the code for each services and the corresponding `Dockerfile`.
 
-Before we start with the `docker-compose.yml` file let's look at a diagram of how the application is going to work:
+Before we start with the `docker-compose.y`a`ml` file let's look at a diagram of how the application is going to work:
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/ng.svg)
+![](.gitbook/assets/fullstack-application-design.svg)
 
-Instead of accepting requests directly like we previously did, in this application, all the requests will be first received by a Nginx server. Nginx will then see if the requested end-point has `/api` in it. If yes, Nginx will route the request to the back-end or if not, Nginx will route the request to the front-end.
+Instead of accepting requests directly like we previously did, in this application, all the requests will be first received by a NGINX \(lets call it router\) service. The router will then see if the requested end-point has `/api` in it. If yes, the router will route the request to the back-end or if not, the router will route the request to the front-end.
 
 The reason behind doing this is that when you run a front-end application it doesn't run inside a container. It runs on the browser, served from a container. As a result, Compose networking doesn't work as expected and the front-end application fails to find the `api` service.
 
-Nginx on the other hand runs inside a container and can communicate with the different services across the entire application.
+NGINX on the other hand runs inside a container and can communicate with the different services across the entire application.
 
-I will not get into the configuration of Nginx here. That topic is kinda out of scope of this article. But if you want to have a look at it, go ahead and checkout the `/nginx/default.conf` file. Code for the `/nginx/Dockerfile.dev` for the is as follows:
+I will not get into the configuration of NGINX here. That topic is kinda out of scope of this article. But if you want to have a look at it, go ahead and checkout the `/notes-api/nginx/development.conf` and `/notes-api/nginx/production.conf` files. Code for the `/notes-api/nginx/Deockerfile.dev` for is as follows:
 
 ```text
-FROM nginx:stable
+FROM nginx:stable-alpine
 
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./development.conf /etc/nginx/conf.d/default.conf
 ```
 
-All it does is just copying the configuration file to `/etc/nginx/conf.d/default.conf` inside the container.
+All it does is copying the configuration file to `/etc/nginx/conf.d/default.conf` inside the container.
 
-Let's start writing the `docker-compose.yml` file by defining the services you're already familiar with. The `db` and `api` service. Create the `docker-compose.yml` file in the project root and put following code in there:
+Let's start writing the `docker-compose.yaml` file. Apart from the `api` and `db` services there will be the `client` and `nginx` services. There will also be some network definitions that I'll get into shortly.
 
 ```text
 version: "3.8"
@@ -344,81 +344,181 @@ version: "3.8"
 services: 
     db:
         image: postgres:12
+        container_name: notes-db-dev
         volumes: 
-            - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+            - db-data:/var/lib/postgresql/data
         environment:
-            POSTGRES_PASSWORD: 63eaQB9wtLqmNBpg
             POSTGRES_DB: notesdb
+            POSTGRES_PASSWORD: secret
+        networks:
+            - backend
     api:
         build: 
             context: ./api
             dockerfile: Dockerfile.dev
+        image: notes-api:dev
+        container_name: notes-api-dev
         volumes: 
-            - /usr/app/node_modules
-            - ./api:/usr/app
+            - /home/node/app/node_modules
+            - ./api:/home/node/app
         environment: 
-            DB_CONNECTION: pg
             DB_HOST: db ## same as the database service name
             DB_PORT: 5432
             DB_USER: postgres
             DB_DATABASE: notesdb
-            DB_PASSWORD: 63eaQB9wtLqmNBpg
-```
-
-As you can see, these two services are almost identical to the previous sub-section, the only difference is the `context` of the `api` service. That's because codes for that application now resides inside a dedicated directory named `api`. Also, there is no port mapping as we don't want to expose the service directly.
-
-The next service we're going to define is the `client` service. Append following bit of code to the compose file:
-
-```text
-    ##
-    ## make sure to align the indentation properly
-    ##
-    
+            DB_PASSWORD: secret
+        networks:
+            - backend
     client:
         build:
             context: ./client
             dockerfile: Dockerfile.dev
+        image: notes-client:dev
+        container_name: notes-client-dev
         volumes: 
-            - /usr/app/node_modules
-            - ./client:/usr/app
-        environment: 
-            VUE_APP_API_URL: /api
-```
-
-We're naming the service `client`. Inside the `build` block, we're setting the `/client` directory as the `context` and giving it the Dockerfile name.
-
-Mapping of the volumes is identical to what you've seen in the previous section. One anonymous volume for the `node_modules` directory and one named volume for the project root.
-
-Value of the `VUE_APP_API_URL` variable inside the `environtment` will be appended to each request that goes from the `client` to the `api` service. This way, Nginx will be able to differentiate between different requests and will be able to re-route them properly.
-
-Just like the `api` service, there is no port mapping here, because we don't want to expose this service either.
-
-Last service in the application is the `nginx` service. To define that, append following code to the compose file:
-
-```text
-    ##
-    ## make sure to align the indentation properly
-    ##
-    
+            - /home/node/app/node_modules
+            - ./client:/home/node/app
+        networks:
+            - frontend
     nginx:
         build:
             context: ./nginx
             dockerfile: Dockerfile.dev
+        image: notes-router:dev
+        container_name: notes-router-dev
+        restart: unless-stopped
         ports: 
-            - 80:80
+            - 8080:80
+        networks:
+            - backend
+            - frontend
+
+volumes:
+    db-data:
+        name: notes-db-dev-data
+
+networks: 
+    frontend:
+        name: fullstack-notes-application-network-frontend
+        driver: bridge
+    backend:
+        name: fullstack-notes-application-network-backend
+        driver: bridge
+
 ```
 
-Content of the `Dockerfile.dev` has already been talked about. We're naming the service `nginx`. Inside the `build` block, we're setting the `/nginx` directory as the `context` and giving it the Dockerfile name.
-
-As I've already shown in the diagram, this `nginx` service is going to handle all the requests. So we have to expose it. Nginx runs on port 80 by default. So I'm mapping port 80 inside the container to port 80 of the host system.
-
-We're done with the full `docker-compose.yml` file and now it's time to run the service. Start all the services by executing following command:
+The file is almost identical to the previous one you worked with. Only thing that needs some explanation is the network configuration. Code for the `networks` block is as follows:
 
 ```text
-docker-compose up
+networks: 
+    frontend:
+        name: fullstack-notes-application-network-frontend
+        driver: bridge
+    backend:
+        name: fullstack-notes-application-network-backend
+        driver: bridge
 ```
 
-Now visit `http://localhost:80` and voilà!
+I've defined two bridge networks. By default compose creates a bridge network and attaches all containers to that. In this project however, I wanted proper network isolation. So I defined two networks, one for the front-end services and one for the back-end  services.
+
+I've also added `networks` block in each of the service definitions. This way the the `api` and `db` service will be attached to one network and the `client` service will be attached to a separate network. The `nginx` service however will be attached to both the networks so that it can perform as router between the front-end and back-end services.
+
+Start all the services by executing following command:
+
+```text
+docker-compose --file docker-compose.yaml up --detach
+
+# Creating network "fullstack-notes-application-network-backend" with driver "bridge"
+# Creating network "fullstack-notes-application-network-frontend" with driver "bridge"
+# Creating volume "notes-db-dev-data" with default driver
+# Building api
+# Sending build context to Docker daemon  37.38kB
+# 
+# Step 1/13 : FROM node:lts-alpine as builder
+#  ---> 471e8b4eb0b2
+# Step 2/13 : RUN apk add --no-cache python make g++
+#  ---> Running in 8a4485388fd3
+### LONG INSTALLATION STUFF GOES HERE ###
+# Removing intermediate container 8a4485388fd3
+#  ---> 47fb1ab07cc0
+# Step 3/13 : WORKDIR /app
+#  ---> Running in bc76cc41f1da
+# Removing intermediate container bc76cc41f1da
+#  ---> 8c03fdb920f9
+# Step 4/13 : COPY ./package.json .
+#  ---> a1d5715db999
+# Step 5/13 : RUN npm install
+#  ---> Running in fabd33cc0986
+### LONG INSTALLATION STUFF GOES HERE ###
+# Removing intermediate container fabd33cc0986
+#  ---> e09913debbd1
+# Step 6/13 : FROM node:lts-alpine
+#  ---> 471e8b4eb0b2
+# Step 7/13 : ENV NODE_ENV=development
+#  ---> Using cache
+#  ---> b7c12361b3e5
+# Step 8/13 : USER node
+#  ---> Using cache
+#  ---> f5ac66ca07a4
+# Step 9/13 : RUN mkdir -p /home/node/app
+#  ---> Using cache
+#  ---> 60094b9a6183
+# Step 10/13 : WORKDIR /home/node/app
+#  ---> Using cache
+#  ---> 316a252e6e3e
+# Step 11/13 : COPY . .
+#  ---> Using cache
+#  ---> 3a083622b753
+# Step 12/13 : COPY --from=builder /app/node_modules /home/node/app/node_modules
+#  ---> Using cache
+#  ---> 707979b3371c
+# Step 13/13 : CMD [ "./node_modules/.bin/nodemon", "--config", "nodemon.json", "bin/www" ]
+#  ---> Using cache
+#  ---> f2da08a5f59b
+# Successfully built f2da08a5f59b
+# Successfully tagged notes-api:dev
+# Building client
+# Sending build context to Docker daemon  43.01kB
+# 
+# Step 1/7 : FROM node:lts-alpine
+#  ---> 471e8b4eb0b2
+# Step 2/7 : USER node
+#  ---> Using cache
+#  ---> 4be5fb31f862
+# Step 3/7 : RUN mkdir -p /home/node/app
+#  ---> Using cache
+#  ---> 1fefc7412723
+# Step 4/7 : WORKDIR /home/node/app
+#  ---> Using cache
+#  ---> d1470d878aa7
+# Step 5/7 : COPY ./package.json .
+#  ---> Using cache
+#  ---> bbcc49475077
+# Step 6/7 : RUN npm install
+#  ---> Using cache
+#  ---> 860a4a2af447
+# Step 7/7 : CMD [ "npm", "run", "serve" ]
+#  ---> Using cache
+#  ---> 11db51d5bee7
+# Successfully built 11db51d5bee7
+# Successfully tagged notes-client:dev
+# Building nginx
+# Sending build context to Docker daemon   5.12kB
+# 
+# Step 1/2 : FROM nginx:stable-alpine
+#  ---> f2343e2e2507
+# Step 2/2 : COPY ./development.conf /etc/nginx/conf.d/default.conf
+#  ---> Using cache
+#  ---> 02a55d005a98
+# Successfully built 02a55d005a98
+# Successfully tagged notes-router:dev
+# Creating notes-client-dev ... done
+# Creating notes-api-dev    ... done
+# Creating notes-router-dev ... done
+# Creating notes-db-dev     ... done
+```
+
+Now visit `http://localhost:8080` and voilà!
 
 ![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-8.23.46-PM-1.png)
 
