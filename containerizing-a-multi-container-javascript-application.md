@@ -468,6 +468,44 @@ If the container is in running state in your system, executing `make stop` shoul
 
 ```text
 make destroy
+
+# ./shutdown.sh
+# stopping api container --->
+# notes-api
+# api container stopped --->
+
+# stopping db container --->
+# notes-db
+# db container stopped --->
+# all containers have been stopped./destroy.sh
+# removing api container --->
+# notes-api
+# api container removed --->
+
+# removing db container --->
+# notes-db
+# db container removed --->
+# removing db data volume --->
+# notes-db-data
+# db data volume removed --->
+# removing network --->
+# notes-api-network
+# network removed --->
+# removing api image --->
+# Untagged: notes-api:latest
+# Deleted: sha256:4b1d0671f5c326f47a63e58391d337123c446da5efd0a6cfd3f582b770813064
+# Deleted: sha256:85997f864620c8d22d3afe63ce4c616c0429c2908c220d1fdc722bf9d5f21a94
+# Deleted: sha256:c6f02cac01245a464427af949dd74e846231a02dd4bf27cc0cb1b500602c3ab5
+# Deleted: sha256:7cc2acb57d8515060e5d418211a55943f62ddab52bf155723b9bccaebf305d7c
+# Deleted: sha256:4a49a0137e986e5e67c182949786f3d37154db9fbb6fdd147936cd0d3027777f
+# Deleted: sha256:2883cdb7c77ac7dba75f2b052fedcd5ac95020817b4643fe0a569d7a3595cfc5
+# Deleted: sha256:5908373dfc751d9ccc602c7a181e19054b0543bdddf6a4d139e67c4261afba08
+# Deleted: sha256:d09680fde41011658c5ec266624fe96b0cf39bced4236e90f715e72ce6c94280
+# Deleted: sha256:0f4045152b1c683efb09aecae584d930af4812846be952341954032275884edd
+# Deleted: sha256:31f62da179293291edc97aeeafd3ead9b1c0033a884d3dee1f5578028b87317c
+# Deleted: sha256:1f0206f2f050ab383e20aa611eebe1da9f4dd08d50bc65ef29a9ce8bdb5b1afe
+# api image removed --->
+# all data have been destroyed
 ```
 
 
