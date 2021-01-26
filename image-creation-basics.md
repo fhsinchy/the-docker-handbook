@@ -64,7 +64,7 @@ docker image <command> <options>
 To build an image using the `Dockerfile` you just wrote, open up your terminal inside the `custom-nginx` directory and execute following command:
 
 ```text
-docker image build --file Dockerfile .
+docker image build .
 
 # Sending build context to Docker daemon  3.584kB
 # Step 1/4 : FROM ubuntu:latest
@@ -87,7 +87,7 @@ docker image build --file Dockerfile .
 
 In order to perform an image build, the daemon needs two very specific information. These are the name of the `Dockerfile` and the build context. In the issued command above:
 
-* `docker image build` is the actual command for building the image. The daemon finds any file named `Dockerfile` by default so the usage of the `--file` option is redundant here. In case of a differently named file i.e. `Dockerfile.dev`, you must specify the filename.
+* `docker image build` is the command for building the image. The daemon finds any file named `Dockerfile` within the context.
 * The `.` at the end sets the context for this build. The context means the directory accessible by the daemon during the build process. The concept of a build context will become much clearer in later sub-sections.
 
 Now to run a container using this image, you can use the container run command coupled with the image id that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
@@ -120,7 +120,7 @@ The repository is usually known as the image name and tag indicates a certain bu
 In order to tag your custom NGINX image with `custom-nginx:packaged` you can execute the following command:
 
 ```text
-docker image build --file Dockerfile --tag custom-nginx:packaged .
+docker image build --tag custom-nginx:packaged .
 
 # Sending build context to Docker daemon  1.055MB
 # Step 1/4 : FROM ubuntu:latest
@@ -186,7 +186,7 @@ docker image rm custom-nginx:packaged
 # Deleted: sha256:6d6460a744475a357a2b631a4098aa1862d04510f3625feb316358536fcd8641
 ```
 
-You can also use the `image prune` command to cleanup all un-tagged images as follows:
+You can also use the `image prune` command to cleanup all un-tagged dangling images as follows:
 
 ```text
 docker image prune --force
@@ -305,7 +305,7 @@ As you can see, the code inside the `Dockerfile` reflects the seven steps I talk
 Now to build an image using this code, execute the following command:
 
 ```text
-docker image build --file Dockerfile --tag custom-nginx:built .
+docker image build --tag custom-nginx:built .
 
 # Step 1/7 : FROM ubuntu:latest
 #  ---> d70eaf7277ea
@@ -390,7 +390,7 @@ The code is almost identical to the previous code block except a new instruction
 Rest of the code is almost unchanged. You should be able to infer the usage of the arguments by yourself now. Finally let's try to build an image from this updated code.
 
 ```text
-docker image build --file Dockerfile --tag custom-nginx:built .
+docker image build --tag custom-nginx:built .
 
 # Step 1/9 : FROM ubuntu:latest
 #  ---> d70eaf7277ea
@@ -482,7 +482,7 @@ docker image ls
 # nginx              stable    b9e1dc12387a   11 days ago      133MB
 ```
 
-This is happening because in our `Dockerfile` we have a lot of garbage. Let's have a look at the `Dockerfile` first:
+In order to find out the root cause, let's have a look at the `Dockerfile` first:
 
 ```text
 FROM ubuntu:latest
@@ -520,7 +520,9 @@ RUN rm -rf /${FILENAME}}
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. So a better idea can be to uninstall the package once the build process is done. Update your `Dockerfile` as follows:
+As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. Out of the 6 packages that've been installed, only two are necessary for running NGINX. These are `libpcre3` and `zlib1g`. So a better idea can be to uninstall the other packages once the build process is done. 
+
+To do so, update your `Dockerfile` as follows:
 
 ```text
 FROM ubuntu:latest
@@ -571,12 +573,12 @@ As you can see, on line 10 a single `RUN` instruction is doing all the necessary
 * On line 29, the extracted files from the downloaded archive gets removed.
 * From line 30 to line 36, all the unnecessary packages are being uninstalled and cache cleared. The `libpcre3` and `zlib1g` packages are needed for running NGINX hence they're kept.
 
-You may ask why am I doing so much inside a single `RUN` instruction instead of nicely splitting them into multiple instructions like we did previously. Well that's a mistake. If you install packages and then remove them in separate `RUN` instructions, they'll live in separate layers of the image. Although the final image will not have the removed packages, their size will still be added to the final image given they exist in one of the layers consisting the image. So make sure you make these kind of changes on a single layer.
+You may ask why am I doing so much woek in a single `RUN` instruction instead of nicely splitting them into multiple instructions, like we did previously. Well that's a mistake. If you install packages and then remove them in separate `RUN` instructions, they'll live in separate layers of the image. Although the final image will not have the removed packages, their size will still be added to the final image given they exist in one of the layers consisting the image. So make sure you make these kind of changes on a single layer.
 
-Let's build an image using this `Dockerfile` and see the differences shall we:
+Let's build an image using this `Dockerfile` and see the differences.
 
 ```text
-docker image build --file Dockerfile --tag custom-nginx:built .
+docker image build --tag custom-nginx:built .
 
 # Sending build context to Docker daemon  1.057MB
 # Step 1/7 : FROM ubuntu:latest
@@ -615,30 +617,33 @@ docker image ls
 # nginx              stable    b9e1dc12387a   11 days ago          133MB
 ```
 
-As you can see, the image size has gone from being 343MB to 81.6MB. The official image is 133MB. This is a pretty optimized build. But there is one thing that we can do better.
+As you can see, the image size has gone from being 343MB to 81.6MB. The official image is 133MB. This is a pretty optimized build but we can go a bit further in the next sub-section.
 
-As you can see in the `Dockerfile` code above, the source code archive is being downloaded using an `ADD` instruction and is being removed inside the `RUN` instruction. I've already told that if files are being added and removed in separate layers, their size is still added to the final image.
+## Embracing Alpine Linux
 
-So instead of using an `ADD` instruction, you can instead use [curl](https://curl.se/) to download the file inside a `RUN` instruction. Open up the `Dockerfile` and update its content as follows:
+If you've been fiddling around with containers for sometime now, you may have heard about something called [Alpine Linux](https://alpinelinux.org/) which is a full-featured [Linux](https://en.wikipedia.org/wiki/Linux) distribution like [Ubuntu](https://ubuntu.com/), [Debian](https://www.debian.org/) or [Fedora](https://getfedora.org/). But the good thing about Alpine is that it's built around `musl` `libc` and `busybox` and is lightweight. Where the latest [ubuntu](https://hub.docker.com/_/ubuntu) image weighs at around 28MB, [alpine](https://hub.docker.com/_/alpine) is 2.8MB. Apart from the lightweight nature, Alpine is also secure and is a much better fit for creating containers than the other distributions.
+
+Although not as user friendly as the other commercial distributions, the transition to Alpine is still very simple. In this sub-section you'll learn about recreating the `custom-nginx` image by using the alpine image as its base.
+
+Open up your `Dockerfile` and update its content as follows:
 
 ```text
-FROM ubuntu:latest
+FROM alpine:latest
 
 EXPOSE 80
 
 ARG FILENAME="nginx-1.19.2"
 ARG EXTENSION="tar.gz"
 
-RUN apt-get update && \
-    apt-get install build-essential \ 
-                    libpcre3 \
-                    libpcre3-dev \
-                    zlib1g \
-                    zlib1g-dev \
-                    libssl-dev \
-                    curl \
-                    -y && \
-    curl https://nginx.org/download/${FILENAME}.${EXTENSION} -o ${FILENAME}.${EXTENSION} && \
+ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+
+RUN apk add --no-cache pcre zlib && \
+    apk add --no-cache \
+            --virtual .build-deps \
+            build-base \ 
+            pcre-dev \
+            zlib-dev \
+            openssl-dev && \
     tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
     cd ${FILENAME} && \
     ./configure \
@@ -651,17 +656,59 @@ RUN apt-get update && \
         --with-http_ssl_module && \
     make && make install && \
     cd / && rm -rfv /${FILENAME} && \
-    apt-get remove build-essential \ 
-                    libpcre3-dev \
-                    zlib1g-dev \
-                    libssl-dev \
-                    curl \
-                    -y && \
-    apt-get autoremove -y && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apk del .build-deps
 
 CMD ["nginx", "-g", "daemon off;"]
 ```
+
+As you can see, the code is almost identical except a few changes. I'll be listing the changes and will be explaining them as I go:
+
+* Instead of using `apt-get install` for installing packages, we use `apk add` and the `--no-cache` option means that the downloaded package won't be cached. Likewise `apk del` is used instead of `apt-get remove` to uninstall packages.
+* The `--virtual` option for `apk add` command is used for bundling a bunch of packages into a single virtual package for easier management. Packages that are needed only for building the program is labeled as `.build-deps` which is then removed on line 29 by executing `apk del .build-deps` command. You can learn more about [virtuals](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html#_virtuals) in the official docs.
+* The packages names are a bit different here. Usually every Linux distribution has its package repository available to everyone where you can search for packages. If you know the packages required for a certain task then you can just head over to the designated repository for a distribution and search for it. You can look up Alpine Linux packages on [https://pkgs.alpinelinux.org/packages](https://pkgs.alpinelinux.org/packages) link.
+
+Now build a new image using this `Dockerfile` and see the difference in file size:
+
+```text
+docker image build --tag custom-nginx:built .
+
+# Sending build context to Docker daemon  1.055MB
+# Step 1/7 : FROM alpine:latest
+#  ---> 7731472c3f2a
+# Step 2/7 : EXPOSE 80
+#  ---> Running in 8336cfaaa48d
+# Removing intermediate container 8336cfaaa48d
+#  ---> d448a9049d01
+# Step 3/7 : ARG FILENAME="nginx-1.19.2"
+#  ---> Running in bb8b2eae9d74
+# Removing intermediate container bb8b2eae9d74
+#  ---> 87ca74f32fbe
+# Step 4/7 : ARG EXTENSION="tar.gz"
+#  ---> Running in aa09627fe48c
+# Removing intermediate container aa09627fe48c
+#  ---> 70cb557adb10
+# Step 5/7 : ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+# Downloading [==================================================>]  1.049MB/1.049MB
+#  ---> b9790ce0c4d6
+# Step 6/7 : RUN apk add --no-cache pcre zlib &&     apk add --no-cache             --virtual .build-deps             build-base             pcre-dev             zlib-dev             openssl-dev &&     tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} &&     cd ${FILENAME} &&     ./configure         --sbin-path=/usr/bin/nginx         --conf-path=/etc/nginx/nginx.conf         --error-log-path=/var/log/nginx/error.log         --http-log-path=/var/log/nginx/access.log         --with-pcre         --pid-path=/var/run/nginx.pid         --with-http_ssl_module &&     make && make install &&     cd / && rm -rfv /${FILENAME} &&     apk del .build-deps
+#  ---> Running in 0b301f64ffc1
+### LONG INSTALLATION AND BUILD STUFF GOES HERE ###
+# Removing intermediate container 0b301f64ffc1
+#  ---> dc7e4161f975
+# Step 7/7 : CMD ["nginx", "-g", "daemon off;"]
+#  ---> Running in b579e4600247
+# Removing intermediate container b579e4600247
+#  ---> 3e186a3c6830
+# Successfully built 3e186a3c6830
+# Successfully tagged custom-nginx:built
+
+docker image ls
+
+# REPOSITORY         TAG       IMAGE ID       CREATED         SIZE
+# custom-nginx       built     3e186a3c6830   8 seconds ago   12.8MB
+```
+
+Where the ubuntu version was 81.6MB, the alpine one has come down to 12.8MB which is a massive gain. Apart from the `apk` package manager, there are some other things that differ in Alpine from Ubuntu but they're not that much of big deal. You can just search the internet where you get stuck and help is a few keystrokes away.
 
 ## Creating Executable Images
 
@@ -686,41 +733,63 @@ To build the above mentioned image, the following steps should be taken:
 Now create a new `Dockerfile` inside the `rmbyext` directory and put following code in it:
 
 ```text
-FROM python:3-buster
+FROM python:3-alpine
 
 WORKDIR /zone
 
-RUN apt-get update && \
-    apt-get install git -y && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN pip install git+https://github.com/fhsinchy/rmbyext.git#egg=rmbyext
-
-RUN useradd human && \
-    chown -R human /zone
-
-USER human
+RUN apk add --no-cache git && \
+    pip install git+https://github.com/fhsinchy/rmbyext.git#egg=rmbyext && \
+    apk del git
 
 ENTRYPOINT [ "rmbyext" ]
 ```
 
 Explanation for the instructions in this file is as follows:
 
-* The `FROM` instruction sets [python](https://hub.docker.com/_/python) as the base image making an ideal environment for running python scripts. The `3-buster` tags indicates that you want Python 3 installed within a [Debian Buster](https://www.debian.org/releases/buster/) image.
-* The `WORKDIR` instruction sets the default working directory to `/zone` here. The name of the working directory is completely random here. I found zone to be fitting name, you may use anything you want.
-* The `RUN` instruction on line 5 checks for necessary updates, installs git and cleans unnecessary cached data using regular `apt-get` commands. Given this is a Debian image, `apt-get` is available right from the get go.
-* The `RUN` instruction on line 9 installs the `rmbyext` script using git and pip.
-* The third `RUN` instruction on line 11 creates a new user named `human` and sets it as the owner of the `/zone` directory. Here, `human` is a non-root user and given the `/zone` directory is in the root, it doesn't have write access to that directory. Hence the necessity of the `chown` command. You could just create the directory in `/home/human/zone` instead of `/zone` but writing `$(pwd):/zone` seems much easier than writing `$(pwd):/home/human/zone` to me.
-* The `USER` instruction sets `human` as the default user for the image. I've set the user just before setting the entrypoint because if I had set it earlier for say before all the `RUN` instructions, then the installation of the git package and the rmbyext script would have failed for the lack of root permission.
-* Finally on line 16, the `ENTRYPOINT` instruction sets the `rmbyext` script as the entrypoint for this image.
+* The `FROM` instruction sets [python](https://hub.docker.com/_/python) as the base image making an ideal environment for running python scripts. The `3-alpine` tag indicates that you want the Alpine variant of Python 3.
+* The `WORKDIR` instruction sets the default working directory to `/zone` here. The name of the working directory is completely random here. I found zone to be a fitting name, you may use anything you want.
+* Given the `rmbyext` script is installed from GitHub, `git` is a install time dependency. The `RUN` instruction on line 5 installs `git`, installs the `rmbyext` script using git and pip. It also gets rid of `git` afterwards.
+* Finally on line 9, the `ENTRYPOINT` instruction sets the `rmbyext` script as the entry-point for this image.
 
-In this entire file, line 16 is the magic that turns this seemingly normal image to an executable one. Now to build the image you can execute following command:
+In this entire file, line 9 is the magic that turns this seemingly normal image to an executable one. Now to build the image you can execute following command:
 
 ```text
 docker image build --tag rmbyext .
+
+# Sending build context to Docker daemon  2.048kB
+# Step 1/4 : FROM python:3-alpine
+# 3-alpine: Pulling from library/python
+# 801bfaa63ef2: Already exists 
+# 8723b2b92bec: Already exists 
+# 4e07029ccd64: Already exists 
+# 594990504179: Already exists 
+# 140d7fec7322: Already exists 
+# Digest: sha256:7492c1f615e3651629bd6c61777e9660caa3819cf3561a47d1d526dfeee02cf6
+# Status: Downloaded newer image for python:3-alpine
+#  ---> d4d4f50f871a
+# Step 2/4 : WORKDIR /zone
+#  ---> Running in 454374612a91
+# Removing intermediate container 454374612a91
+#  ---> 7f7e49bc98d2
+# Step 3/4 : RUN apk add --no-cache git &&     pip install git+https://github.com/fhsinchy/rmbyext.git#egg=rmbyext &&     apk del git
+#  ---> Running in 27e2e96dc95a
+### LONG INSTALLATION STUFF GOES HERE ###
+# Removing intermediate container 27e2e96dc95a
+#  ---> 3c7389432e36
+# Step 4/4 : ENTRYPOINT [ "rmbyext" ]
+#  ---> Running in f239bbea1ca6
+# Removing intermediate container f239bbea1ca6
+#  ---> 1746b0cedbc7
+# Successfully built 1746b0cedbc7
+# Successfully tagged rmbyext:latest
+
+docker image ls
+
+# REPOSITORY         TAG        IMAGE ID       CREATED         SIZE
+# rmbyext            latest     1746b0cedbc7   4 minutes ago   50.9MB
 ```
 
-Here I'm not providing any tag after the image name so the image will be tagged as `latest` by default. You should be able to run the image as you saw in the previous section. Just remember to refer to the actual image name you've set, instead of `fhsinchy/rmbyext` here.
+Here I haven't provided any tag after the image name so the image has been tagged as `latest` by default. You should be able to run the image as you saw in the previous section. Remember to refer to the actual image name you've set, instead of `fhsinchy/rmbyext` here.
 
 ## Sharing Your Images Online
 

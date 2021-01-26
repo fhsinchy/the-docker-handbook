@@ -2,6 +2,8 @@
 
 Now that you've got some idea of creating images, it's time to work with something a bit more relevant. In this sub-section, you'll be working with the source code of the [fhsinchy/hello-dock](https://hub.docker.com/r/fhsinchy/hello-dock) image that you worked with on a previous section. In the process of containerizing this very simple application, you'll be introduced to volumes and multi-staged builds, two of the most important concepts in Docker.
 
+## Writing The Development Dockerfile
+
 To begin with, open up the directory where you've cloned the repository that came with this article. Code for the `hello-dock` application resides inside the sub-directory with the same name.
 
 ```text
@@ -34,11 +36,15 @@ Just like any other project you've done in the previous sub-section, you'll begi
 This plan should always come from the developer of the application that you're containerizing. If you're the developer yourself, then you should already have a proper understanding of how this application needs to be run. Now if you put the above mentioned plan inside `Dockerfile.dev`, the file should look like as follows:
 
 ```text
-FROM node:lts
+FROM node:lts-alpine
 
 EXPOSE 3000
 
-WORKDIR /app
+USER node
+
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
 
 COPY ./package.json .
 RUN npm install
@@ -50,12 +56,14 @@ CMD [ "npm", "run", "dev" ]
 
 Explanation for this code is as follows:
 
-* The `FROM` instruction here sets the official Node.js image as the base giving you all the goodness of Node.js necessary to run any JavaScript application. The `lts` tag indicates that you want to use the long term support version of the image. Available tags and necessary documentation for an image is usually found on [node](https://hub.docker.com/_/node) hub page.
-* Then the `WORKDIR` instruction sets the default working directory to `/app` directory. By default the working directory of any image is the root. You don't want any unnecessary files sprayed all over your root directory, do you? Hence you change the default working directory to something more sensible like `/app` or whatever you like. This working directory will be application to any consecutive `COPY`, `ADD`, `RUN` and `CMD` instructions.
+* The `FROM` instruction here sets the official Node.js image as the base giving you all the goodness of Node.js necessary to run any JavaScript application. The `lts-alpine` tag indicates that you want to use the Alpine variant, long term support version of the image. Available tags and necessary documentation for the image can be found on [node](https://hub.docker.com/_/node) hub page.
+* The `USER` instruction sets the default user for the image to `node`. By default Docker runs containers as the root user and according to [Docker and Node.js Best Practices](https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md) this can pose a security threat. So a better idea is to run as a non-root user whenever possible. The node image comes with a non-root user named `node` which you can set as the default user using the `USER` instruction.
+* The `RUN mkdir -p /home/node/app` instruction creates a directory called `app` inside the home directory of the `node` user. The home directory for any non-root user in Linux is usually  `/home/<user name>` by default.
+* Then the `WORKDIR` instruction sets the default working directory to the newly created `/home/node/app` directory. By default the working directory of any image is the root. You don't want any unnecessary files sprayed all over your root directory, do you? Hence you change the default working directory to something more sensible like `/home/node/app` or whatever you like. This working directory will be applicable to any consecutive `COPY`, `ADD`, `RUN` and `CMD` instructions.
 * The `COPY` instruction here copies the `package.json` file which contains information regarding all the necessary dependencies for this application. The `RUN` instruction executes `npm install` command which is the default command for installing dependencies using a `package.json` file in Node.js projects. The `.` at the end represents the working directory.
 * The second `COPY` instruction copies rest of the content from the current directory \(`.`\) of the host filesystem to the working directory \(`.`\) inside the image.
 * Finally, the `CMD` instruction here sets the default command for this image which is `npm run dev` written in `exec` form.
-* The vite development server by default runs on port `3000` hence adding an `EXPOSE` command seemed like a good idea, so there you go.
+* The `vite` development server by default runs on port `3000` hence adding an `EXPOSE` command seemed like a good idea, so there you go.
 
 Now, to build an image from this `Dockerfile.dev` you can execute the following command:
 
@@ -89,7 +97,7 @@ docker image build --file Dockerfile.dev --tag hello-dock:dev .
 # Successfully tagged hello-dock:dev
 ```
 
-A container can be run using this image by executing the following command:
+Given the filename is not `Dockerfile` you have to explicitly pass the filename using the `--file` option. A container can be run using this image by executing the following command:
 
 ```text
 docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev hello-dock:dev
@@ -103,6 +111,8 @@ Now visit `http://127.0.0.1:3000` do see the `hello-dock` application in action.
 
 Congratulations on running your first real-world application inside a container. The code you've just written is okay but there is one big issue with it and a few places where it can be improved. Let's begin with the issue first.
 
+## Working With Bind Mounts
+
 If you've worked with any front-end JavaScript framework before, you should know that the development servers in these frameworks usually come with a hot reload feature. That is if you make a change in your code, the server will reload automatically reflecting any changes you've made immediately.
 
 But if you make any change in your code right now, you'll see nothing happening to your application running in the browser. The reason behind this is the fact that you're making changes in the code that you have in your local file system but the application you're seeing in the browser resides inside the container file system.
@@ -115,9 +125,9 @@ Using bind mounts, you can easily mount one of your local file system directory 
 
 ![](.gitbook/assets/bind-mounts.svg)
 
-This way, any changes you make to your local source code will reflect immediately inside the container,  triggering the hot reload feature of vite development server. Changes made to the file system inside the container will reflect on your local file system as well.
+This way, any changes you make to your local source code will reflect immediately inside the container,  triggering the hot reload feature of `vite` development server. Changes made to the file system inside the container will reflect on your local file system as well.
 
-As you've already learned in, bind mounts can be created using the `--volume` or `-v` option for the `container run` or `container start` commands. Just to remind you, the generic syntax is as follows: 
+You've already learned in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section, bind mounts can be created using the `--volume` or `-v` option for the `container run` or `container start` commands. Just to remind you, the generic syntax is as follows: 
 
 ```text
 --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
@@ -147,6 +157,8 @@ That's because although the usage of a volume solves the issue of hot reloads, i
 
 Now that you're mounting the project root on your local file system as a volume inside the container, the content inside the container gets replaced along with the `node_modules` directory containing all the dependencies.  Hence the `vite` package goes missing.
 
+## Working With Anonymous Volumes
+
 This problem here can be solved using an anonymous volume. An anonymous volume is identical to a bind mount except the fact that you don't need to specify the source directory here. The generic syntax for creating an anonymous volume is as follows:
 
 ```text
@@ -162,36 +174,6 @@ docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev --v
 ```
 
 Here, Docker will take the entire `node_modules` directory from inside the container and tuck it away in some other directory managed by the Docker daemon on your host file system and will mount that directory as `node_modules` inside the container.
-
-## Improving the Dockerfile.dev
-
-The `Dockerfile.dev` you wrote in the previous section is okay but there are some improvements that can be made. So open up the `Dockerfile.dev` file once again and update it's content to look like as follows:
-
-```text
-FROM node:lts
-
-EXPOSE 3000
-
-USER node
-
-RUN mkdir -p /home/node/app
-
-WORKDIR /home/node/app
-
-COPY ./package.json .
-RUN npm install
-
-CMD [ "npm", "run", "dev" ]
-```
-
-Let me explain the changes I've made one by one here:
-
-* On line 5, I've added a new instruction `USER node`. By default Docker runs containers as the root user and according to [Docker and Node.js Best Practices](https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md) this can pose a security threat. So a better idea is to run as a non-root user whenever possible. The node image comes with a non-root user named `node` which you can set as the default user using the `USER` instruction.
-* Given now you're using a non-root user, you do not have write access to the container root hence using `/app` is not possible. So instead of the root, you'll have to use a directory that is writable by the `node` user. On line 7, the `RUN mkdir -p /home/node/app` instruction creates a directory called `app` inside the home directory of the `node` user. The home directory for any non-root user in Linux is usually  `/home/<user name>` by default.
-* On line 9, the `WORKDIR /home/node/app` instruction sets the `/home/node/app` directory as the working directory instead of the `/app` directory.
-* Another change is the removal of the `COPY . .` instruction. This is done because mounting the project root as a volume inside the container working directory makes the `COPY` instruction redundant.
-
-Apart from these four changes, rest of the file remains same. Now rebuild the image and try running a new container with the resultant image.
 
 ## Performing Multi-Staged Builds
 
@@ -211,13 +193,9 @@ This approach is a completely valid approach but the problem is that the `node` 
 This way your image only contains the files that are needed and becomes really handy. This approach is a multi-staged build. To perform such a build, create a new `Dockerfile` inside your `hello-dock` project directory and put following content in there:
 
 ```text
-FROM node:lts as builder
+FROM node:lts-alpine as builder
 
-USER node
-
-RUN mkdir -p /home/node/app
-
-WORKDIR /home/node/app
+WORKDIR /app
 
 COPY ./package.json ./
 RUN npm install
@@ -225,29 +203,29 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM nginx:stable
+FROM nginx:stable-alpine
 
 EXPOSE 80
 
-COPY --from=builder /home/node/app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 ```
 
 As you can see the `Dockerfile` looks a lot like your previous ones with a few oddities. Explanation for this file is as follows:
 
-* Line 1 starts the first stage of the build using `node:lts` as the base image. The `as builder` syntax assigns a name to this stage so that it can be referred to as later on.
+* Line 1 starts the first stage of the build using `node:lts-alpine` as the base image. The `as builder` syntax assigns a name to this stage so that it can be referred to as later on.
 * From line 3 to line 13, it's standard stuff that you've seen many times before. The `RUN npm run build` command actually compiles the entire application and tucks it inside `/home/node/app/dist` directory where `/home/node/app` is the working directory and `/dist` is the default output directory for `vite` applications.
-* Line 15 starts the second stage of the build using `nginx:stable` as the base image.
-* The nginx server runs on port 80 by default hence the line `EXPOSE 80` is added.
-* The last line is a `COPY` instruction. The `--from=builder` part indicates that you want to copy some files from the `builder` stage. After that it's a standard copy instruction where `/home/node/app/dist` is the source and `/usr/share/nginx/html` is the destination. The destination used here is the default site path for nginx so any static file you put inside there will be automatically served by nginx.
+* Line 15 starts the second stage of the build using `nginx:stable-alpine` as the base image.
+* The NGINX server runs on port 80 by default hence the line `EXPOSE 80` is added.
+* The last line is a `COPY` instruction. The `--from=builder` part indicates that you want to copy some files from the `builder` stage. After that it's a standard copy instruction where `/app/dist` is the source and `/usr/share/nginx/html` is the destination. The destination used here is the default site path for NGINX so any static file you put inside there will be automatically served.
 
 As you can see the resultant image is a `nginx` base image containing only the files necessary for running the application. To build this image execute following command:
 
 ```text
 docker image build --tag hello-dock:prod .
 
-# Step 1/9 : FROM node:lts as builder
+# Step 1/9 : FROM node:lts-alpine as builder
 #  ---> 72aaced1868f
-# Step 2/9 : WORKDIR /usr/app
+# Step 2/9 : WORKDIR /app
 #  ---> Running in e361c5c866dd
 # Removing intermediate container e361c5c866dd
 #  ---> 241b4b97b34c
@@ -257,7 +235,7 @@ docker image build --tag hello-dock:prod .
 #  ---> Running in 6dfabf0ee9f8
 # npm WARN deprecated fsevents@2.1.3: Please update to v 2.2.x
 
-# > esbuild@0.8.29 postinstall /usr/app/node_modules/esbuild
+# > esbuild@0.8.29 postinstall /app/node_modules/esbuild
 # > node install.js
 
 # npm notice created a lockfile as package-lock.json. You should commit this file.
@@ -281,7 +259,7 @@ docker image build --tag hello-dock:prod .
 # Step 6/9 : RUN npm run build
 #  ---> Running in 4d918cf18584
 
-# > hello-dock@0.0.0 build /usr/app
+# > hello-dock@0.0.0 build /app
 # > vite build
 
 # - Building production bundle...
@@ -300,7 +278,7 @@ docker image build --tag hello-dock:prod .
 #  ---> Running in b3aab5cf5975
 # Removing intermediate container b3aab5cf5975
 #  ---> d6fcc058cfda
-# Step 8/9 : FROM nginx:stable
+# Step 8/9 : FROM nginx:stable-alpine
 # stable: Pulling from library/nginx
 # 6ec7b7d162b2: Already exists 
 # 43876acb2da3: Pull complete 
@@ -310,13 +288,13 @@ docker image build --tag hello-dock:prod .
 # Digest: sha256:2eea9f5d6fff078ad6cc6c961ab11b8314efd91fb8480b5d054c7057a619e0c3
 # Status: Downloaded newer image for nginx:stable
 #  ---> 05f64a802c26
-# Step 9/9 : COPY --from=builder /usr/app/dist /usr/share/nginx/html
+# Step 9/9 : COPY --from=builder /app/dist /usr/share/nginx/html
 #  ---> 8c6dfc34a10d
 # Successfully built 8c6dfc34a10d
 # Successfully tagged hello-dock:prod
 ```
 
-As I've already said in a previous section, the `--file` option is redundant if there is a `Dockerfile` in the context, so I'm omitting that. Once the image has been built, you may run a new container by executing the following command:
+Once the image has been built, you may run a new container by executing the following command:
 
 ```text
 docker container run --rm --detach --name hello-dock-prod --publish 8080:80 hello-dock:prod

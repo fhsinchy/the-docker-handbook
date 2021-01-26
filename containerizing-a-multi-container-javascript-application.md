@@ -11,7 +11,13 @@ The database server in this project is a simple PostgreSQL server and uses the o
 To run the database server you can execute the following command:
 
 ```text
-docker container run --detach --name=notes-api-db --env POSTGRES_DB=notesdb --env POSTGRES_PASSWORD=secret postgres:12
+docker container run \
+    --detach \
+    --name=notes-api-db \
+    --env POSTGRES_DB=notesdb \
+    --env POSTGRES_PASSWORD=secret \
+    --network=notes-api-network \
+    postgres:12
 
 # a7b287d34d96c8e81a63949c57b83d7c1d71b5660c87f5172f074bd1606196dc
 
@@ -166,9 +172,9 @@ docker network connect notes-ap-network notes-api-db
 
 Now the database server is complete ready to be bugged by the API.
 
-## Writing The Development Dockerfile
+## Writing The Dockerfile
 
-Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory and create a new `Dockerfile.dev` in there. Code for the `Dockerfile.dev` is as follows:
+Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory and you'll find a `Dockerfile` in there.
 
 ```text
 # stage one
@@ -180,21 +186,22 @@ RUN apk add --no-cache python make g++
 WORKDIR /app
 
 COPY ./package.json .
-RUN npm install
+RUN npm install --only=prod
 
 # stage two
 FROM node:lts-alpine
 
-ENV NODE_ENV=development
+EXPOSE 3000
+ENV NODE_ENV=production
 
 USER node
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 
 COPY . .
-COPY --from=builder /app/node_modules /home/node/app/node_modules
+COPY --from=builder /app/node_modules  /home/node/app/node_modules
 
-CMD [ "./node_modules/.bin/nodemon", "--config", "nodemon.json", "bin/www" ]
+CMD [ "node", "bin/www" ]
 ```
 
 This is a multi-staged build. The first stage is used for building and installing the dependencies using `node-gyp` and the second stage is for running the application. I'll go through the steps briefly:
@@ -204,8 +211,242 @@ This is a multi-staged build. The first stage is used for building and installin
 * On line 7, we set the `WORKDIR` to `/app` directory.
 * On line 9 and 10, we copy the `package.json` file to the `WORKDIR` and installs all the dependencies.
 * Stage 2 also uses `node-lts:alpine` as the base.
-* On line 15, we set the `NODE_ENV` environment variable to `development`. This is important for the API to run properly in development mode.
-* From line 17 to line 19, we set the default user to `node`, create the `/home/node/app` directory and set that as the `WORKDIR`.
-* On line 21, we copy all the project files and on line 22 we copy the `node_modules` directory from stage 1. This directory contains all the built dependencies necessary for running the application.
-* On line 24, we set the default command. `nodemon` is a tool that provides auto-reload functionality for Node.js applications.
+* On line 16, we set the `NODE_ENV` environment variable to `production`. This is important for the API to run properly.
+* From line 18 to line 20, we set the default user to `node`, create the `/home/node/app` directory and set that as the `WORKDIR`.
+* On line 22, we copy all the project files and on line 23 we copy the `node_modules` directory from the `builder` stage. This directory contains all the built dependencies necessary for running the application.
+* On line 25, we set the default command.
+
+To build an image from this `Dockerfile`, execute following command inside the `api` directory:
+
+```text
+docker image build --tag notes-api .
+
+# Sending build context to Docker daemon  37.38kB
+# Step 1/14 : FROM node:lts-alpine as builder
+#  ---> 471e8b4eb0b2
+# Step 2/14 : RUN apk add --no-cache python make g++
+#  ---> Running in 5f20a0ecc04b
+# fetch http://dl-cdn.alpinelinux.org/alpine/v3.11/main/x86_64/APKINDEX.tar.gz
+# fetch http://dl-cdn.alpinelinux.org/alpine/v3.11/community/x86_64/APKINDEX.tar.gz
+# (1/21) Installing binutils (2.33.1-r0)
+# (2/21) Installing gmp (6.1.2-r1)
+# (3/21) Installing isl (0.18-r0)
+# (4/21) Installing libgomp (9.3.0-r0)
+# (5/21) Installing libatomic (9.3.0-r0)
+# (6/21) Installing mpfr4 (4.0.2-r1)
+# (7/21) Installing mpc1 (1.1.0-r1)
+# (8/21) Installing gcc (9.3.0-r0)
+# (9/21) Installing musl-dev (1.1.24-r3)
+# (10/21) Installing libc-dev (0.7.2-r0)
+# (11/21) Installing g++ (9.3.0-r0)
+# (12/21) Installing make (4.2.1-r2)
+# (13/21) Installing libbz2 (1.0.8-r1)
+# (14/21) Installing expat (2.2.9-r1)
+# (15/21) Installing libffi (3.2.1-r6)
+# (16/21) Installing gdbm (1.13-r1)
+# (17/21) Installing ncurses-terminfo-base (6.1_p20200118-r4)
+# (18/21) Installing ncurses-libs (6.1_p20200118-r4)
+# (19/21) Installing readline (8.0.1-r0)
+# (20/21) Installing sqlite-libs (3.30.1-r2)
+# (21/21) Installing python2 (2.7.18-r0)
+# Executing busybox-1.31.1-r9.trigger
+# OK: 212 MiB in 37 packages
+# Removing intermediate container 5f20a0ecc04b
+#  ---> 637ca797d709
+# Step 3/14 : WORKDIR /app
+#  ---> Running in 846361b57599
+# Removing intermediate container 846361b57599
+#  ---> 3d58a482896e
+# Step 4/14 : COPY ./package.json .
+#  ---> 11b387794039
+# Step 5/14 : RUN npm install --only=prod
+#  ---> Running in 2e27e33f935d
+#  added 269 packages from 220 contributors and audited 1137 packages in 140.322s
+
+# 4 packages are looking for funding
+#   run `npm fund` for details
+
+# found 0 vulnerabilities
+
+# Removing intermediate container 2e27e33f935d
+#  ---> eb7cb2cb0b20
+# Step 6/14 : FROM node:lts-alpine
+#  ---> 471e8b4eb0b2
+# Step 7/14 : EXPOSE 3000
+#  ---> Running in 4ea24f871747
+# Removing intermediate container 4ea24f871747
+#  ---> 1f0206f2f050
+# Step 8/14 : ENV NODE_ENV=production
+#  ---> Running in 5d40d6ac3b7e
+# Removing intermediate container 5d40d6ac3b7e
+#  ---> 31f62da17929
+# Step 9/14 : USER node
+#  ---> Running in 0963e1fb19a0
+# Removing intermediate container 0963e1fb19a0
+#  ---> 0f4045152b1c
+# Step 10/14 : RUN mkdir -p /home/node/app
+#  ---> Running in 0ac591b3adbd
+# Removing intermediate container 0ac591b3adbd
+#  ---> 5908373dfc75
+# Step 11/14 : WORKDIR /home/node/app
+#  ---> Running in 55253b62ff57
+# Removing intermediate container 55253b62ff57
+#  ---> 2883cdb7c77a
+# Step 12/14 : COPY . .
+#  ---> 8e60893a7142
+# Step 13/14 : COPY --from=builder /app/node_modules  /home/node/app/node_modules
+#  ---> 27a85faa4342
+# Step 14/14 : CMD [ "node", "bin/www" ]
+#  ---> Running in 349c8ca6dd3e
+# Removing intermediate container 349c8ca6dd3e
+#  ---> 9ea100571585
+# Successfully built 9ea100571585
+# Successfully tagged notes-api:latest
+```
+
+Before you run a container using this image, make sure the database container is running, and is attached to the `notes-api-network`. 
+
+```text
+docker container inspect notes-api-db
+
+# [
+#     {
+#         ...
+#         "State": {
+#             "Status": "running",
+#             "Running": true,
+#             "Paused": false,
+#             "Restarting": false,
+#             "OOMKilled": false,
+#             "Dead": false,
+#             "Pid": 11521,
+#             "ExitCode": 0,
+#             "Error": "",
+#             "StartedAt": "2021-01-26T06:55:44.928510218Z",
+#             "FinishedAt": "2021-01-25T14:19:31.316854657Z"
+#         },
+#         ...
+#         "Mounts": [
+#             {
+#                 "Type": "volume",
+#                 "Name": "notes-api-db-data",
+#                 "Source": "/var/lib/docker/volumes/notes-api-db-data/_data",
+#                 "Destination": "/var/lib/postgresql/data",
+#                 "Driver": "local",
+#                 "Mode": "z",
+#                 "RW": true,
+#                 "Propagation": ""
+#             }
+#         ],
+#         ...
+#         "NetworkSettings": {
+#             ...
+#             "Networks": {
+#                 "bridge": {
+#                     "IPAMConfig": null,
+#                     "Links": null,
+#                     "Aliases": null,
+#                     "NetworkID": "e4c7ce50a5a2a49672155ff498597db336ecc2e3bbb6ee8baeebcf9fcfa0e1ab",
+#                     "EndpointID": "2a2587f8285fa020878dd38bdc630cdfca0d769f76fc143d1b554237ce907371",
+#                     "Gateway": "172.17.0.1",
+#                     "IPAddress": "172.17.0.2",
+#                     "IPPrefixLen": 16,
+#                     "IPv6Gateway": "",
+#                     "GlobalIPv6Address": "",
+#                     "GlobalIPv6PrefixLen": 0,
+#                     "MacAddress": "02:42:ac:11:00:02",
+#                     "DriverOpts": null
+#                 },
+#                 "notes-api-network": {
+#                     "IPAMConfig": {},
+#                     "Links": null,
+#                     "Aliases": [
+#                         "37755e86d627"
+#                     ],
+#                     "NetworkID": "06579ad9f93d59fc3866ac628ed258dfac2ed7bc1a9cd6fe6e67220b15d203ea",
+#                     "EndpointID": "5b8f8718ec9a5ec53e7a13cce3cb540fdf3556fb34242362a8da4cc08d37223c",
+#                     "Gateway": "172.18.0.1",
+#                     "IPAddress": "172.18.0.2",
+#                     "IPPrefixLen": 16,
+#                     "IPv6Gateway": "",
+#                     "GlobalIPv6Address": "",
+#                     "GlobalIPv6PrefixLen": 0,
+#                     "MacAddress": "02:42:ac:12:00:02",
+#                     "DriverOpts": {}
+#                 }
+#             }
+#         }
+#     }
+# ]
+
+```
+
+I've shortened the output for easy viewing here. On my system, the `notes-api-db` container is running, uses the `notes-api-db-data` volume and is attached to the `notes-api-network` bridge.
+
+Once you're assured that everything is in place, you can run a new container by executing the following command:
+
+```text
+docker container run \
+    --detach \
+    --name=notes-api \
+    --env DB_HOST=notes-api-db \
+    --env DB_DATABASE=notesdb \
+    --env DB_PASSWORD=secret \
+    --publish=3000:3000 \
+    --network=notes-api-network \
+    notes-api
+    
+# f9ece420872de99a060b954e3c236cbb1e23d468feffa7fed1e06985d99fb919
+
+```
+
+You should be able to understand this long command by yourself, I'll go through the environment variables briefly. The `notes-api` application requires three environment variables to be set. They are as follows:
+
+* `DB_HOST` - This is the host of the database server. Given both the database server and the api is attached to the same user-defined bridge network, the database server can be refereed to using its container name which is `notes-api-db` in this case.
+* `DB_DATABASE` - The database that this API will use. On [Running the Database Server](containerizing-a-multi-container-javascript-application.md#running-the-database-server) we set the default database name to `notesdb` using the `POSTGRES_DB` environment variable. We'll use that here.
+* `DB_PASSWORD` - Password for connecting to the database. This was also set on [Running the Database Server](containerizing-a-multi-container-javascript-application.md#running-the-database-server) sub-section using the `POSTGRES_PASSWORD` environment variable.
+
+To check if the container is running properly or not, you can use the `container ls` command:
+
+```text
+docker container ls
+
+# CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                    NAMES
+# f9ece420872d   notes-api     "docker-entrypoint.s…"   12 minutes ago   Up 12 minutes   0.0.0.0:3000->3000/tcp   notes-api
+# 37755e86d627   postgres:12   "docker-entrypoint.s…"   17 hours ago     Up 14 minutes   5432/tcp                 notes-api-db
+```
+
+The container is running now. There is one last thing that you'll have to do. You'll have to run the database migration necessary for setting up the database tables and you can do that by executing `npm run db:migrate` command inside the container.
+
+You've already learned how to execute commands inside a running container using the `container exec` command. To refresh your memory, the generic syntax for the `exec` command is as follows:
+
+```text
+docker container exec <container identifier> <command>
+```
+
+To execute `npm run db:migrate` inside the `notes-api` container, you can execute the following command:
+
+```text
+docker container exec notes-api npm run db:migrate
+
+# > notes-api@ db:migrate /home/node/app
+# > knex migrate:latest
+
+# Using environment: production
+# Batch 1 run: 1 migrations
+```
+
+Now visit `http://127.0.0.1:3000/` to see the API in action.
+
+![](.gitbook/assets/bonjour-mon-ami.png)
+
+The API has five routes in total that you can see inside the `/notes/api/api/api/routes/notes.js` file. This API was bootstrapped one of my open-source projects:
+
+{% embed url="https://github.com/fhsinchy/create-node-rocket-api" caption="spare a ⭐ to keep me motivated" %}
+
+The project also contains a `Dockerfile.dev` file that allows hot reload functionality like the one you worked with in [Containerizing a JavaScript Application](containerizing-a-javascript-application.md) section. I'll leave the `Dockerfile.dev` for you to understand by yourself.
+
+## Destroying The Application
+
+
 
