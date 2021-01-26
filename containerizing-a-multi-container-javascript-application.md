@@ -454,7 +454,7 @@ The project also contains a `Dockerfile.dev` file that you'll be using in the ne
 
 ## Writing Management Scripts
 
-Managing a multi-container project along with the network and volumes and stuff means writing a lot of commands. To simplify the process, I usually take help of simple [shell scripts](https://opensource.com/article/17/1/getting-started-shell-scripting) and a [Makefile](https://opensource.com/article/18/8/what-how-makefile). You'll fine three shell scripts in the `notes-api` directory. They are as follows:
+Managing a multi-container project along with the network and volumes and stuff means writing a lot of commands. To simplify the process, I usually take help of simple [shell scripts](https://opensource.com/article/17/1/getting-started-shell-scripting) and a [Makefile](https://opensource.com/article/18/8/what-how-makefile). You'll find four shell scripts in the `notes-api` directory. They are as follows:
 
 * `boot.sh` - Used for starting the containers if they already exist.
 * `build.sh` - Creates and runs the containers. It also creates the images, volumes and networks if necessary.
