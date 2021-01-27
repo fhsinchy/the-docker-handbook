@@ -449,7 +449,7 @@ And here is the trusty default response page from NGINX. You can visit the [offi
 
 ## Optimizing Images
 
-The image you built in the last sub-section is functional but very unoptimized. To prove my point let's  have a look at the size of the image using the docker `image ls` command:
+The image we built in the last sub-section is functional but very unoptimized. To prove my point let's  have a look at the size of the image using the `image ls` command:
 
 ```text
 docker image ls
@@ -458,7 +458,7 @@ docker image ls
 # custom-nginx       built     1f3aaf40bb54   16 minutes ago   343MB
 ```
 
-For an image that contains only NGINX, that's too much. If you pull the official image and check it's size you'll see how small it is:
+For an image containing only NGINX, that's too much. If you pull the official image and check it's size you'll see how small it is:
 
 ```text
 docker image pull nginx:stable
@@ -518,7 +518,7 @@ RUN rm -rf /${FILENAME}}
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. Out of the 6 packages that've been installed, only two are necessary for running NGINX. These are `libpcre3` and `zlib1g`. So a better idea can be to uninstall the other packages once the build process is done. 
+As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. Out of the 6 packages that we installed, only two are necessary for running NGINX. These are `libpcre3` and `zlib1g`. So a better idea can be to uninstall the other packages once the build process is done. 
 
 To do so, update your `Dockerfile` as follows:
 
@@ -571,7 +571,7 @@ As you can see, on line 10 a single `RUN` instruction is doing all the necessary
 * On line 29, the extracted files from the downloaded archive gets removed.
 * From line 30 to line 36, all the unnecessary packages are being uninstalled and cache cleared. The `libpcre3` and `zlib1g` packages are needed for running NGINX hence they're kept.
 
-You may ask why am I doing so much woek in a single `RUN` instruction instead of nicely splitting them into multiple instructions, like we did previously. Well that's a mistake. If you install packages and then remove them in separate `RUN` instructions, they'll live in separate layers of the image. Although the final image will not have the removed packages, their size will still be added to the final image given they exist in one of the layers consisting the image. So make sure you make these kind of changes on a single layer.
+You may ask why am I doing so much work in a single `RUN` instruction instead of nicely splitting them into multiple instructions, like we did previously. Well that's a mistake. If you install packages and then remove them in separate `RUN` instructions, they'll live in separate layers of the image. Although the final image will not have the removed packages, their size will still be added to the final image given they exist in one of the layers consisting the image. So make sure you make these kind of changes on a single layer.
 
 Let's build an image using this `Dockerfile` and see the differences.
 
@@ -659,7 +659,7 @@ RUN apk add --no-cache pcre zlib && \
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-As you can see, the code is almost identical except a few changes. I'll be listing the changes and will be explaining them as I go:
+The code is almost identical except a few changes. I'll be listing the changes and will be explaining them as I go:
 
 * Instead of using `apt-get install` for installing packages, we use `apk add` and the `--no-cache` option means that the downloaded package won't be cached. Likewise `apk del` is used instead of `apt-get remove` to uninstall packages.
 * The `--virtual` option for `apk add` command is used for bundling a bunch of packages into a single virtual package for easier management. Packages that are needed only for building the program is labeled as `.build-deps` which is then removed on line 29 by executing `apk del .build-deps` command. You can learn more about [virtuals](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html#_virtuals) in the official docs.
@@ -706,13 +706,13 @@ docker image ls
 # custom-nginx       built     3e186a3c6830   8 seconds ago   12.8MB
 ```
 
-Where the ubuntu version was 81.6MB, the alpine one has come down to 12.8MB which is a massive gain. Apart from the `apk` package manager, there are some other things that differ in Alpine from Ubuntu but they're not that much of big deal. You can just search the internet where you get stuck and help is a few keystrokes away.
+Where the ubuntu version was 81.6MB, the alpine one has come down to 12.8MB which is a massive gain. Apart from the `apk` package manager, there are some other things that differ in Alpine from Ubuntu but they're not that much of big deal. You can just search the internet whenever you get stuck.
 
 ## Creating Executable Images
 
 In the previous section you've worked with the [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image. In this section you'll learn about making such an executable image. Open up the `rmbyext` directory inside the code repository for this article.
 
-Before you start working on the `Dockerfile` take a moment to plan out what the final output should be. In my opinion it should be something like as follows:
+Before you start working on the `Dockerfile` take a moment to plan out what the final output should be. In my opinion it should be like something as follows:
 
 * The image should have python pre-installed.
 * It should contain a copy of my `rmbyext` script.
@@ -725,8 +725,8 @@ To build the above mentioned image, the following steps should be taken:
 * Set-up the working directory to an easily accessible directory.
 * Install git so that the script can be installed from my github repository.
 * Install the script using git and pip.
-* Create and switch to a non-root user.
-* Set `rmbyext` as the entrypoint for this image.
+* Get rid of the build unnecessary packages.
+* Set `rmbyext` as the entry-point for this image.
 
 Now create a new `Dockerfile` inside the `rmbyext` directory and put following code in it:
 
@@ -746,7 +746,7 @@ Explanation for the instructions in this file is as follows:
 
 * The `FROM` instruction sets [python](https://hub.docker.com/_/python) as the base image making an ideal environment for running python scripts. The `3-alpine` tag indicates that you want the Alpine variant of Python 3.
 * The `WORKDIR` instruction sets the default working directory to `/zone` here. The name of the working directory is completely random here. I found zone to be a fitting name, you may use anything you want.
-* Given the `rmbyext` script is installed from GitHub, `git` is a install time dependency. The `RUN` instruction on line 5 installs `git`, installs the `rmbyext` script using git and pip. It also gets rid of `git` afterwards.
+* Given the `rmbyext` script is installed from GitHub, `git` is a install time dependency. The `RUN` instruction on line 5 installs `git` then installs the `rmbyext` script using git and pip. It also gets rid of `git` afterwards.
 * Finally on line 9, the `ENTRYPOINT` instruction sets the `rmbyext` script as the entry-point for this image.
 
 In this entire file, line 9 is the magic that turns this seemingly normal image to an executable one. Now to build the image you can execute following command:
@@ -808,7 +808,7 @@ docker login
 # Login Succeeded
 ```
 
-As seen in the output above, you'll be prompted for your username and password. If you input them properly, you should be logged in to your account successfully.
+You'll be prompted for your username and password. If you input them properly, you should be logged in to your account successfully.
 
 In order to share an image online, the image has to be tagged. You've already learned about tagging in a previous sub-section. Just to refresh your memory, the generic syntax for the `--tag` or `-t` option is as follows:
 
