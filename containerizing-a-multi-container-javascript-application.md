@@ -110,9 +110,9 @@ docker container logs notes-db
 # The database cluster will be initialized with locale "en_US.utf8".
 # The default database encoding has accordingly been set to "UTF8".
 # The default text search configuration will be set to "english".
-
+#
 # Data page checksums are disabled.
-
+#
 # fixing permissions on existing directory /var/lib/postgresql/data ... ok
 # creating subdirectories ... ok
 # selecting dynamic shared memory implementation ... posix
@@ -123,12 +123,12 @@ docker container logs notes-db
 # running bootstrap script ... ok
 # performing post-bootstrap initialization ... ok
 # syncing data to disk ... ok
-
-
+#
+#
 # Success. You can now start the database server using:
-
+#
 #     pg_ctl -D /var/lib/postgresql/data -l logfile start
-
+#
 # initdb: warning: enabling "trust" authentication for local connections
 # You can change this by editing pg_hba.conf or using the option -A, or
 # --auth-local and --auth-host, the next time you run initdb.
@@ -139,10 +139,10 @@ docker container logs notes-db
 #  done
 # server started
 # CREATE DATABASE
-
-
+#
+#
 # /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
-
+#
 # 2021-01-25 13:39:22.008 UTC [47] LOG:  received fast shutdown request
 # waiting for server to shut down....2021-01-25 13:39:22.015 UTC [47] LOG:  aborting any active transactions
 # 2021-01-25 13:39:22.017 UTC [47] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
@@ -150,9 +150,9 @@ docker container logs notes-db
 # 2021-01-25 13:39:22.056 UTC [47] LOG:  database system is shut down
 #  done
 # server stopped
-
+#
 # PostgreSQL init process complete; ready for start up.
-
+#
 # 2021-01-25 13:39:22.135 UTC [1] LOG:  starting PostgreSQL 12.5 (Debian 12.5-1.pgdg100+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 8.3.0-6) 8.3.0, 64-bit
 # 2021-01-25 13:39:22.136 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
 # 2021-01-25 13:39:22.136 UTC [1] LOG:  listening on IPv6 address "::", port 5432
@@ -177,11 +177,9 @@ Now attach the `notes-db` container to this network by executing the following c
 docker network connect notes-api-network notes-db
 ```
 
-Now the database server is complete ready to be bugged by the API.
-
 ## Writing The Dockerfile
 
-Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory, and you'll find a `Dockerfile` in there.
+Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory, and crreate a new `Dockerfile` in there. Put following code in the file:
 
 ```text
 # stage one
@@ -269,12 +267,12 @@ docker image build --tag notes-api .
 # Step 5/14 : RUN npm install --only=prod
 #  ---> Running in 2e27e33f935d
 #  added 269 packages from 220 contributors and audited 1137 packages in 140.322s
-
+#
 # 4 packages are looking for funding
 #   run `npm fund` for details
-
+#
 # found 0 vulnerabilities
-
+#
 # Removing intermediate container 2e27e33f935d
 #  ---> eb7cb2cb0b20
 # Step 6/14 : FROM node:lts-alpine
@@ -426,9 +424,7 @@ The container is running now. You can visit `http://127.0.0.1:3000/` to see the 
 
 ![](.gitbook/assets/bonjour-mon-ami.png)
 
-The API has five routes in total that you can see inside the `/notes/api/api/api/routes/notes.js` file.
-
-This API was bootstrapped with one of my open-source projects:
+The API has five routes in total that you can see inside the `/notes/api/api/api/routes/notes.js` file. It was bootstrapped with one of my open-source projects:
 
 {% embed url="https://github.com/fhsinchy/create-node-rocket-api" caption="spare a ⭐ to keep me motivated" %}
 

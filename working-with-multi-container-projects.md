@@ -134,7 +134,7 @@ As you can see from the outputs of the two `network inspect` commands, the `hell
 The second way of attaching a container to a network is by using the `--network` option for `container run` or `container create` commands. The generic syntax for the option is as follows:
 
 ```text
-run --network <network identifier>
+--network <network identifier>
 ```
 
 To run another `hello-dock` container to the attached to the same network, you can execute the following command:

@@ -10,7 +10,7 @@ Although Compose works in all environments, it's more focused on development and
 
 ## Compose Basics
 
-In the last section, I told that you'll be working with the `Dockerfile.dev` file later. Well now is the time. Lets begin by taking a look at the `Dockerfile.dev` file itself:
+Go the directory where you've cloned the repository that came with this article. Go inside the `notes-api/api` directory and create a `Dockerfile.dev` file. Put following code in it:
 
 ```text
 # stage one
@@ -144,7 +144,7 @@ api:
 * In the `volumes` map, you can see an anonymous volume and a bind mount described. The syntax is identical to what you've seen in previous sections.
 * The `ports` map defines any port mapping. The syntax, `<host port>:<container port>` is identical to the `--publish` option you used before.
 
-Finally code for the `volumes` is as follows:
+Finally, code for the `volumes` is as follows:
 
 ```text
 volumes:
@@ -153,8 +153,6 @@ volumes:
 ```
 
 Any named volume used in any of the services has to be defined here. If you don't define a name, the volume will be named following the `<project directory name>_<volume key>` and the key here is `db-data`. You can learn about the different options for volume configuration in the official [docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes).
-
-> One thing that you should be careful about is, every `docker-compose` command should be run within the directory where the YAML file exists.
 
 ## Starting Services
 
@@ -241,7 +239,7 @@ It's not as informative as the `container ls` output, but useful when you have t
 
 ## Executing Commands Inside a Running Service
 
-I hope you remember from the previous section that you have to run some migration scripts to create the database tables for this API. Just like the `container exec` command, there is an `exec` command for Compose. Generic syntax for the command is as follows:
+I hope you remember from the previous section that you have to run some migration scripts to create the database tables for this API. Just like the `container exec` command, there is an `exec` command for `docker-compose`. Generic syntax for the command is as follows:
 
 ```text
 docker-compose exec <service name> <command>
@@ -520,7 +518,7 @@ docker-compose --file docker-compose.yaml up --detach
 
 Now visit `http://localhost:8080` and voilà!
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/Screenshot-2020-07-11-at-8.23.46-PM-1.png)
+![](.gitbook/assets/notes-application.png)
 
 Try adding and deleting notes to see if the application works properly or not. Multi-container applications can be a lot more complicated than this, but for this article, this is enough.
 

@@ -6,22 +6,6 @@ Now that you've got some idea of creating images, it's time to work with somethi
 
 To begin with, open up the directory where you've cloned the repository that came with this article. Code for the `hello-dock` application resides inside the sub-directory with the same name.
 
-```text
-.
-├── index.html
-├── package.json
-├── public
-│   └── favicon.ico
-└── src
-    ├── App.vue
-    ├── assets
-    │   └── docker-handbook-github.webp
-    ├── components
-    │   └── HelloDock.vue
-    ├── index.css
-    └── main.js
-```
-
 This is a very simple JavaScript project powered by the [vitejs/vite](https://github.com/vitejs/vite) project. Don't worry though, you don't need to know JavaScript or vite in order to go through this sub-section. Having a basic understanding of [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) will suffice.
 
 Just like any other project you've done in the previous sub-section, you'll begin by making a plan of how you want this application to run. In my opinion, the plan should be as follows:
@@ -31,7 +15,7 @@ Just like any other project you've done in the previous sub-section, you'll begi
 * Copy the `package.json` file into the image.
 * Install necessary dependencies.
 * Copy rest of the project files.
-* Start the vite development server by executing `npm run dev` command.
+* Start the `vite` development server by executing `npm run dev` command.
 
 This plan should always come from the developer of the application that you're containerizing. If you're the developer yourself, then you should already have a proper understanding of how this application needs to be run. Now if you put the above mentioned plan inside `Dockerfile.dev`, the file should look like as follows:
 
@@ -100,7 +84,12 @@ docker image build --file Dockerfile.dev --tag hello-dock:dev .
 Given the filename is not `Dockerfile` you have to explicitly pass the filename using the `--file` option. A container can be run using this image by executing the following command:
 
 ```text
-docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev hello-dock:dev
+docker container run \
+    --rm \
+    --detach \
+    --publish 3000:3000 \
+    --name hello-dock-dev \
+    hello-dock:dev
 
 # 21b9b1499d195d85e81f0e8bce08f43a64b63d589c5f15cbbd0b9c0cb07ae268
 ```
@@ -119,7 +108,7 @@ But if you make any change in your code right now, you'll see nothing happening 
 
 ![](.gitbook/assets/local-vs-container-file-system.svg)
 
-To solve this issue, you can again make use of a [bind mount](https://docs.docker.com/storage/bind-mounts/). You've already had a brief encounter of bind mounts in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section under [Container Manipulation Basics](container-manipulation-basics.md) section.
+To solve this issue, you can again make use of a [bind mount](https://docs.docker.com/storage/bind-mounts/). You've already had a brief encounter of bind mounts in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section.
 
 Using bind mounts, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system, the bind mount can reference the local file system directly from inside the container.
 
@@ -136,7 +125,12 @@ You've already learned in the [Working With Executable Images](container-manipul
 Stop your previously started `hello-dock-dev` container, and start a new container by executing the following command:
 
 ```text
-docker container run --rm --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/home/node/app hello-dock:dev
+docker container run \
+    --rm \
+    --publish 3000:3000 \
+    --name hello-dock-dev \
+    --volume $(pwd):/home/node/app \
+    hello-dock:dev
 
 # sh: 1: vite: not found
 # npm ERR! code ELIFECYCLE
@@ -168,7 +162,14 @@ This problem here can be solved using an anonymous volume. An anonymous volume i
 So the final command for starting the `hello-dock` container with both volumes should be as follows:
 
 ```text
-docker container run --rm --detach --publish 3000:3000 --name hello-dock-dev --volume $(pwd):/home/node/app --volume /home/node/app/node_modules hello-dock:dev
+docker container run \
+    --rm \
+    --detach \
+    --publish 3000:3000 \
+    --name hello-dock-dev \
+    --volume $(pwd):/home/node/app \
+    --volume /home/node/app/node_modules \
+    hello-dock:dev
 
 # 53d1cfdb3ef148eb6370e338749836160f75f076d0fbec3c2a9b059a8992de8b
 ```
@@ -177,14 +178,16 @@ Here, Docker will take the entire `node_modules` directory from inside the conta
 
 ## Performing Multi-Staged Builds
 
-So far in this section, you've built an image for running a JavaScript application in development mode. Now if you want to build the image in production mode, some new challenges show up. In development mode the `npm run serve` command starts a development server that serves the application to the user. That server not only serves the files but also provides the hot reload feature. In production mode, the `npm run build` command compiles all your JavaScript code into some static HTML, CSS and JavaScript files. To run these files you don't need node or any other runtime dependencies. All you need is a server like `nginx` for example.
+So far in this section, you've built an image for running a JavaScript application in development mode. Now if you want to build the image in production mode, some new challenges show up. In development mode the `npm run serve` command starts a development server that serves the application to the user. That server not only serves the files but also provides the hot reload feature.
+
+In production mode, the `npm run build` command compiles all your JavaScript code into some static HTML, CSS and JavaScript files. To run these files you don't need node or any other runtime dependencies. All you need is a server like `nginx` for example.
 
 So to create an image where the application runs in production mode, you can take the following steps:
 
 * Use `node` as the base image and build the application.
 * Install `nginx` inside the node image and use that to serve the static files.
 
-This approach is a completely valid approach but the problem is that the `node` image a big image and most of the stuff it carries is unnecessary to serve your static files. A better approach to this scenario is as follows:
+This approach is a completely valid but the problem is that the `node` image is big and most of the stuff it carries is unnecessary to serve your static files. A better approach to this scenario is as follows:
 
 * Use `node` image as the base and build the application.
 * Copy the files created using the `node` image to a `nginx` image.
@@ -212,8 +215,8 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 As you can see the `Dockerfile` looks a lot like your previous ones with a few oddities. Explanation for this file is as follows:
 
-* Line 1 starts the first stage of the build using `node:lts-alpine` as the base image. The `as builder` syntax assigns a name to this stage so that it can be referred to as later on.
-* From line 3 to line 13, it's standard stuff that you've seen many times before. The `RUN npm run build` command actually compiles the entire application and tucks it inside `/home/node/app/dist` directory where `/home/node/app` is the working directory and `/dist` is the default output directory for `vite` applications.
+* Line 1 starts the first stage of the build using `node:lts-alpine` as the base image. The `as builder` syntax assigns a name to this stage so that it can be referred to later on.
+* From line 3 to line 13, it's standard stuff that you've seen many times before. The `RUN npm run build` command actually compiles the entire application and tucks it inside `/app/dist` directory where `/app` is the working directory and `/dist` is the default output directory for `vite` applications.
 * Line 15 starts the second stage of the build using `nginx:stable-alpine` as the base image.
 * The NGINX server runs on port 80 by default hence the line `EXPOSE 80` is added.
 * The last line is a `COPY` instruction. The `--from=builder` part indicates that you want to copy some files from the `builder` stage. After that it's a standard copy instruction where `/app/dist` is the source and `/usr/share/nginx/html` is the destination. The destination used here is the default site path for NGINX so any static file you put inside there will be automatically served.
@@ -234,44 +237,44 @@ docker image build --tag hello-dock:prod .
 # Step 4/9 : RUN npm install
 #  ---> Running in 6dfabf0ee9f8
 # npm WARN deprecated fsevents@2.1.3: Please update to v 2.2.x
-
+#
 # > esbuild@0.8.29 postinstall /app/node_modules/esbuild
 # > node install.js
-
+#
 # npm notice created a lockfile as package-lock.json. You should commit this file.
 # npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@~2.1.2 (node_modules/chokidar/node_modules/fsevents):
 # npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.1.3: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
 # npm WARN hello-dock@0.0.0 No description
 # npm WARN hello-dock@0.0.0 No repository field.
 # npm WARN hello-dock@0.0.0 No license field.
-
+#
 # added 327 packages from 301 contributors and audited 329 packages in 35.971s
-
+#
 # 26 packages are looking for funding
 #   run `npm fund` for details
-
+#
 # found 0 vulnerabilities
-
+#
 # Removing intermediate container 6dfabf0ee9f8
 #  ---> 21fd1b065314
 # Step 5/9 : COPY . .
 #  ---> 43243f95bff7
 # Step 6/9 : RUN npm run build
 #  ---> Running in 4d918cf18584
-
+#
 # > hello-dock@0.0.0 build /app
 # > vite build
-
+#
 # - Building production bundle...
-
+#
 # [write] dist/index.html 0.39kb, brotli: 0.15kb
 # [write] dist/_assets/docker-handbook-github.3adb4865.webp 12.32kb
 # [write] dist/_assets/index.eabcae90.js 42.56kb, brotli: 15.40kb
 # [write] dist/_assets/style.0637ccc5.css 0.16kb, brotli: 0.10kb
 # - Building production bundle...
-
+#
 # Build completed in 1.71s.
-
+#
 # Removing intermediate container 4d918cf18584
 #  ---> 187fb3e82d0d
 # Step 7/9 : EXPOSE 80
@@ -297,12 +300,17 @@ docker image build --tag hello-dock:prod .
 Once the image has been built, you may run a new container by executing the following command:
 
 ```text
-docker container run --rm --detach --name hello-dock-prod --publish 8080:80 hello-dock:prod
+docker container run \
+    --rm \
+    --detach \
+    --name hello-dock-prod \
+    --publish 8080:80 \
+    hello-dock:prod
 
 # 224aaba432bb09aca518fdd0365875895c2f5121eb668b2e7b2d5a99c019b953
 ```
 
-The running application should be avail able on `http://127.0.0.1:8080` address:
+The running application should be available on `http://127.0.0.1:8080` address:
 
 ![](.gitbook/assets/hello-dock-prod.png)
 

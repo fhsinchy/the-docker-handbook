@@ -710,7 +710,7 @@ Where the ubuntu version was 81.6MB, the alpine one has come down to 12.8MB whic
 
 ## Creating Executable Images
 
-In the previous section you've worked with the [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image. In this section you'll learn about making such an executable image. Open up the `rmbyext` directory inside the code repository for this article.
+In the previous section you've worked with the [fhsinchy/rmbyext](https://hub.docker.com/r/fhsinchy/rmbyext) image. In this section you'll learn about making such an executable image. To begin with, open up the directory where you've cloned the repository that came with this article. Code for the `rmbyext` application resides inside the sub-directory with the same name.
 
 Before you start working on the `Dockerfile` take a moment to plan out what the final output should be. In my opinion it should be like something as follows:
 
