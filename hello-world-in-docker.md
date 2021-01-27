@@ -22,19 +22,19 @@ docker run hello-world
 #     executable that produces the output you are currently reading.
 #  4. The Docker daemon streamed that output to the Docker client, which sent it
 #     to your terminal.
-
+#
 # To try something more ambitious, you can run an Ubuntu container with:
 #  $ docker run -it ubuntu bash
 # 
 # Share images, automate workflows, and more with a free Docker ID:
 #  https://hub.docker.com/
-
+#
 # For more examples and ideas, visit:
 #  https://docs.docker.com/get-started/
 
 ```
 
-The [hello-world](https://hub.docker.com/_/hello-world) image is an example of minimal containerization with Docker. It has a single [hello.c](https://github.com/docker-library/hello-world/blob/master/hello.c) file responsible for printing out the message you're seeing on your terminal.
+The [hello-world](https://hub.docker.com/_/hello-world) image is an example of minimal containerization with Docker. It has a single program compiled from a [hello.c](https://github.com/docker-library/hello-world/blob/master/hello.c) file responsible for printing out the message you're seeing on your terminal.
 
 Now in your terminal, you can use the `docker ps -a` command to have a look at all the containers that are currently running or have run in the past:
 
@@ -131,7 +131,7 @@ You as user will usually execute commands using the client component. The client
 
 Okay, enough talking. Now it's time for you to understand how all these pieces of puzzle you just learned about works in harmony. Before I dive into the explanation of what really happened when you ran `docker run hello-world` command, let me show you a little diagram I've made:
 
-![](https://www.freecodecamp.org/news/content/images/2020/07/docker-run-hello-world.svg)
+![](.gitbook/assets/docker-run-hello-world.svg)
 
 This image is a slightly modified version of the one found in the official [docs](https://docs.docker.com/engine/images/architecture.svg). The series of events that occurred when you executed the command can be listed as follows:
 
