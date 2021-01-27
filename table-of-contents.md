@@ -26,6 +26,7 @@
   * [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images)
 * [Image Manipulation Basics](image-creation-basics.md)
   * [Image Creation Basics](image-creation-basics.md#image-creation-basics)
+  * [Tagging Images](image-creation-basics.md#tagging-images)
   * [Listing and Removing Images](image-creation-basics.md#listing-and-removing-images)
   * [Understanding the Many Layers of an Image](image-creation-basics.md#understanding-the-many-layers-of-an-image)
   * [Building NGINX From Source](image-creation-basics.md#building-nginx-from-source)
