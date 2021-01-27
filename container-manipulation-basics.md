@@ -112,7 +112,7 @@ docker container ls --all
 
 As you can see the second container in the list `reverent_torvalds` was created earlier and has exited with the status code 0, which indicates that no error was produced during the runtime of the container.
 
-## Naming and Renaming Containers
+## Naming or Renaming Containers
 
 By default, every container has two identifiers. They are as follows:
 

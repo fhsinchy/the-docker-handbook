@@ -3,7 +3,6 @@
 
 
 * [Introduction to Containerization and Docker](introduction-to-containerization-and-docker.md)
-  * [Virtual Machines vs Containers](introduction-to-containerization-and-docker.md#virtual-machines-vs-containers)
 * [Installing Docker](installing-docker.md)
   * [Installation on macOS](installing-docker.md#installation-on-a-macos)
   * [Installation on Windows](installing-docker.md#installation-on-windows)
@@ -19,7 +18,7 @@
   * [Publishing Ports](container-manipulation-basics.md#publishing-ports)
   * [Detached Mode](container-manipulation-basics.md#detached-mode)
   * [Listing Containers](container-manipulation-basics.md#listing-containers)
-  * [Naming and Renaming Containers](container-manipulation-basics.md#naming-and-renaming-containers)
+  * [Naming or Renaming Containers](container-manipulation-basics.md#naming-or-renaming-containers)
   * [Stopping or Killing a Running Container](container-manipulation-basics.md#stopping-or-killing-a-running-container)
   * [Restarting Containers](container-manipulation-basics.md#restarting-containers)
   * [Creating Containers Without Running](container-manipulation-basics.md#creating-containers-without-running)
