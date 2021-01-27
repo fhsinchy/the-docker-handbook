@@ -4,13 +4,13 @@ Now that you've a solid understanding of running containers using images availab
 
 In this section, you'll learn the fundamentals of creating images, running containers using them and sharing them online.
 
-I would suggest you install [Visual Studio Code](https://code.visualstudio.com/) with the official [Docker Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) from the marketplace. This will greatly help your development experience.
+I would suggest you to install [Visual Studio Code](https://code.visualstudio.com/) with the official [Docker Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) from the marketplace. This will greatly help your development experience.
 
 ## Image Creation Basics
 
 As I've already explained in the [Hello World in Docker](hello-world-in-docker.md#image) section, images are multi-layered self-contained files that act as the template for creating Docker containers. They are like a frozen, read-only copy of a container.
 
-In order to create an image using one of your application you must have a clear vision of what you want from the image. Take the official [nginx](https://hub.docker.com/_/nginx) image for example. You can start a container using this image simply by executing the following command:
+In order to create an image using one of your programs you must have a clear vision of what you want from the image. Take the official [nginx](https://hub.docker.com/_/nginx) image for example. You can start a container using this image simply by executing the following command:
 
 ```text
 docker container run --rm --detach --name default-nginx --publish 8080:80 nginx
@@ -27,14 +27,14 @@ Now, if you visit `http://127.0.0.1:8080` in the browser, you'll see a default r
 
 ![](.gitbook/assets/nginx-default.png)
 
-That's all nice and good, but what if you want to make a custom NGINX which functions exactly like the official one, but is built by you? That's completely valid scenario to be honest. In fact, let's do that.
+That's all nice and good, but what if you want to make a custom NGINX image which functions exactly like the official one, but is built by you? That's completely valid scenario to be honest. In fact, let's do that.
 
 In order to make a custom NGINX image, you must have a clear picture of what the final state of the image will be. In my opinion the image should be as follows:
 
 * The image should have NGINX pre-installed which can be done using a package manager or can be built from source.
 * The image should start NGINX automatically upon running.
 
-That's simple. I hope that you've already cloned the project repository linked in this article. Go inside the repository and look for a directory named `custom-nginx` in there. Now, create a new file named `Dockerfile` inside that directory. A `Dockerfile` is a collection of instructions that once processed by the daemon, results into an image. Content for the `Dockerfile` is as follows:
+That's simple. If you've cloned the project repository linked in this article, go inside the project root and look for a directory named `custom-nginx` in there. Now, create a new file named `Dockerfile` inside that directory. A `Dockerfile` is a collection of instructions that once processed by the daemon, results into an image. Content for the `Dockerfile` is as follows:
 
 ```text
 FROM ubuntu:latest
@@ -48,11 +48,11 @@ RUN apt-get update && \
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-I hope that you remember that images are multi-layered files. In this file, each line \(known as instructions\) that you've written here, creates a layer for your custom image.
+Images are multi-layered files and In this file, each line \(known as instructions\) that you've written, creates a layer for your image.
 
 * Every valid `Dockerfile` starts with a `FROM` instruction. This instruction sets the base image for your resultant image. By setting `ubuntu:latest` as the base image here, you get all the goodness of Ubuntu already available in your custom image hence, you can use things like the `apt-get` command for easy package installation.
-* The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` command explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that you'll learn about in later sub-sections.
-* The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package version and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here, are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
+* The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` option explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that I won't  be discussing here.
+* The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package versions and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here, are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
 * Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the NGINX executable. The `-g` and `daemon off` are options for NGINX. Running NGINX as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
 
 Now that you have a valid `Dockerfile` you can build an image out of it. Just like the container related commands, the image related commands can be issued using the following syntax:
@@ -61,7 +61,7 @@ Now that you have a valid `Dockerfile` you can build an image out of it. Just li
 docker image <command> <options>
 ```
 
-To build an image using the `Dockerfile` you just wrote, open up your terminal inside the `custom-nginx` directory and execute following command:
+To build an image using the `Dockerfile` you just wrote, open up your terminal inside the `custom-nginx` directory and execute the following command:
 
 ```text
 docker image build .
@@ -85,12 +85,12 @@ docker image build .
 # Successfully built 3199372aa3fc
 ```
 
-In order to perform an image build, the daemon needs two very specific information. These are the name of the `Dockerfile` and the build context. In the issued command above:
+To perform an image build, the daemon needs two very specific information. These are the name of the `Dockerfile` and the build context. In the issued command above:
 
 * `docker image build` is the command for building the image. The daemon finds any file named `Dockerfile` within the context.
-* The `.` at the end sets the context for this build. The context means the directory accessible by the daemon during the build process. The concept of a build context will become much clearer in later sub-sections.
+* The `.` at the end sets the context for this build. The context means the directory accessible by the daemon during the build process.
 
-Now to run a container using this image, you can use the container run command coupled with the image id that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
+Now to run a container using this image, you can use the `container run` command coupled with the image ID that you received as the result of the build process. In my case the id is `3199372aa3fc` evident by the `Successfully built 3199372aa3fc` line in the previous code block.
 
 ```text
 docker container run --rm --detach --name custom-nginx-packaged --publish 8080:80 3199372aa3fc
@@ -103,13 +103,13 @@ docker container ls
 # ec09d4e1f70c        3199372aa3fc        "nginx -g 'daemon of…"   23 seconds ago      Up 22 seconds       0.0.0.0:8080->80/tcp   custom-nginx-packaged
 ```
 
-This container should behave just like the official one. To verify, visit `http://127.0.0.1:8080` and you should see the default response page.
+To verify, visit `http://127.0.0.1:8080` and you should see the default response page.
 
 ![](.gitbook/assets/nginx-default.png)
 
 ## Tagging Images
 
-Just like containers, you can assign custom identifiers to your images instead of relying on the randomly generated id. In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. Generic syntax for the option is as follows:
+Just like containers, you can assign custom identifiers to your images instead of relying on the randomly generated ID. In case of an image, it's called tagging instead of naming. The `--tag` or `-t` option is used in such cases. Generic syntax for the option is as follows:
 
 ```text
 --tag <image repository>:<image tag>
@@ -153,8 +153,6 @@ docker image tag <image id> <image repository>:<image tag>
 
 docker image tag <image repository>:<image tag> <new image repository>:<new image tag>
 ```
-
-You'll learn more about tagging in [Sharing Your Images Online](image-creation-basics.md#sharing-your-images-online) sub-section.
 
 ## Listing and Removing Images
 
@@ -204,7 +202,7 @@ The `--force` or `-f` option skips any confirmation questions. You can also use 
 
 ## Understanding the Many Layers of an Image
 
-From the very beginning of this article, I've been saying that images are multi-layered files. In this sub-section I'll demonstrate the various layers of a file and how they play an important role in the build process of an image. For this demonstration, I'll be using the `custom-nginx:packaged` image from the previous sub-section.
+From the very beginning of this article, I've been saying that images are multi-layered files. In this sub-section I'll demonstrate the various layers of an image and how they play an important role in the build process of an image. For this demonstration, I'll be using the `custom-nginx:packaged` image from the previous sub-section.
 
 To visualize the many layers of an image, you can use the `image history` command. The various layers of the `custom-nginx:packaged` image can be visualized as follows:
 
@@ -222,7 +220,7 @@ docker image history custom-nginx:packaged
 # <missing>           17 hours ago        /bin/sh -c #(nop) ADD file:435d9776fdd3a1834…   72.9MB
 ```
 
-As you can see in the output, there are eight layers of this image. The upper most layer is the latest one and as you go down, those are older layers. The upper most layer is the one that you usually use for running containers.
+There are eight layers of this image. The upper most layer is the latest one and as you go down, those are older layers. The upper most layer is the one that you usually use for running containers.
 
 Now, let's have a closer look at the images beginning from image `d70eaf7277ea` to `7f16387f7307` image. I'll ignore the bottom four layers where the `IMAGE` is `<missing>` as they are not of our concern.
 
@@ -295,10 +293,10 @@ CMD ["nginx", "-g", "daemon off;"]
 As you can see, the code inside the `Dockerfile` reflects the seven steps I talked about beforehand.
 
 * The `FROM` instruction sets Ubuntu as the base image making an ideal environment for building any application.
-* The `RUN` instruction here installs standard packages necessary for building NGINX from source.
+* The `RUN` instruction installs standard packages necessary for building NGINX from source.
 * The `COPY` instruction here is something new. This instruction is responsible for copying the the `nginx-1.19.2.tar.gz` file inside the image. The generic syntax for the `COPY` instruction is `COPY <source> <destination>` where source is in your local filesystem and the destination is inside your image. The `.` as the destination means the working directory inside the image which is by default `/` unless set otherwise.
 * The second `RUN` instruction here extracts the contents from the archive using `tar` and gets rid of it afterwards.
-* The archive file contains a directory called `nginx-1.19.2` containing the source code. Hence on the next step, you'll need to `cd` inside that directory and perform the build process. You can read the [How to Install Software from Source Code… and Remove it Afterwards](https://itsfoss.com/install-software-from-source-code/) article at [It's Foss](https://itsfoss.com/) to learn more on the topic.
+* The archive file contains a directory called `nginx-1.19.2` containing the source code. Hence on the next step, you'll have to `cd` inside that directory and perform the build process. You can read the [How to Install Software from Source Code… and Remove it Afterwards](https://itsfoss.com/install-software-from-source-code/) article at [It's Foss](https://itsfoss.com/) to learn more on the topic.
 * Once the build and installation is complete, you remove the `nginx-1.19.2` directory using `rm` command.
 * On the final step you start NGINX in single process mode just like you did before.
 
@@ -338,7 +336,7 @@ docker image build --tag custom-nginx:built .
 # Successfully tagged custom-nginx:built
 ```
 
-Now you should be able to run a container using the `custom-nginx:built` image. This code is alright but there are some places where improvements can be made. 
+This code is alright but there are some places where improvements can be made. 
 
 * Instead of hard coding the filename like `nginx-1.19.2.tar.gz`, you can create an argument using the `ARG` instruction. This way, you'll be able to change the version or filename by just changing the argument.
 * Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction which is capable of adding files from the internet.
@@ -383,11 +381,11 @@ CMD ["nginx", "-g", "daemon off;"]
 
 The code is almost identical to the previous code block except a new instruction called `ARG` on line 13, 14 and the usage of the `ADD` instruction on line 16. Explanation for the updated code is as follows:
 
-* The `ARG` instruction lets you declare variables like in other languages. These variables  or arguments can later be accessed using the `${argument name}` syntax. Here, I've put the filename `nginx-1.19.2` and the file extension `tar.gz` in two separate arguments. This way I can switch between newer versions of NGINX or the archive format by making a change in just one place. In the code above, I've added default values to the variables. Variable values can be passed as option of the `image build` command as well. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#arg) for more details.
+* The `ARG` instruction lets you declare variables like in other languages. These variables  or arguments can later be accessed using the `${argument name}` syntax. Here, I've put the filename `nginx-1.19.2` and the file extension `tar.gz` in two separate arguments. This way I can switch between newer versions of NGINX or the archive format by making a change in just one place. In the code above, I've added default values to the variables. Variable values can be passed as options of the `image build` command as well. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#arg) for more details.
 * In the `ADD` instruction, I've formed the download URL dynamically using the arguments declared above. The `https://nginx.org/download/${FILENAME}.${EXTENSION}` line will result in something like `https://nginx.org/download/nginx-1.19.2.tar.gz` during the build process. You can change the file version or the extension by changing it in just one place thanks to the `ARG` instruction.
-* The `ADD` instruction doesn't extract files obtained from the internet by default hence, the usage of `tar` on line 18 here.
+* The `ADD` instruction doesn't extract files obtained from the internet by default hence, the usage of `tar` on line 18.
 
-Rest of the code is almost unchanged. You should be able to infer the usage of the arguments by yourself now. Finally let's try to build an image from this updated code.
+Rest of the code is almost unchanged. You should be able to understand the usage of the arguments by yourself now. Finally let's try to build an image from this updated code.
 
 ```text
 docker image build --tag custom-nginx:built .
@@ -443,7 +441,7 @@ docker container ls
 # 90ccdbc0b598        custom-nginx:built   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
 ```
 
-As you can see, a container using the `custom-nginx:built-v2` image has been successfully run. The container should be accessible at `http://127.0.0.1:8080` address now.
+A container using the `custom-nginx:built-v2` image has been successfully run. The container should be accessible at `http://127.0.0.1:8080` address now.
 
 ![](.gitbook/assets/nginx-default.png)
 
