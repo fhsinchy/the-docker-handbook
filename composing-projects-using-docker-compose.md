@@ -520,5 +520,5 @@ Now visit `http://localhost:8080` and voilà!
 
 ![](.gitbook/assets/notes-application.png)
 
-Try adding and deleting notes to see if the application works properly or not. The project also comes with shell scripts and a Makefile. Explore them to see how you can run this project without the help of `docker-compose` like you did in the previous section.
+Try adding and deleting notes to see if the application works properly or not. The project also comes with shell scripts and a `Makefile`. Explore them to see how you can run this project without the help of `docker-compose` like you did in the previous section.
 
