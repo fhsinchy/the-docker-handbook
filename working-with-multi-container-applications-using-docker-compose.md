@@ -156,7 +156,9 @@ Any named volume used in any of the services has to be defined here. If you don'
 
 ## Starting Services
 
-There are a few ways of starting services defined in a YAML file. The first command that you'll learn about is the `up` command. The `up` command builds any missing images, creates containers and starts them in one go:
+There are a few ways of starting services defined in a YAML file. The first command that you'll learn about is the `up` command. The `up` command builds any missing images, creates containers and starts them in one go.
+
+Before you execute the command though, make sure you've open your terminal in the same directory where the `docker-compose.yaml` file is. This is very important for every `docker-compose` command you execute.
 
 ```text
 docker-compose --file docker-compose.yaml up --detach
@@ -520,5 +522,5 @@ Now visit `http://localhost:8080` and voilà!
 
 ![](.gitbook/assets/notes-application.png)
 
-Try adding and deleting notes to see if the application works properly or not. Multi-container applications can be a lot more complicated than this, but for this article, this is enough.
+Try adding and deleting notes to see if the application works properly or not. The project also comes with shell scripts and a Makefile. Explore them to see how you can run this project without the help of `docker-compose` like you did in the previous section.
 
