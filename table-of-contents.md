@@ -1,9 +1,6 @@
 # Table of Contents
 
-
-
 * [Introduction to Containerization and Docker](introduction-to-containerization-and-docker.md)
-  * [Virtual Machines vs Containers](introduction-to-containerization-and-docker.md#virtual-machines-vs-containers)
 * [Installing Docker](installing-docker.md)
   * [Installation on macOS](installing-docker.md#installation-on-a-macos)
   * [Installation on Windows](installing-docker.md#installation-on-windows)
@@ -19,7 +16,7 @@
   * [Publishing Ports](container-manipulation-basics.md#publishing-ports)
   * [Detached Mode](container-manipulation-basics.md#detached-mode)
   * [Listing Containers](container-manipulation-basics.md#listing-containers)
-  * [Naming and Renaming Containers](container-manipulation-basics.md#naming-and-renaming-containers)
+  * [Naming or Renaming Containers](container-manipulation-basics.md#naming-or-renaming-containers)
   * [Stopping or Killing a Running Container](container-manipulation-basics.md#stopping-or-killing-a-running-container)
   * [Restarting Containers](container-manipulation-basics.md#restarting-containers)
   * [Creating Containers Without Running](container-manipulation-basics.md#creating-containers-without-running)
@@ -47,13 +44,21 @@
   * [Attaching Containers to a Network](working-with-multi-container-projects.md#attaching-containers-to-a-network)
   * [Detaching Containers from a Network](working-with-multi-container-projects.md#detaching-containers-from-a-network)
   * [Getting Rid of Networks](working-with-multi-container-projects.md#getting-rid-of-networks)
-* [Managing Multi-Container Projects using Docker-Compose](working-with-multi-container-applications-using-docker-compose.md)
+* [Containerizing a Multi-Container JavaScript Application](containerizing-a-multi-container-javascript-application.md)
+  * [Running the Database Server](containerizing-a-multi-container-javascript-application.md#running-the-database-server)
+  * [Working With Named Volumes](containerizing-a-multi-container-javascript-application.md#working-with-named-volumes)
+  * [Accessing Logs From a Container](containerizing-a-multi-container-javascript-application.md#accessing-logs-from-a-container)
+  * [Creating a Network and Attaching the Database Server](containerizing-a-multi-container-javascript-application.md#creating-a-network-and-attaching-the-database-server)
+  * [Writing The Dockerfile](containerizing-a-multi-container-javascript-application.md#writing-the-dockerfile)
+  * [Executing Commands in a Running Container](containerizing-a-multi-container-javascript-application.md#executing-commands-in-a-running-container)
+  * [Writing Management Scripts](containerizing-a-multi-container-javascript-application.md#writing-management-scripts)
+* [Composing Projects Using Docker-Compose](working-with-multi-container-applications-using-docker-compose.md)
   * [Compose Basics](working-with-multi-container-applications-using-docker-compose.md#compose-basics)
+  * [Starting Services](working-with-multi-container-applications-using-docker-compose.md#starting-services)
   * [Listing Services](working-with-multi-container-applications-using-docker-compose.md#listing-services)
   * [Executing Commands Inside a Running Service](working-with-multi-container-applications-using-docker-compose.md#executing-commands-inside-a-running-service)
-  * [Starting Shell Inside a Running Service](working-with-multi-container-applications-using-docker-compose.md#starting-shell-inside-a-running-service)
   * [Accessing Logs From a Running Service](working-with-multi-container-applications-using-docker-compose.md#accessing-logs-from-a-running-service)
-  * [Stopping Running Services](working-with-multi-container-applications-using-docker-compose.md#stopping-running-services)
+  * [Stopping Services](working-with-multi-container-applications-using-docker-compose.md#stopping-services)
   * [Composing a Full-stack Application](working-with-multi-container-applications-using-docker-compose.md#composing-a-full-stack-application)
 * [Conclusion](conclusion.md)
 

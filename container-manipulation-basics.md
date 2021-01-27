@@ -112,7 +112,7 @@ docker container ls --all
 
 As you can see the second container in the list `reverent_torvalds` was created earlier and has exited with the status code 0, which indicates that no error was produced during the runtime of the container.
 
-## Naming or Renaming Containers
+## Naming and Renaming Containers
 
 By default, every container has two identifiers. They are as follows:
 
@@ -417,7 +417,12 @@ docker run alpine uname -a
 
 In this command, I've executed the `uname -a` command inside an Alpine Linux container. Scenarios like this where all you want is just to execute a certain command inside a certain container is pretty common. So learning the different ways of executing command inside a container is important.
 
-Assume that you want encode a string using the `base64` program which is something available in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [busybox](https://hub.docker.com/_/busybox) and let it do the job.
+When it comes to custom command execution inside a container, there are two very common scenarios. These scenarios are as follows:
+
+* Executing command inside a container that isn't running.
+* Executing command inside a running container.
+
+Let's begin with the first scenario here. Assume that you want encode a string using the `base64` program which is something available in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [busybox](https://hub.docker.com/_/busybox) and let it do the job.
 
 The generic syntax for encoding a string using `base64` is as follows:
 
@@ -442,6 +447,33 @@ docker container run --rm busybox echo -n my-secret | base64
 ```
 
 What happens here is, in a `run` command, whatever you pass after the image name gets passed to the default entrypoint of the image. An entrypoint is like a gateway to the image. Most of the images except the executable images \(explained in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section\), uses shell or `sh` as the default entrypoint. So any valid shell command can be passed to them as arguments.
+
+Now you know how to execute custom command inside a container. The second scenario is executing a command inside a running container. Assume that you a [Redis](https://redis.io/) container in detached mode using the official [redis](https://hub.docker.com/_/redis) image.
+
+```text
+docker container run --rm --detach --name redis-server redis
+
+# df20eb7205cfe7037fe0c67a358880f5d86f7ccab0d8650711aafdca0b6e67da
+```
+
+Now you would like to access the `redis-cli` program inside the container to perform some queries. You can not just pass `redis-cli` as an argument to the container image like you did in the previous scenario. Instead you'll have to use the `exec` command to execute a custom command inside a running container.
+
+The generic syntax for the `exec` command is as follows:
+
+```text
+docker container exec <container identifier> <command>
+```
+
+To start `redis-cli` inside the `redis-server` container, you can execute the following command:
+
+```text
+docker container exec -it redis-server redis-cli
+
+# 127.0.0.1:6379> flushall
+# OK
+```
+
+Given `redis-cli` is an interactive program, you need to pass the `-it` flag here. In this shell, you'll be able to run any valid [redis command](https://redis.io/commands) such as `flushall` to flush all data.
 
 ## Working With Executable Images
 

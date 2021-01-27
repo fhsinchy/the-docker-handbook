@@ -6,7 +6,7 @@ In other words, containerization lets you bundle up your software along with all
 
 Let's consider a real life scenario here. Assume you have developed an awesome book management application that can store information regarding all the books you own and can also serve the purpose of a book lending system for your friends.
 
-Now if you make a list of the dependencies, that list may look like as follows:
+If you make a list of the dependencies, that list may look like as follows:
 
 * Node.js
 * Express.js
@@ -22,21 +22,21 @@ Well theoretically this should be it. But practically there are some other stuff
 
 Installing Python 2/3 is pretty straight forward regardless of the platform you're on. Setting-up C/C++ tool-chain is pretty easy on Linux but on Windows and Mac, it's a painful task. On Windows, the C++ build tools package measures at gigabytes and takes quite some time to install. On a Mac, you can either install the gigantic [Xcode](https://developer.apple.com/xcode/) application or the much smaller [Command Line Tools for Xcode](https://developer.apple.com/downloads/) package. Regardless of the one you install, it still may break on OS updates. In fact, the problem is so prevalent that there are [Installation notes for macOS Catalina](https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md) available on the official repository.
 
-Now let's assume that you've gone through all the hassles of setting up the dependencies and have started working on the project. Does that mean you're out of danger now? Of course not.
+Let's assume that you've gone through all the hassles of setting up the dependencies and have started working on the project. Does that mean you're out of danger now? Of course not.
 
 What if you have a teammate who uses Windows while you're using Linux. Now you have to consider the inconsistencies of how these two different operating systems handle paths. Or the fact that popular technologies like [nginx](https://nginx.org/) are not well optimized to run on Windows. Some technologies i.e. [Redis](https://redis.io/) doesn't even come pre-built for Windows.
 
-Even if you get through the entire development phase, what if the person responsible for managing the servers follows the wrong deployment procedure?
+Even if you get through the entire development phase, but the person responsible for managing the servers follows the wrong deployment procedure?
 
 All these issues can be solved if only you could somehow:
 
 * Develop and run the application inside an isolated environment \(known as a container\) that matches your final deployment environment.
-* Put your application inside a single file \(known as an image\) along with all its dependencies, necessary deployment configurations.
+* Put your application inside a single file \(known as an image\) along with all its dependencies and necessary deployment configurations.
 * And share that image through a central server \(known as a registry\) that is accessible by anyone with proper authorization.
 
 Your teammates, will then be able to download the image from the registry, run the application as it is within an isolated environment free from the platform specific inconsistencies or even deploy directly on a server, given the image comes with all the proper production configurations.
 
-That is the idea behind containerization. Putting your applications inside a self-contained package making it extremely portable and reproducible across various environments.
+That is the idea behind containerization. Putting your applications inside a self-contained package making it portable and reproducible across various environments.
 
 #### Now the question is "What role does Docker play here?"
 
