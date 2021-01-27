@@ -422,9 +422,23 @@ docker container ls
 # 37755e86d627   postgres:12   "docker-entrypoint.s…"   17 hours ago     Up 14 minutes   5432/tcp                 notes-db
 ```
 
-The container is running now. There is one last thing that you'll have to do. You'll have to run the database migration necessary for setting up the database tables, and you can do that by executing `npm run db:migrate` command inside the container.
+The container is running now. You can visit `http://127.0.0.1:3000/` to see the API in action.
 
-You've already learned how to execute commands inside a running container using the `container exec` command. To refresh your memory, the generic syntax for the `exec` command is as follows:
+![](.gitbook/assets/bonjour-mon-ami.png)
+
+The API has five routes in total that you can see inside the `/notes/api/api/api/routes/notes.js` file.
+
+This API was bootstrapped with one of my open-source projects:
+
+{% embed url="https://github.com/fhsinchy/create-node-rocket-api" caption="spare a ⭐ to keep me motivated" %}
+
+Although the container is running, there is one last thing that you'll have to do before you can start using it. You'll have to run the database migration necessary for setting up the database tables, and you can do that by executing `npm run db:migrate` command inside the container.
+
+## Executing Commands in a Running Container
+
+You've already learned about executing commands in a stopped container. Another scenario is executing a command inside a running container.For this, you'll have to use the `exec` command to execute a custom command inside a running container.
+
+The generic syntax for the `exec` command is as follows:
 
 ```text
 docker container exec <container identifier> <command>
@@ -437,20 +451,19 @@ docker container exec notes-api npm run db:migrate
 
 # > notes-api@ db:migrate /home/node/app
 # > knex migrate:latest
-
+#
 # Using environment: production
 # Batch 1 run: 1 migrations
 ```
 
-Now visit `http://127.0.0.1:3000/` to see the API in action.
+In cases where you want to run an interactive command inside a running container, you'll have to use the `-it` flag. As an example, if you want to access the shell running inside the `notes-api` container, you can execute following the command:
 
-![](.gitbook/assets/bonjour-mon-ami.png)
+```text
+docker container exec -it notes-api sh
 
-The API has five routes in total that you can see inside the `/notes/api/api/api/routes/notes.js` file. This API was bootstrapped one of my open-source projects:
-
-{% embed url="https://github.com/fhsinchy/create-node-rocket-api" caption="spare a ⭐ to keep me motivated" %}
-
-The project also contains a `Dockerfile.dev` file that you'll be using in the next section.
+# / # uname -a
+# Linux b5b1367d6b31 5.10.9-201.fc33.x86_64 #1 SMP Wed Jan 20 16:56:23 UTC 2021 x86_64 Linux
+```
 
 ## Writing Management Scripts
 
