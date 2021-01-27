@@ -417,7 +417,7 @@ networks:
         driver: bridge
 ```
 
-I've defined two bridge networks. By default compose creates a bridge network and attaches all containers to that. In this project however, I wanted proper network isolation. So I defined two networks, one for the front-end services and one for the back-end  services.
+I've defined two bridge networks. By default Compose creates a bridge network and attaches all containers to that. In this project however, I wanted proper network isolation. So I defined two networks, one for the front-end services and one for the back-end  services.
 
 I've also added `networks` block in each of the service definitions. This way the the `api` and `db` service will be attached to one network and the `client` service will be attached to a separate network. The `nginx` service however will be attached to both the networks so that it can perform as router between the front-end and back-end services.
 
