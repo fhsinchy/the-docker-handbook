@@ -15,12 +15,12 @@ docker run <image name>
 Although this is a perfectly valid command, there is a better way of dispatching commands to the `docker` daemon. Prior to version `1.13`, Docker had only the previously mentioned command syntax. Later on, the command-line was [restructured](https://www.docker.com/blog/whats-new-in-docker-1-13/) to have the following syntax:
 
 ```text
-docker <object> <command> <options>
+docker <object-type> <command> <options>
 ```
 
 In this syntax:
 
-* `object` indicates the type of Docker object you'll be manipulating. This can be a `container`, `image`, `network` or `volume` object.
+* `object-type` indicates the type of Docker object you'll be manipulating. This can be a `container`, `image`, `network` or `volume` object.
 * `command` indicates the task to be carried out by the daemon i.e. `run` command.
 * `options` can be any valid parameter that can override the default behavior of the command i.e. the `--publish` option for port mapping.
 
