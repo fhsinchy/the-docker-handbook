@@ -15,12 +15,12 @@ docker run <image name>
 Although this is a perfectly valid command, there is a better way of dispatching commands to the `docker` daemon. Prior to version `1.13`, Docker had only the previously mentioned command syntax. Later on, the command-line was [restructured](https://www.docker.com/blog/whats-new-in-docker-1-13/) to have the following syntax:
 
 ```text
-docker <object-type> <command> <options>
+docker <object> <command> <options>
 ```
 
 In this syntax:
 
-* `object-type` indicates the type of Docker object you'll be manipulating. This can be a `container`, `image`, `network` or `volume` object.
+* `object` indicates the type of Docker object you'll be manipulating. This can be a `container`, `image`, `network` or `volume` object.
 * `command` indicates the task to be carried out by the daemon i.e. `run` command.
 * `options` can be any valid parameter that can override the default behavior of the command i.e. the `--publish` option for port mapping.
 
@@ -78,7 +78,7 @@ docker container run --detach --publish 8080:80 fhsinchy/hello-dock
 
 Unlike the previous example, you won't get a wall of text thrown at you this time. Instead what you'll get is the ID of the newly created container.
 
-The order of the options you provide doesn't really matter. If you put the `--publish` option before the `--detach` option, it'll work just the same. One thing that you have to keep in mind in case of the `run` command is that the image name must come at last. If you put anything after the image name then that'll be passed as an argument to the container entry-point \(explained in the [Executing Commands Inside a Container](container-manipulation-basics.md#executing-commands-inside-a-container) sub-section\) and may result in unexpected situations.
+The order of the options you provide doesn't really matter. If you put the `--publish` option before the `--detach` option, it'll work just the same. One thing that you have to keep in mind in case of the `run` command is that the image name must come last. If you put anything after the image name then that'll be passed as an argument to the container entry-point \(explained in the [Executing Commands Inside a Container](container-manipulation-basics.md#executing-commands-inside-a-container) sub-section\) and may result in unexpected situations.
 
 ## Listing Containers
 
