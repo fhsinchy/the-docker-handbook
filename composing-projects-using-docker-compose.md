@@ -324,7 +324,7 @@ The reason behind doing this is that when you run a front-end application it doe
 
 NGINX on the other hand runs inside a container and can communicate with the different services across the entire application.
 
-I will not get into the configuration of NGINX here. That topic is kinda out of scope of this article. But if you want to have a look at it, go ahead and checkout the `/notes-api/nginx/development.conf` and `/notes-api/nginx/production.conf` files. Code for the `/notes-api/nginx/Deockerfile.dev` for is as follows:
+I will not get into the configuration of NGINX here. That topic is kinda out of scope of this article. But if you want to have a look at it, go ahead and checkout the `/notes-api/nginx/development.conf` and `/notes-api/nginx/production.conf` files. Code for the `/notes-api/nginx/Dockerfile.dev` is as follows:
 
 ```text
 FROM nginx:stable-alpine
@@ -332,7 +332,7 @@ FROM nginx:stable-alpine
 COPY ./development.conf /etc/nginx/conf.d/default.conf
 ```
 
-All it does is copying the configuration file to `/etc/nginx/conf.d/default.conf` inside the container.
+All it does is copy the configuration file to `/etc/nginx/conf.d/default.conf` inside the container.
 
 Let's start writing the `docker-compose.yaml` file. Apart from the `api` and `db` services there will be the `client` and `nginx` services. There will also be some network definitions that I'll get into shortly.
 
