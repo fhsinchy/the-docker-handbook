@@ -152,6 +152,10 @@ volumes:
 
 Any named volume used in any of the services has to be defined here. If you don't define a name, the volume will be named following the `<project directory name>_<volume key>` and the key here is `db-data`. You can learn about the different options for volume configuration in the official [docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes).
 
+## What About the Network Bridge?
+
+You may have noticed that there is no network bridge creation section in this YAML file. While the docker-compose specification supports adding network configuration to the file, docker-compose has [a helpful feature](https://docs.docker.com/compose/networking/#) that automatically creates a bridge network for the composed project, and assigns a name based on the directory name (or project-name, if defined with the `--project-name` switch or the `COMPOSE_PROJECT_NAME` environment variable).  So, since this file doesn't include that information, you can look for a "notes-api_default" network after bringing up the composed project below.
+
 ## Starting Services
 
 There are a few ways of starting services defined in a YAML file. The first command that you'll learn about is the `up` command. The `up` command builds any missing images, creates containers and starts them in one go.
