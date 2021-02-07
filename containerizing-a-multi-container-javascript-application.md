@@ -4,14 +4,13 @@ Now that you've learned enough about networks in Docker, in this sub-section you
 
 In this project there are two containers in total that you'll have to connect using a network. Apart from this, you'll also learn about concepts like environment variables and named volumes. So without further ado, lets jump right in.
 
-## Setting Up the Custom Bridge Network
+## Setting Up The Custom Bridge Network
 
 As you've learned in the previous section, the containers have to be attached to a user-defined bridge network in order to communicate with each other using container names. To do so, create a network named notes-api-network in your system:
 
 ```text
 docker network create notes-api-network
 ```
-
 
 ## Running the Database Server
 
@@ -172,9 +171,9 @@ docker container logs notes-db
 
 Evident by the text in line 57, the database is up and ready for accepting connections from the outside. There is also the `--follow` or `-f` option for the command which lets you attach the console to the logs output and get a continuous stream of text.
 
-## Attaching the Database Server (in case you missed it earlier)
+## Attaching The Database Server \(in case you missed it earlier\)
 
-Your container should be connected to the network "notes-api-network" now.  Recall that you can use `docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' notes-api-network` to verify, and it should look like this:
+Your container should be connected to the network "notes-api-network" now. Recall that you can use `docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' notes-api-network` to verify, and it should look like this:
 
 ```text
 docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' notes-api-network
@@ -320,7 +319,7 @@ docker image build --tag notes-api .
 # Successfully tagged notes-api:latest
 ```
 
-Before you run a container using this image, make sure the database container is running, and is attached to the `notes-api-network`. 
+Before you run a container using this image, make sure the database container is running, and is attached to the `notes-api-network`.
 
 ```text
 docker container inspect notes-db
@@ -394,7 +393,6 @@ docker container inspect notes-db
 #         }
 #     }
 # ]
-
 ```
 
 I've shortened the output for easy viewing here. On my system, the `notes-db` container is running, uses the `notes-db-data` volume and is attached to the `notes-api-network` bridge.
@@ -411,7 +409,7 @@ docker container run \
     --publish=3000:3000 \
     --network=notes-api-network \
     notes-api
-    
+
 # f9ece420872de99a060b954e3c236cbb1e23d468feffa7fed1e06985d99fb919
 ```
 
@@ -483,7 +481,7 @@ Managing a multi-container project along with the network and volumes and stuff 
 
 There is also a `Makefile` that contains four targets named `start`, `stop`, `build` and `destroy` each invoking the previously mentioned shell scripts.
 
-If the container is in running state in your system, executing `make stop` should stop all the containers. executing `make destroy` should stop the containers and remove everything. Make sure you're running the scripts inside the `notes-api` directory (if you're still in `notes-api\api`, you can use the command `cd ..` to back up one level to the correct directory before running the following):
+If the container is in running state in your system, executing `make stop` should stop all the containers. executing `make destroy` should stop the containers and remove everything. Make sure you're running the scripts inside the `notes-api` directory \(if you're still in `notes-api\api`, you can use the command `cd ..` to back up one level to the correct directory before running the following\):
 
 ```text
 make destroy
