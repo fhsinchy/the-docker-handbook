@@ -316,7 +316,7 @@ In this sub-section, we'll be adding a front-end to our notes API and turn it in
 
 If you've cloned the project code repository, then go inside the `fullstack-notes-application` directory. Each directory inside the project root contains the code for each services and the corresponding `Dockerfile`.
 
-Before we start with the `docker-compose.y`a`ml` file let's look at a diagram of how the application is going to work:
+Before we start with the `docker-compose.yaml` file let's look at a diagram of how the application is going to work:
 
 ![](.gitbook/assets/fullstack-application-design.svg)
 
