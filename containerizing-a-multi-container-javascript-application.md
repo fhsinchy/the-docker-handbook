@@ -424,7 +424,7 @@ The container is running now. You can visit `http://127.0.0.1:3000/` to see the 
 
 ![](.gitbook/assets/bonjour-mon-ami.png)
 
-The API has five routes in total that you can see inside the `/notes/api/api/api/routes/notes.js` file. It was bootstrapped with one of my open-source projects:
+The API has five routes in total that you can see inside the `/notes-api/api/api/routes/notes.js` file. It was bootstrapped with one of my open-source projects:
 
 {% embed url="https://github.com/fhsinchy/create-node-rocket-api" caption="spare a ⭐ to keep me motivated" %}
 
