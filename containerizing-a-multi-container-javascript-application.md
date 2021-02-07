@@ -472,7 +472,7 @@ Managing a multi-container project along with the network and volumes and stuff 
 
 There is also a `Makefile` that contains four targets named `start`, `stop`, `build` and `destroy` each invoking the previously mentioned shell scripts.
 
-If the container is in running state in your system, executing `make stop` should stop all the containers. executing `make destroy` should stop the containers and remove everything. Make sure you're running the scripts inside the `notes-api` directory:
+If the container is in running state in your system, executing `make stop` should stop all the containers. executing `make destroy` should stop the containers and remove everything. Make sure you're running the scripts inside the `notes-api` directory (if you're still in `notes-api\api`, you can use the command `cd ..` to back up one level to the correct directory before running the following):
 
 ```text
 make destroy
