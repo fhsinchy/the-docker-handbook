@@ -4,6 +4,15 @@ Now that you've learned enough about networks in Docker, in this sub-section you
 
 In this project there are two containers in total that you'll have to connect using a network. Apart from this, you'll also learn about concepts like environment variables and named volumes. So without further ado, lets jump right in.
 
+## Setting Up the Custom Bridge Network
+
+As you've learned in the previous section, the containers have to be attached to a user-defined bridge network in order to communicate with each other using container names. To do so, create a network named notes-api-network in your system:
+
+```text
+docker network create notes-api-network
+```
+
+
 ## Running the Database Server
 
 The database server in this project is a simple PostgreSQL server and uses the official [postgres](https://hub.docker.com/_/postgres) image. According to the official docs, in order to run a container with this image, you must provide the `POSTGRES_PASSWORD` environment variable. Apart from this one, I'll also provide a name for the default database using the `POSTGRES_DB` environment variable. PostgreSQL by default listens on `5432` port, so you need to publish that as well.
@@ -163,15 +172,17 @@ docker container logs notes-db
 
 Evident by the text in line 57, the database is up and ready for accepting connections from the outside. There is also the `--follow` or `-f` option for the command which lets you attach the console to the logs output and get a continuous stream of text.
 
-## Creating a Network and Attaching the Database Server
+## Attaching the Database Server (in case you missed it earlier)
 
-As you've learned in the previous section, the containers have to be attached to a user-defined bridge network in order to communicate with each other using container names. To do so, create a network named `notes-api-network` in your system:
+Your container should be connected to the network "notes-api-network" now.  Recall that you can use `docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' notes-api-network` to verify, and it should look like this:
 
 ```text
-docker network create notes-api-network
+docker network inspect --format='{{range .Containers}}{{.Name}}{{end}}' notes-api-network
+
+# notes-db
 ```
 
-Now attach the `notes-db` container to this network by executing the following command:
+If that command instead returns a blank line, you can attach the `notes-db` container to this network by executing the following command:
 
 ```text
 docker network connect notes-api-network notes-db
