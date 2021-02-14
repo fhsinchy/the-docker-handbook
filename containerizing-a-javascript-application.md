@@ -216,8 +216,8 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 As you can see the `Dockerfile` looks a lot like your previous ones with a few oddities. Explanation for this file is as follows:
 
 * Line 1 starts the first stage of the build using `node:lts-alpine` as the base image. The `as builder` syntax assigns a name to this stage so that it can be referred to later on.
-* From line 3 to line 13, it's standard stuff that you've seen many times before. The `RUN npm run build` command actually compiles the entire application and tucks it inside `/app/dist` directory where `/app` is the working directory and `/dist` is the default output directory for `vite` applications.
-* Line 15 starts the second stage of the build using `nginx:stable-alpine` as the base image.
+* From line 3 to line 9, it's standard stuff that you've seen many times before. The `RUN npm run build` command actually compiles the entire application and tucks it inside `/app/dist` directory where `/app` is the working directory and `/dist` is the default output directory for `vite` applications.
+* Line 11 starts the second stage of the build using `nginx:stable-alpine` as the base image.
 * The NGINX server runs on port 80 by default hence the line `EXPOSE 80` is added.
 * The last line is a `COPY` instruction. The `--from=builder` part indicates that you want to copy some files from the `builder` stage. After that it's a standard copy instruction where `/app/dist` is the source and `/usr/share/nginx/html` is the destination. The destination used here is the default site path for NGINX so any static file you put inside there will be automatically served.
 
