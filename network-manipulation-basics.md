@@ -44,7 +44,7 @@ docker network ls
 
 You should see three networks in your system. Now look at the `DRIVER` column of the table here. These drivers are can be treated as the type of network. By default, Docker has five networking drivers. They are as follows:
 
-* `bridge` - The default networking driver in Docker. This can e used when multiple containers are running in standard mode and needs to communicate with each other.
+* `bridge` - The default networking driver in Docker. This can be used when multiple containers are running in standard mode and needs to communicate with each other.
 * `host` - Removes the network isolation completely. Any container running under a `host` network is basically attached to the network of the host system.
 * `none` - This driver disables networking for containers altogether. I haven't' found any use-case for this yet.
 * `overlay` - This is used for connecting multiple Docker daemons across computers and is out of the scope of this article.
