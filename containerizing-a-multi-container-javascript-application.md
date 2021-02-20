@@ -189,7 +189,7 @@ docker network connect notes-api-network notes-db
 
 ## Writing The Dockerfile
 
-Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory, and crreate a new `Dockerfile` in there. Put following code in the file:
+Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory, and create a new `Dockerfile` in there. Put following code in the file:
 
 ```text
 # stage one
