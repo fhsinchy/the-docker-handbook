@@ -441,7 +441,7 @@ Although the container is running, there is one last thing that you'll have to d
 
 ## Executing Commands in a Running Container
 
-You've already learned about executing commands in a stopped container. Another scenario is executing a command inside a running container.For this, you'll have to use the `exec` command to execute a custom command inside a running container.
+You've already learned about executing commands in a starting container. Another scenario is executing a command inside a running container. For this, you'll have to use the `exec` command to execute a custom command inside a running container.
 
 The generic syntax for the `exec` command is as follows:
 
