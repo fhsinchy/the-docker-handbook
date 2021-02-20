@@ -83,7 +83,7 @@ services:
             - 3000:3000
 
 volumes:
-    notes-db-dev-data:
+    dev-data:
         name: notes-db-dev-data
 ```
 
