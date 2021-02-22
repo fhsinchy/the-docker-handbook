@@ -189,7 +189,7 @@ docker network connect notes-api-network notes-db
 
 ## Writing The Dockerfile
 
-Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory, and crreate a new `Dockerfile` in there. Put following code in the file:
+Go to the directory where you've cloned the project codes. Inside there, go inside the `notes-api/api` directory, and create a new `Dockerfile` in there. Put following code in the file:
 
 ```text
 # stage one
@@ -441,7 +441,7 @@ Although the container is running, there is one last thing that you'll have to d
 
 ## Executing Commands in a Running Container
 
-You've already learned about executing commands in a stopped container. Another scenario is executing a command inside a running container.For this, you'll have to use the `exec` command to execute a custom command inside a running container.
+You've already learned about executing commands in a stopped container. Another scenario is executing a command inside a running container. For this, you'll have to use the `exec` command to execute a custom command inside a running container.
 
 The generic syntax for the `exec` command is as follows:
 

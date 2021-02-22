@@ -62,7 +62,7 @@ services:
         image: postgres:12
         container_name: notes-db-dev
         volumes: 
-            - notes-db-dev-data:/var/lib/postgresql/data
+            - db-data:/var/lib/postgresql/data
         environment:
             POSTGRES_DB: notesdb
             POSTGRES_PASSWORD: secret
@@ -83,7 +83,7 @@ services:
             - 3000:3000
 
 volumes:
-    notes-db-dev-data:
+    db-data:
         name: notes-db-dev-data
 ```
 
@@ -94,7 +94,7 @@ Blocks in an YAML file are defined by indentation. I will go through each of the
 * The `services` block holds the definitions for each of the services or containers in the application. `db` and `api` are the two services that comprise this project.
 * The `db` block defines a new service in the application and holds necessary information to start the container. Every service requires either a pre-built image or a `Dockerfile` to run a container. For the `db` service we're using the official PostgreSQL image.
 * Unlike the `db` service, a pre-built image for the `api` service doesn't exist. Hence, we use the `Dockerfile.dev` file.
-* The `volumes` block defines any name volume needed by any of the services. At the time it only enlists `notes-db-dev-data` volume used by the `db` service.
+* The `volumes` block defines any name volume needed by any of the services. At the time it only enlists `db-data` volume used by the `db` service.
 
 Now that have a high level overview of the `docker-compose.yaml` file, lets have a closer look at the individual services.
 
@@ -318,7 +318,7 @@ In this sub-section, we'll be adding a front-end to our notes API and turn it in
 
 If you've cloned the project code repository, then go inside the `fullstack-notes-application` directory. Each directory inside the project root contains the code for each services and the corresponding `Dockerfile`.
 
-Before we start with the `docker-compose.y`a`ml` file let's look at a diagram of how the application is going to work:
+Before we start with the `docker-compose.yaml` file let's look at a diagram of how the application is going to work:
 
 ![](.gitbook/assets/fullstack-application-design.svg)
 
