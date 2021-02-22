@@ -41,3 +41,14 @@ If you're looking for the complete and stable version of the article then freeCo
 
 Which ever version of the article you end up reading though, don't forget to let me know your opinion. Constructive criticism is always welcomed.
 
+## Awesome Contributors
+
+I am listing the names of the amazing people who have contributed to this small project in alphabetical order.
+
+* [Andrea Trogolo](https://github.com/ATrogolo) - fixed several grammatical mistakes and inconsistencies in code examples. 
+* [David A. Carley](https://github.com/dacarley) - fixed spelling mistakes in some of the `svg` files.
+* [Emilano Vazquez](https://github.com/gamba47) - fixed inconsistencies in code explanations.
+* [Steven Cook](https://github.com/Dez-BlueRose) - fixed mistakes and added new sub-sections with better explanations for some of the topics.
+
+Thanks a lot to all of you, I appreciate the effort you guys have put in improving this project. Hoping to collaborate in the future also.
+
