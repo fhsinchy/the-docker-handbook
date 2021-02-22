@@ -62,7 +62,7 @@ services:
         image: postgres:12
         container_name: notes-db-dev
         volumes: 
-            - notes-db-dev-data:/var/lib/postgresql/data
+            - db-data:/var/lib/postgresql/data
         environment:
             POSTGRES_DB: notesdb
             POSTGRES_PASSWORD: secret
@@ -83,7 +83,7 @@ services:
             - 3000:3000
 
 volumes:
-    dev-data:
+    db-data:
         name: notes-db-dev-data
 ```
 
@@ -94,7 +94,7 @@ Blocks in an YAML file are defined by indentation. I will go through each of the
 * The `services` block holds the definitions for each of the services or containers in the application. `db` and `api` are the two services that comprise this project.
 * The `db` block defines a new service in the application and holds necessary information to start the container. Every service requires either a pre-built image or a `Dockerfile` to run a container. For the `db` service we're using the official PostgreSQL image.
 * Unlike the `db` service, a pre-built image for the `api` service doesn't exist. Hence, we use the `Dockerfile.dev` file.
-* The `volumes` block defines any name volume needed by any of the services. At the time it only enlists `notes-db-dev-data` volume used by the `db` service.
+* The `volumes` block defines any name volume needed by any of the services. At the time it only enlists `db-data` volume used by the `db` service.
 
 Now that have a high level overview of the `docker-compose.yaml` file, lets have a closer look at the individual services.
 
@@ -137,7 +137,7 @@ api:
 ```
 
 * The `api` service doesn't come with a pre-built image instead what it has is a build configuration. Under the `build` block we define the context and the name of the Dockerfile for building an image. You should have a understanding of context and Dockerfile by now so I won't spend time explaining those.
-* The `image` key holds the name of the image to be build. If not assigned the image will be named following the `<project directory name>_<service name>` syntax.
+* The `image` key holds the name of the image to be built. If not assigned the image will be named following the `<project directory name>_<service name>` syntax.
 * Inside the `environment` map, the `DB_HOST` variable demonstrates a feature of Compose. That is, you can refer to another service in the same application by using its name. So the `db` here, will be replaced by the IP address of the `api` service container. The `DB_DATABASE` and `DB_PASSWORD` variables have to match up with `POSTGRES_DB` and `POSTGRES_PASSWORD` respectively from the `db` service definition.
 * In the `volumes` map, you can see an anonymous volume and a bind mount described. The syntax is identical to what you've seen in previous sections.
 * The `ports` map defines any port mapping. The syntax, `<host port>:<container port>` is identical to the `--publish` option you used before.
