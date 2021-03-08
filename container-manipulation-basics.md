@@ -307,7 +307,7 @@ docker container prune
 
 Docker will ask for confirmation. You can use the `--force` or `-f` option to skip this confirmation step. Once done, the `container prune` command will show the amount of reclaimed space.
 
-You can check the the container list using the `container ls --all` command to make sure that the dangling containers have been removed:
+You can check the container list using the `container ls --all` command to make sure that the dangling containers have been removed:
 
 ```text
 docker container ls --all
@@ -358,7 +358,7 @@ Well, all images are not that simple. Images can encapsulate an entire Linux dis
 
 These images do not just run some pre-configured program. These are instead configured to run a shell by default. In case of the operating system images it can be something like `sh` or `bash` and in case of the programming languages or run-times, it is usually their default language shell.
 
-As you may have already learned from your previous experiences with computers, shells are interactive programs. Images configured to run such a program is an interactive image. These images require a special `-it` option to be passed in the `container run` command.
+As you may have already learned from your previous experiences with computers, shells are interactive programs. Images configured to run such a program are interactive images. These images require a special `-it` option to be passed in the `container run` command.
 
 As an example, if you run a container using the `ubuntu` image by executing `docker container run ubuntu` you'll see nothing happens. But if you execute the same command with `-it` option, you should land directly on bash inside the Ubuntu container. 
 
