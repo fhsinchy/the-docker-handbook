@@ -1,6 +1,6 @@
 # Composing Projects Using Docker-Compose
 
-In the previous section, you've learned about managing a multi-container project and the difficulties of it. Instead of writing so many commands, there is an easier to manage multi-container projects, a tool called [Docker Compose](https://docs.docker.com/compose/).
+In the previous section, you've learned about managing a multi-container project and the difficulties of it. Instead of writing so many commands, there is an easier way to manage multi-container projects, a tool called [Docker Compose](https://docs.docker.com/compose/).
 
 According to the Docker [documentation](https://docs.docker.com/compose/) - "Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration."
 
@@ -8,7 +8,7 @@ Although Compose works in all environments, it's more focused on development and
 
 ## Compose Basics
 
-Go the directory where you've cloned the repository that came with this article. Go inside the `notes-api/api` directory and create a `Dockerfile.dev` file. Put following code in it:
+Go the directory where you've cloned the repository that came with this article. Go inside the `notes-api/api` directory and create a `Dockerfile.dev` file. Put the following code in it:
 
 ```text
 # stage one
@@ -96,7 +96,7 @@ Blocks in an YAML file are defined by indentation. I will go through each of the
 * Unlike the `db` service, a pre-built image for the `api` service doesn't exist. Hence, we use the `Dockerfile.dev` file.
 * The `volumes` block defines any name volume needed by any of the services. At the time it only enlists `db-data` volume used by the `db` service.
 
-Now that have a high level overview of the `docker-compose.yaml` file, lets have a closer look at the individual services.
+Now that we have a high level overview of the `docker-compose.yaml` file, lets have a closer look at the individual services.
 
 Definition code for the `db` service is as follows:
 
@@ -136,7 +136,7 @@ api:
         - 3000:3000
 ```
 
-* The `api` service doesn't come with a pre-built image instead what it has is a build configuration. Under the `build` block we define the context and the name of the Dockerfile for building an image. You should have a understanding of context and Dockerfile by now so I won't spend time explaining those.
+* The `api` service doesn't come with a pre-built image instead what it has is a build configuration. Under the `build` block we define the context and the name of the Dockerfile for building an image. You should have an understanding of context and Dockerfile by now so I won't spend time explaining those.
 * The `image` key holds the name of the image to be built. If not assigned the image will be named following the `<project directory name>_<service name>` syntax.
 * Inside the `environment` map, the `DB_HOST` variable demonstrates a feature of Compose. That is, you can refer to another service in the same application by using its name. So the `db` here, will be replaced by the IP address of the `api` service container. The `DB_DATABASE` and `DB_PASSWORD` variables have to match up with `POSTGRES_DB` and `POSTGRES_PASSWORD` respectively from the `db` service definition.
 * In the `volumes` map, you can see an anonymous volume and a bind mount described. The syntax is identical to what you've seen in previous sections.
@@ -150,7 +150,7 @@ volumes:
         name: notes-db-dev-data
 ```
 
-Any named volume used in any of the services has to be defined here. If you don't define a name, the volume will be named following the `<project directory name>_<volume key>` and the key here is `db-data`. You can learn about the different options for volume configuration in the official [docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes).
+Any named volume used in any of the services has to be defined here. If you don't define a name, the volume will be named following the `<project directory name>_<volume key>` syntax and the key here is `db-data`. You can learn about the different options for volume configuration in the official [docs](https://docs.docker.com/compose/compose-file/compose-file-v3/#volumes).
 
 ## What About the Network Bridge?
 
@@ -160,7 +160,7 @@ You may have noticed that there is no network bridge creation section in this YA
 
 There are a few ways of starting services defined in a YAML file. The first command that you'll learn about is the `up` command. The `up` command builds any missing images, creates containers and starts them in one go.
 
-Before you execute the command though, make sure you've open your terminal in the same directory where the `docker-compose.yaml` file is. This is very important for every `docker-compose` command you execute.
+Before you execute the command though, make sure you've opened your terminal in the same directory where the `docker-compose.yaml` file is. This is very important for every `docker-compose` command you execute.
 
 ```text
 docker-compose --file docker-compose.yaml up --detach
@@ -220,7 +220,7 @@ docker-compose --file docker-compose.yaml up --detach
 # Creating notes-db-dev  ... done
 ```
 
-The `--detach` or `-d` option here functions same as the one you've seen before. The `--file` or `-f` option is only needed if the YAML file is note named `docker-compose.yaml` but I've used here for demonstration purpose.
+The `--detach` or `-d` option here functions same as the one you've seen before. The `--file` or `-f` option is only needed if the YAML file is not named `docker-compose.yaml` but I've used here for demonstration purpose.
 
 Apart from the the `up` command there is the `start` command. The main difference between these two is the `start` command doesn't create missing containers, only starts existing containers. It's basically same as the `container start` command.
 
