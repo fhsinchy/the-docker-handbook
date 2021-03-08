@@ -48,10 +48,10 @@ RUN apt-get update && \
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-Images are multi-layered files and In this file, each line \(known as instructions\) that you've written, creates a layer for your image.
+Images are multi-layered files and in this file, each line \(known as instructions\) that you've written, creates a layer for your image.
 
 * Every valid `Dockerfile` starts with a `FROM` instruction. This instruction sets the base image for your resultant image. By setting `ubuntu:latest` as the base image here, you get all the goodness of Ubuntu already available in your custom image hence, you can use things like the `apt-get` command for easy package installation.
-* The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` option explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that I won't  be discussing here.
+* The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` option explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that I won't be discussing here.
 * The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package versions and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here, are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
 * Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the NGINX executable. The `-g` and `daemon off` are options for NGINX. Running NGINX as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
 
@@ -231,7 +231,7 @@ I've already mentioned in the previous sub-section that each instruction you wri
 * `587c805fe8df` was created by `/bin/sh -c apt-get update && apt-get install nginx -y && apt-get clean && rm -rf /var/lib/apt/lists/*` which was the third instruction in your code. You can also see that this image has a size of `60MB` given all necessary packages were installed during the execution of this instruction.
 * Finally the upper most layer `7f16387f7307` was created by `/bin/sh -c #(nop)  CMD ["nginx", "-g", "daemon off;"]` which sets the default command for this image.
 
-As you can see, the image comprises of many read-only layers each recording a new set of change to the state triggered by certain instructions. When you start a container using an image, a new writable layer on top of the other layers.
+As you can see, the image comprises of many read-only layers each recording a new set of change to the state triggered by certain instructions. When you start a container using an image, a new layer is written on top of the other layers.
 
 This layering phenomenon that happens every time you work with Docker has been made possible by an amazing technical concept called union file system. Here, union means union in set theory. According to [Wikipedia](https://en.wikipedia.org/wiki/UnionFS) - "It allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system. Contents of directories which have the same path within the merged branches will be seen together in a single merged directory, within the new, virtual filesystem."
 
@@ -241,11 +241,11 @@ By utilizing this concept, Docker can avoid data duplication, can use previously
 
 In the previous sub-section, you've learned about the `FROM`, `EXPOSE`, `RUN` and `CMD` instructions. In this sub-section you'll be learning a lot more about other instructions.
 
-In this sub-section you'll be again create a custom NGINX image but the twist is that you'll be building NGINX from source instead of installing it using some package manager such as `apt-get` in the previous example.
+In this sub-section you'll again create a custom NGINX image but the twist is that you'll be building NGINX from source instead of installing it using some package manager such as `apt-get` in the previous example.
 
 In order to build NGINX from source, you first need the source of NGINX. If you've cloned my projects repository you'll see a file named `nginx-1.19.2.tar.gz` inside the `custom-nginx` directory. You'll use this archive as the source for building NGINX.
 
-Before diving into writing some code, let's plan out the process first. The image process creation process this time can be done in seven steps. These are as follows:
+Before diving into writing some code, let's plan out the process first. The image creation process this time can be done in seven steps. These are as follows:
 
 * Get a good base image for building the application i.e. [ubuntu](https://hub.docker.com/_/ubuntu).
 * Install necessary build dependencies on the base image.
@@ -388,7 +388,7 @@ The code is almost identical to the previous code block except a new instruction
 Rest of the code is almost unchanged. You should be able to understand the usage of the arguments by yourself now. Finally let's try to build an image from this updated code.
 
 ```text
-docker image build --tag custom-nginx:built .
+docker image build --tag custom-nginx:built-v2 .
 
 # Step 1/9 : FROM ubuntu:latest
 #  ---> d70eaf7277ea
@@ -425,20 +425,20 @@ docker image build --tag custom-nginx:built .
 # Removing intermediate container 63ee44b571bb
 #  ---> 4ce79556db1b
 # Successfully built 4ce79556db1b
-# Successfully tagged custom-nginx:built
+# Successfully tagged custom-nginx:built-v2
 ```
 
-Now you should be able to run a container using the `custom-nginx:built` image.
+Now you should be able to run a container using the `custom-nginx:built-v2` image.
 
 ```text
-docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built
+docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built-v2
 
 # 90ccdbc0b598dddc4199451b2f30a942249d85a8ed21da3c8d14612f17eed0aa
 
 docker container ls
 
 # CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS                  NAMES
-# 90ccdbc0b598        custom-nginx:built   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
+# 90ccdbc0b598        custom-nginx:built-v2   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
 ```
 
 A container using the `custom-nginx:built-v2` image has been successfully run. The container should be accessible at `http://127.0.0.1:8080` address now.
@@ -663,7 +663,7 @@ The code is almost identical except a few changes. I'll be listing the changes a
 
 * Instead of using `apt-get install` for installing packages, we use `apk add` and the `--no-cache` option means that the downloaded package won't be cached. Likewise `apk del` is used instead of `apt-get remove` to uninstall packages.
 * The `--virtual` option for `apk add` command is used for bundling a bunch of packages into a single virtual package for easier management. Packages that are needed only for building the program is labeled as `.build-deps` which is then removed on line 29 by executing `apk del .build-deps` command. You can learn more about [virtuals](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html#_virtuals) in the official docs.
-* The packages names are a bit different here. Usually every Linux distribution has its package repository available to everyone where you can search for packages. If you know the packages required for a certain task then you can just head over to the designated repository for a distribution and search for it. You can look up Alpine Linux packages on [https://pkgs.alpinelinux.org/packages](https://pkgs.alpinelinux.org/packages) link.
+* The package names are a bit different here. Usually every Linux distribution has its package repository available to everyone where you can search for packages. If you know the packages required for a certain task then you can just head over to the designated repository for a distribution and search for it. You can look up Alpine Linux packages on [https://pkgs.alpinelinux.org/packages](https://pkgs.alpinelinux.org/packages) link.
 
 Now build a new image using this `Dockerfile` and see the difference in file size:
 
@@ -746,7 +746,7 @@ Explanation for the instructions in this file is as follows:
 
 * The `FROM` instruction sets [python](https://hub.docker.com/_/python) as the base image making an ideal environment for running python scripts. The `3-alpine` tag indicates that you want the Alpine variant of Python 3.
 * The `WORKDIR` instruction sets the default working directory to `/zone` here. The name of the working directory is completely random here. I found zone to be a fitting name, you may use anything you want.
-* Given the `rmbyext` script is installed from GitHub, `git` is a install time dependency. The `RUN` instruction on line 5 installs `git` then installs the `rmbyext` script using git and pip. It also gets rid of `git` afterwards.
+* Given the `rmbyext` script is installed from GitHub, `git` is an install time dependency. The `RUN` instruction on line 5 installs `git` then installs the `rmbyext` script using git and pip. It also gets rid of `git` afterwards.
 * Finally on line 9, the `ENTRYPOINT` instruction sets the `rmbyext` script as the entry-point for this image.
 
 In this entire file, line 9 is the magic that turns this seemingly normal image to an executable one. Now to build the image you can execute following command:
@@ -865,7 +865,7 @@ Take the `node` image as an example. The `node:lts` image refers to the long ter
 
 If you do not give the image any tag, it'll be automatically tagged as `latest`. But that doesn't mean that the `latest` tag will always refer to the latest version. If for some reason you explicitly tag an older version of the image as `latest` then Docker will not make any extra effort to cross check that.
 
-Once the image has been built, you can them upload that by executing the following command:
+Once the image has been built, you can then upload that by executing the following command:
 
 ```text
 docker image push <image repository>:<image tag>
@@ -887,5 +887,5 @@ docker image push fhsinchy/custom-nginx:latest
 # latest: digest: sha256:ffe93440256c9edb2ed67bf3bba3c204fec3a46a36ac53358899ce1a9eee497a size: 1788
 ```
 
-Depending on the image size, the upload may take some time. Once it's done you should able to find the image in your hub profile page.
+Depending on the image size, the upload may take some time. Once it's done you should be able to find the image in your hub profile page.
 
