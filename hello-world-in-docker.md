@@ -77,9 +77,9 @@ Unlike a virtual machine, a container does the job of virtualization in a smarte
 
 ![](.gitbook/assets/containers.svg)
 
-The container runtime i.e. Docker sits between the containers and the host operating system ****instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure. As a result of eliminating the entire host operating system layer, containers are much lighter and less resource hogging than traditional virtual machines.
+The container runtime i.e. Docker sits between the containers and the host operating system ****instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure. As a result of eliminating the entire guest operating system layer, containers are much lighter and less resource hogging than traditional virtual machines.
 
-As an demonstration of the point, look at the following code block:
+As a demonstration of the point, look at the following code block:
 
 ```text
 uname -a

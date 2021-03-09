@@ -461,7 +461,7 @@ docker container exec notes-api npm run db:migrate
 # Batch 1 run: 1 migrations
 ```
 
-In cases where you want to run an interactive command inside a running container, you'll have to use the `-it` flag. As an example, if you want to access the shell running inside the `notes-api` container, you can execute following the command:
+In cases where you want to run an interactive command inside a running container, you'll have to use the `-it` flag. As an example, if you want to access the shell running inside the `notes-api` container, you can execute the following command:
 
 ```text
 docker container exec -it notes-api sh

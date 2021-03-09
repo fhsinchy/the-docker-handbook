@@ -94,11 +94,11 @@ docker container run \
 # 21b9b1499d195d85e81f0e8bce08f43a64b63d589c5f15cbbd0b9c0cb07ae268
 ```
 
-Now visit `http://127.0.0.1:3000` do see the `hello-dock` application in action.
+Now visit `http://127.0.0.1:3000` to see the `hello-dock` application in action.
 
 ![](.gitbook/assets/hello-dock-dev.png)
 
-Congratulations on running your first real-world application inside a container. The code you've just written is okay but there is one big issue with it and a few places where it can be improved. Let's begin with the issue first.
+Congratulations on running your first real-world application inside a container. The code you've just written is okay but there is one big issue with it and there are a few places where it can be improved. Let's begin with the issue first.
 
 ## Working With Bind Mounts
 
