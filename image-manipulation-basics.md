@@ -226,7 +226,7 @@ Now, let's have a closer look at the images beginning from image `d70eaf7277ea` 
 
 I've already mentioned in the previous sub-section that each instruction you write in the `Dockerfile` will create a layer in the image.
 
-*  `d70eaf7277ea` was created by `/bin/sh -c #(nop)  CMD ["/bin/bash"]` which indicates that the default shell inside Ubuntu has been loaded successfully.
+* `d70eaf7277ea` was created by `/bin/sh -c #(nop)  CMD ["/bin/bash"]` which indicates that the default shell inside Ubuntu has been loaded successfully.
 * `6fe4e51e35c1` was created by `/bin/sh -c #(nop)  EXPOSE 80` which was the second instruction in your code.
 * `587c805fe8df` was created by `/bin/sh -c apt-get update && apt-get install nginx -y && apt-get clean && rm -rf /var/lib/apt/lists/*` which was the third instruction in your code. You can also see that this image has a size of `60MB` given all necessary packages were installed during the execution of this instruction.
 * Finally the upper most layer `7f16387f7307` was created by `/bin/sh -c #(nop)  CMD ["nginx", "-g", "daemon off;"]` which sets the default command for this image.
@@ -266,6 +266,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -336,7 +337,7 @@ docker image build --tag custom-nginx:built .
 # Successfully tagged custom-nginx:built
 ```
 
-This code is alright but there are some places where improvements can be made. 
+This code is alright but there are some places where improvements can be made.
 
 * Instead of hard coding the filename like `nginx-1.19.2.tar.gz`, you can create an argument using the `ARG` instruction. This way, you'll be able to change the version or filename by just changing the argument.
 * Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction which is capable of adding files from the internet.
@@ -352,6 +353,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -449,7 +451,7 @@ And here is the trusty default response page from NGINX. You can visit the [offi
 
 ## Optimizing Images
 
-The image we built in the last sub-section is functional but very unoptimized. To prove my point let's  have a look at the size of the image using the `image ls` command:
+The image we built in the last sub-section is functional but very unoptimized. To prove my point let's have a look at the size of the image using the `image ls` command:
 
 ```text
 docker image ls
@@ -491,6 +493,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -518,7 +521,7 @@ RUN rm -rf /${FILENAME}}
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. Out of the 6 packages that we installed, only two are necessary for running NGINX. These are `libpcre3` and `zlib1g`. So a better idea can be to uninstall the other packages once the build process is done. 
+As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. Out of the 6 packages that we installed, only two are necessary for running NGINX. These are `libpcre3` and `zlib1g`. So a better idea can be to uninstall the other packages once the build process is done.
 
 To do so, update your `Dockerfile` as follows:
 
@@ -538,6 +541,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
