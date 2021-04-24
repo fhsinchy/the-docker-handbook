@@ -45,7 +45,8 @@ Which ever version of the article you end up reading though, don't forget to let
 
 I am listing the names of the amazing people who have contributed to this small project in alphabetical order.
 
-* [Andrea Trogolo](https://github.com/ATrogolo) - fixed several grammatical mistakes and inconsistencies in code examples. 
+* [Andrea Trogolo](https://github.com/ATrogolo) - fixed several grammatical mistakes and inconsistencies in code examples.
+*  [Arsen Melikyan](https://github.com/bugron) - fixed typos and inconsistencies in multiple images and sections.
 * [David A. Carley](https://github.com/dacarley) - fixed spelling mistakes in some of the `svg` files.
 * [Emilano Vazquez](https://github.com/gamba47) - fixed inconsistencies in code explanations.
 * [Steven Cook](https://github.com/Dez-BlueRose) - fixed mistakes and added new sub-sections with better explanations for some of the topics.
