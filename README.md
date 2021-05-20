@@ -33,7 +33,7 @@ This article is completely open-source and quality contributions are more than w
 
 I usually do my changes and updates on the GitBook version of the article first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the article in the following link:
 
-{% embed url="https://docker.farhan.info/" caption="don\'t forget to leave ratings" %}
+{% embed url="https://docker-handbook.farhan.dev/" caption="don\'t forget to leave a ⭐" %}
 
 If you're looking for the complete and stable version of the article then freeCodeCamp will be the best place to go:
 
