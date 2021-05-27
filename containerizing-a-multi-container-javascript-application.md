@@ -97,7 +97,7 @@ docker container inspect --format='{{range .Mounts}} {{ .Name }} {{end}}' notes-
 #  notes-db-data
 ```
 
-Now the data will safely stored inside the `notes-db-data` volume and can be reused in the future. A bind mount can also be used instead of a named volume here, but I prefer a named volume in such scenarios.
+Now the data will be safely stored inside the `notes-db-data` volume and can be reused in the future. A bind mount can also be used instead of a named volume here, but I prefer a named volume in such scenarios.
 
 ## Accessing Logs From a Container
 
