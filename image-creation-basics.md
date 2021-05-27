@@ -255,7 +255,7 @@ Before diving into writing some code, let's plan out the process first. The imag
 * Get rid of the extracted source code.
 * Run `nginx` executable.
 
-Now that you have a plan, let's begin by opening up old `Dockerfile` and update its contet as follows:
+Now that you have a plan, let's begin by opening up old `Dockerfile` and update its content as follows:
 
 ```text
 FROM ubuntu:latest
