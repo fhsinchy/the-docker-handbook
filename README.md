@@ -23,7 +23,7 @@ Code for the example projects can be found in the following repository:
 
 {% embed url="https://github.com/fhsinchy/docker-handbook-projects/" caption="spare a ⭐ to keep me motivated" %}
 
-You can find the complete code in the [`containerized`](https://github.com/fhsinchy/docker-handbook-projects/tree/containerized) branch.
+You can find the complete code in the [completed](https://github.com/fhsinchy/docker-handbook-projects/tree/completed) branch.
 
 ## Contributions
 
