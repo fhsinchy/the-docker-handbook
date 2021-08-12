@@ -31,7 +31,6 @@ docker run hello-world
 #
 # For more examples and ideas, visit:
 #  https://docs.docker.com/get-started/
-
 ```
 
 The [hello-world](https://hub.docker.com/_/hello-world) image is an example of minimal containerization with Docker. It has a single program compiled from a [hello.c](https://github.com/docker-library/hello-world/blob/master/hello.c) file responsible for printing out the message you're seeing on your terminal.
@@ -57,7 +56,7 @@ I've listed the three concepts in alphabetical order and will begin my explanati
 
 ## Container
 
-In the world of containerization, there can not be anything more fundamental than the concept of a container. 
+In the world of containerization, there can not be anything more fundamental than the concept of a container.
 
 The official Docker [resources](https://www.docker.com/resources/what-container) site says, "A container is an abstraction at the application layer that packages code and dependencies together. Instead of virtualizing the entire physical machine, containers virtualize the host operating system only."
 
@@ -65,11 +64,11 @@ You may consider containers as the next generation of virtual machines. Just lik
 
 Containers and virtual machines are actually different ways of virtualizing your physical hardware. The main difference between these two is the method of virtualization.
 
-Virtual machines are usually created and managed by a program known as a hypervisor i.e. [Oracle VM VirtualBox](https://www.virtualbox.org/), [VMware Workstation](https://www.vmware.com/), [KVM](https://www.linux-kvm.org/), [Microsoft Hyper-V ](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/about/)etc. This hypervisor program usually sits between the host operating system and the virtual machines to act as a medium of communication.
+Virtual machines are usually created and managed by a program known as a hypervisor i.e. [Oracle VM VirtualBox](https://www.virtualbox.org/), [VMware Workstation](https://www.vmware.com/), [KVM](https://www.linux-kvm.org/), [Microsoft Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/about/), etc. This hypervisor program usually sits between the host operating system and the virtual machines to act as a medium of communication.
 
 ![](.gitbook/assets/virtual-machines.svg)
 
-Each virtual machine comes with it's own guest operating system which is just as heavy as the host operating system. Application running inside a virtual machine communicates with the guest operating system, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the running application. 
+Each virtual machine comes with its own guest operating system which is just as heavy as the host operating system. Applications running inside a virtual machine communicates with the guest operating system, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the running application.
 
 As you can see, there is a long chain of communication between applications running inside virtual machines and the physical infrastructure. The application running inside the virtual machine may take only a small amount of resources but the guest operating system adds a noticeable overhead.
 
@@ -77,7 +76,7 @@ Unlike a virtual machine, a container does the job of virtualization in a smarte
 
 ![](.gitbook/assets/containers.svg)
 
-The container runtime i.e. Docker sits between the containers and the host operating system ****instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure. As a result of eliminating the entire guest operating system layer, containers are much lighter and less resource hogging than traditional virtual machines.
+The container runtime i.e. Docker sits between the containers and the host operating system instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure. As a result of eliminating the entire guest operating system layer, containers are much lighter and less resource-hogging than traditional virtual machines.
 
 As a demonstration of the point, look at the following code block:
 
@@ -95,7 +94,7 @@ If you're on a Windows machine, you'll find out that all the containers uses the
 
 ## Image
 
-Images are multi-layered self-contained files that act as the template for creating containers. They are like a frozen, read-only copy of a container. Images can be exchanged through registries. 
+Images are multi-layered self-contained files that act as the template for creating containers. They are like a frozen, read-only copy of a container. Images can be exchanged through registries.
 
 In the past, different container engines had different image formats but later on [Open Container Initiative \(OCI\)](https://opencontainers.org/) defined a standard specification for container images which is complied by the major containerization engines out there. This means that an image built with Docker can be used with another runtime like Podman without any additional hassle.
 
