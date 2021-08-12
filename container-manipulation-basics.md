@@ -319,7 +319,7 @@ docker container ls --all
 
 If you are following the article exactly as written so far, you should only see the `hello-dock-container` and `hello-dock-container-2` in the list. I would suggest stopping and removing both containers before going to the next section.
 
-There is also the `--rm` option for the `container run`  and `container start` commands which indicates that you want the containers removed as soon as they're stopped. To start another `hello-dock` container with the `--rm` option, execute the following command:
+There is also the `--rm` option for the `container run` and `container start` commands which indicates that you want the containers removed as soon as they're stopped. To start another `hello-dock` container with the `--rm` option, execute the following command:
 
 ```text
 docker container run --rm --detach --publish 8888:80 --name hello-dock-volatile fhsinchy/hello-dock
@@ -360,7 +360,7 @@ These images do not just run some pre-configured program. These are instead conf
 
 As you may have already learned from your previous experiences with computers, shells are interactive programs. Images configured to run such a program are interactive images. These images require a special `-it` option to be passed in the `container run` command.
 
-As an example, if you run a container using the `ubuntu` image by executing `docker container run ubuntu` you'll see nothing happens. But if you execute the same command with `-it` option, you should land directly on bash inside the Ubuntu container. 
+As an example, if you run a container using the `ubuntu` image by executing `docker container run ubuntu` you'll see nothing happens. But if you execute the same command with `-it` option, you should land directly on bash inside the Ubuntu container.
 
 ```text
 docker container run --rm -it ubuntu
@@ -430,7 +430,7 @@ docker container run <image name> <command>
 To perform the base64 encoding using the busybox image, you can execute following command:
 
 ```text
-docker container run --rm busybox echo -n my-secret | base64
+docker container run --rm busybox sh -c "echo -n my-secret | base64"
 
 # bXktc2VjcmV0
 ```
@@ -510,6 +510,4 @@ The `--volume` or `-v` option is valid for the `container run` as well as the `c
 The difference between a regular image and an executable one is that the entry-point for an executable image is set to a custom program instead of `sh`, in this case the `rmbyext` program and as you've learned in the previous sub-section, anything you write after the image name in a `container run` command gets passed to the entry-point of the image.
 
 So in the end the `docker container run --rm -v $(pwd):/zone fhsinchy/rmbyext pdf` command translates to `rmbyext pdf` inside the container. Executable images are not that common in the wild but can be very useful in certain cases, hence learning about them is important.
-
-
 
