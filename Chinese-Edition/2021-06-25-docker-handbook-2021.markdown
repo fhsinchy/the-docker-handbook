@@ -3526,7 +3526,7 @@ docker-compose --file docker-compose.yaml up --detach
 
 - 本书翻译原文：[https://www.freecodecamp.org/news/the-docker-handbook/](https://www.freecodecamp.org/news/the-docker-handbook/)
 - 原作者：`Farhan Hasin Chowdhury`
-- 原项目仓库：[https://github.com/fhsinchy/docker-handbook-projects/](https://github.com/fhsinchy/the-docker-handbook/)
+- 原项目仓库：[https://github.com/fhsinchy/the-docker-handbook/](https://github.com/fhsinchy/the-docker-handbook/)
 - 译者：`冯兄话吉`
 - 译者项目克隆仓库：[https://github.com/FengMengZhao/the-docker-handbook/](https://github.com/FengMengZhao/the-docker-handbook/)
 - 译者gitee项目同步仓库（GitHub访问异常使用）：[https://gitee.com/fengmengzhao/the-docker-handbook/](https://gitee.com/fengmengzhao/the-docker-handbook/)
