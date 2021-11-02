@@ -15,7 +15,7 @@ Go the directory where you've cloned the repository that came with this article.
 FROM node:lts-alpine as builder
 
 # install dependencies for node-gyp
-RUN apk add --no-cache python make g++
+RUN apk add --no-cache python2 make g++
 
 WORKDIR /app
 
