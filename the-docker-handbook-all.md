@@ -56,11 +56,11 @@ Installation of Docker varies greatly depending on the operating system you’re
 
 On a mac, all you have to do is navigate to the official [download page](https://www.docker.com/products/docker-desktop) and click the _Download for Mac \(stable\)_ button. You’ll get a regular looking _Apple Disk Image_ file and inside the file, there will be the application. All you have to do is drag the file and drop it on your Applications directory.
 
-![](.gitbook/assets/drag-docker-in-applications-directory.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/drag-docker-in-applications-directory.png)
 
 You can start Docker by simply double-clicking the application icon. Once the application start, you'll see the Docker icon appear on your menu-bar.
 
-![](.gitbook/assets/docker-icon-in-menubar.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/docker-icon-in-menubar.png)
 
 Now, open up the terminal and execute `docker --version` and `docker-compose --version` to ensure the success of the installation.
 
@@ -74,11 +74,11 @@ On Windows, the procedure is almost the same, except there are a few extra steps
 
 Once the installation is done, start _Docker Desktop_ either from the start menu or your desktop. The docker icon should show up on your taskbar.
 
-![](.gitbook/assets/docker-icon-in-taskbar.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/docker-icon-in-taskbar.png)
 
 Now, open up Ubuntu or whatever distribution you've installed from Microsoft Store. Execute `docker --version` and `docker-compose --version` commands to make sure that the installation was successful.
 
-![](.gitbook/assets/docker-and-compose-version-on-windows.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/docker-and-compose-version-on-windows.png)
 
 You can access Docker from your regular Command Prompt or PowerShell as well. It's just that I prefer using WSL2 over any other command line on Windows.
 
@@ -99,7 +99,7 @@ The Docker Desktop package on Windows or Mac is a collection of tools like `Dock
 
 Once the installation is done, open up the terminal and execute `docker --version` and `docker-compose --version` to ensure the success of the installation.
 
-![](.gitbook/assets/docker-and-compose-version-on-linux.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/docker-and-compose-version-on-linux.png)
 
 Although Docker performs quite well regardless of the platform you’re on, I prefer Linux over the others. Throughout the article, I’ll be switching between my [Ubuntu 20.10](https://releases.ubuntu.com/20.10/) and [Fedora 33](https://fedoramagazine.org/announcing-fedora-33/) workstations.
 
@@ -175,7 +175,7 @@ Containers and virtual machines are actually different ways of virtualizing your
 
 Virtual machines are usually created and managed by a program known as a hypervisor i.e. [Oracle VM VirtualBox](https://www.virtualbox.org/), [VMware Workstation](https://www.vmware.com/), [KVM](https://www.linux-kvm.org/), [Microsoft Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/about/), etc. This hypervisor program usually sits between the host operating system and the virtual machines to act as a medium of communication.
 
-![](.gitbook/assets/virtual-machines.svg)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/virtual-machines.svg)
 
 Each virtual machine comes with its own guest operating system which is just as heavy as the host operating system. Applications running inside a virtual machine communicates with the guest operating system, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the running application.
 
@@ -183,7 +183,7 @@ As you can see, there is a long chain of communication between applications runn
 
 Unlike a virtual machine, a container does the job of virtualization in a smarter way. Instead of having a complete guest operating system inside a container, it just utilizes the host operating system via the container runtime while maintaining isolation just like a traditional virtual machine.
 
-![](.gitbook/assets/containers.svg)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/containers.svg)
 
 The container runtime i.e. Docker sits between the containers and the host operating system instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure. As a result of eliminating the entire guest operating system layer, containers are much lighter and less resource-hogging than traditional virtual machines.
 
@@ -213,11 +213,11 @@ Containers are just images in running state. When you obtain an image from the i
 
 You've already learned about two very important pieces of the puzzle, _Container_ and _Image_. The final piece is _Registry_. An image registry is a centralized place where you can upload your images and can also download images created by others. [Docker Hub](https://hub.docker.com/) is the default public registry for Docker. Another very popular image registry is [Quay](https://quay.io/) by Red Hat. Throughout this article I'll be using Docker Hub as my registry of choice.
 
-![](.gitbook/assets/docker-hub.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/docker-hub.png)
 
 You can share any number of public images on Docker Hub for free. People around the world will be able to download them and use them freely. Images that I've uploaded are available on my profile \([fhsinchy](https://hub.docker.com/u/fhsinchy)\) page.
 
-![](.gitbook/assets/my-images-on-docker-hub.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/my-images-on-docker-hub.png)
 
 Apart from Docker Hub or Quay, you can also create your own image registry for hosting private images. There is also a local registry that runs within your computer that caches images pulled from remote registries.
 
@@ -239,7 +239,7 @@ You as user will usually execute commands using the client component. The client
 
 Okay, enough talking. Now it's time for you to understand how all these pieces of puzzle you just learned about works in harmony. Before I dive into the explanation of what really happened when you ran `docker run hello-world` command, let me show you a little diagram I've made:
 
-![](.gitbook/assets/docker-run-hello-world.svg)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/docker-run-hello-world.svg)
 
 This image is a slightly modified version of the one found in the official [docs](https://docs.docker.com/engine/images/architecture.svg). The series of events that occurred when you executed the command can be listed as follows:
 
@@ -324,7 +324,7 @@ When you wrote `--publish 8080:80` in the previous sub-section, it meant any req
 
 Now to access the application on your browser, visit `http://127.0.0.1:8080` address.
 
-![](.gitbook/assets/hello-dock.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/hello-dock.png)
 
 The container can be stopped by simply hitting `ctrl + c` key combination while the terminal window is in focus or closing off the terminal window completely.
 
@@ -480,7 +480,7 @@ docker container start hello-dock-container
 
 Now you can ensure that the container is running by looking at the list of running containers using the `container ls` command. The `container start` command starts any container in detached mode by default and retains any port configurations made previously. So if you visit `http://127.0.0.1:8080` now, you should be able to access the `hello-dock` application just like before.
 
-![](.gitbook/assets/hello-dock.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/hello-dock.png)
 
 Now, in scenarios where you would like to reboot a running container you may use the `container restart` command. The `container restart` command follows the exact syntax as the `container start` command.
 
@@ -802,7 +802,7 @@ docker container ls
 
 Now, if you visit `http://127.0.0.1:8080` in the browser, you'll see a default response page.
 
-![](.gitbook/assets/nginx-default.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/nginx-default.png)
 
 That's all nice and good, but what if you want to make a custom NGINX image which functions exactly like the official one, but is built by you? That's completely valid scenario to be honest. In fact, let's do that.
 
@@ -882,7 +882,7 @@ docker container ls
 
 To verify, visit `http://127.0.0.1:8080` and you should see the default response page.
 
-![](.gitbook/assets/nginx-default.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/nginx-default.png)
 
 ## Tagging Images
 
@@ -1222,7 +1222,7 @@ docker container ls
 
 A container using the `custom-nginx:built-v2` image has been successfully run. The container should be accessible at `http://127.0.0.1:8080` address now.
 
-![](.gitbook/assets/nginx-default.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/nginx-default.png)
 
 And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
 
@@ -1768,7 +1768,7 @@ docker container run \
 
 Now visit `http://127.0.0.1:3000` to see the `hello-dock` application in action.
 
-![](.gitbook/assets/hello-dock-dev.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/hello-dock-dev.png)
 
 Congratulations on running your first real-world application inside a container. The code you've just written is okay but there is one big issue with it and there are a few places where it can be improved. Let's begin with the issue first.
 
@@ -1778,13 +1778,13 @@ If you've worked with any front-end JavaScript framework before, you should know
 
 But if you make any change in your code right now, you'll see nothing happening to your application running in the browser. The reason behind this is the fact that you're making changes in the code that you have in your local file system but the application you're seeing in the browser resides inside the container file system.
 
-![](.gitbook/assets/local-vs-container-file-system.svg)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/local-vs-container-file-system.svg)
 
 To solve this issue, you can again make use of a [bind mount](https://docs.docker.com/storage/bind-mounts/). You've already had a brief encounter of bind mounts in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section.
 
 Using bind mounts, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system, the bind mount can reference the local file system directly from inside the container.
 
-![](.gitbook/assets/bind-mounts.svg)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/bind-mounts.svg)
 
 This way, any changes you make to your local source code will reflect immediately inside the container,  triggering the hot reload feature of `vite` development server. Changes made to the file system inside the container will reflect on your local file system as well.
 
@@ -1984,7 +1984,7 @@ docker container run \
 
 The running application should be available on `http://127.0.0.1:8080` address:
 
-![](.gitbook/assets/hello-dock-prod.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/hello-dock-prod.png)
 
 Here you can see my `hello-dock` application in all it's glory. Multi-staged builds can be very useful if you're building large applications with a lot of dependencies. If configured properly, images built in multiple stages can be very optimized and compact.
 
@@ -2638,7 +2638,7 @@ docker container ls
 
 The container is running now. You can visit `http://127.0.0.1:3000/` to see the API in action.
 
-![](.gitbook/assets/bonjour-mon-ami.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/bonjour-mon-ami.png)
 
 The API has five routes in total that you can see inside the `/notes-api/api/api/routes/notes.js` file. It was bootstrapped with one of my open-source projects:
 
@@ -3054,7 +3054,7 @@ If you've cloned the project code repository, then go inside the `fullstack-note
 
 Before we start with the `docker-compose.yaml` file let's look at a diagram of how the application is going to work:
 
-![](.gitbook/assets/fullstack-application-design.svg)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/fullstack-application-design.svg)
 
 Instead of accepting requests directly like we previously did, in this application, all the requests will be first received by a NGINX \(lets call it router\) service. The router will then see if the requested end-point has `/api` in it. If yes, the router will route the request to the back-end or if not, the router will route the request to the front-end.
 
@@ -3256,7 +3256,7 @@ docker-compose --file docker-compose.yaml up --detach
 
 Now visit `http://localhost:8080` and voilà!
 
-![](.gitbook/assets/notes-application.png)
+![](https://gitee.com/fengmengzhao/the-docker-handbook/raw/feature/add-Chinese-Edition-for-docker-handbook2021/.gitbook/assets/notes-application.png)
 
 Try adding and deleting notes to see if the application works properly or not. The project also comes with shell scripts and a `Makefile`. Explore them to see how you can run this project without the help of `docker-compose` like you did in the previous section.
 
