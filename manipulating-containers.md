@@ -89,7 +89,7 @@ docker container ls
 # 9f21cb777058        fhsinchy/hello-dock   "/docker-entrypoint.…"   5 seconds ago       Up 5 seconds        0.0.0.0:8080->80/tcp   gifted_sammet
 ```
 
-As you can see in the output, a container named `gifted_sammet` is running. In was created `5 seconds ago` and the status is the status is `Up 5 seconds,` which indicates that the container is running fine since it's creation.
+As you can see in the output, a container named `gifted_sammet` is running. In was created `5 seconds ago` and the status is `Up 5 seconds,` which indicates that the container is running fine since it's creation.
 
 The id if the container is `b6ada76e29c1` which is the first 12 characters of the full container id. The full container id is `9f21cb77705810797c4b847dbd330d9c732ffddba14fb435470567a7a3f46cdc` which is 64 characters long. This full container id was printed as the output of the `docker container run` command in the previous section.
 
