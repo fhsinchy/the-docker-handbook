@@ -336,7 +336,7 @@ docker container ls
 # 0d74e14091dc   fhsinchy/hello-dock   "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8888->80/tcp   hello-dock-volatile
 ```
 
-Now if stop the container and then check again with the `container ls --all` command:
+Now if you stop the container and then check again with the `container ls --all` command:
 
 ```text
 docker container stop hello-dock-volatile
