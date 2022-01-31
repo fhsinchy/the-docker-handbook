@@ -435,7 +435,7 @@ docker container run --rm busybox sh -c "echo -n my-secret | base64"
 # bXktc2VjcmV0
 ```
 
-What happens here is, in a `container run` command, whatever you pass after the image name gets passed to the default entry-point of the image. An entrypoint is like a gateway to the image. Most of the images except the executable images \(explained in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section\), uses shell or `sh` as the default entry-point. So any valid shell command can be passed to them as arguments.
+What happens here is, in a `container run` command, whatever you pass after the image name gets passed to the default entry-point of the image. An entrypoint is like a gateway to the image. Most of the images except the executable images \(explained in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section\), use shell or `sh` as the default entry-point. So any valid shell command can be passed to them as arguments.
 
 ## Working With Executable Images
 
