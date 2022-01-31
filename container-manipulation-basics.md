@@ -409,7 +409,7 @@ docker run alpine uname -a
 # Linux f08dbbe9199b 5.8.0-22-generic #23-Ubuntu SMP Fri Oct 9 00:34:40 UTC 2020 x86_64 Linux
 ```
 
-In this command, I've executed the `uname -a` command inside an Alpine Linux container. Scenarios like this where all you want is to execute a certain command inside a certain container is pretty common.
+In this command, I've executed the `uname -a` command inside an Alpine Linux container. Scenarios like this where all you want is to execute a certain command inside a certain container are pretty common.
 
 Assume that you want encode a string using the `base64` program which is something available in almost any Linux or Unix based operating system but not on Windows. In this situation you can quickly spin up a container using images like [busybox](https://hub.docker.com/_/busybox) and let it do the job.
 
