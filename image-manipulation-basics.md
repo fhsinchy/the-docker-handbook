@@ -258,7 +258,7 @@ Before diving into writing some code, let's plan out the process first. The imag
 Now that you have a plan, let's begin by opening up old `Dockerfile` and update its contet as follows:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 RUN apt-get update && \
     apt-get install build-essential\ 
@@ -306,7 +306,7 @@ Now to build an image using this code, execute the following command:
 ```text
 docker image build --tag custom-nginx:built .
 
-# Step 1/7 : FROM ubuntu:latest
+# Step 1/7 : FROM ubuntu:focal
 #  ---> d70eaf7277ea
 # Step 2/7 : RUN apt-get update &&     apt-get install build-essential                    libpcre3                     libpcre3-dev                     zlib1g                     zlib1g-dev                     libssl-dev                     -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*
 #  ---> Running in 2d0aa912ea47
@@ -345,7 +345,7 @@ This code is alright but there are some places where improvements can be made.
 Open up the `Dockerfile` file and update it's content as follows:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 RUN apt-get update && \
     apt-get install build-essential\ 
@@ -376,7 +376,7 @@ RUN cd ${FILENAME} && \
         --with-http_ssl_module && \
     make && make install
 
-RUN rm -rf /${FILENAME}}
+RUN rm -rf /${FILENAME}
 
 CMD ["nginx", "-g", "daemon off;"]
 ```
@@ -392,7 +392,7 @@ Rest of the code is almost unchanged. You should be able to understand the usage
 ```text
 docker image build --tag custom-nginx:built-v2 .
 
-# Step 1/9 : FROM ubuntu:latest
+# Step 1/9 : FROM ubuntu:focal
 #  ---> d70eaf7277ea
 # Step 2/9 : RUN apt-get update &&     apt-get install build-essential                    libpcre3                     libpcre3-dev                     zlib1g                     zlib1g-dev                     libssl-dev                     -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*
 #  ---> cbe1ced3da11
@@ -485,7 +485,7 @@ docker image ls
 In order to find out the root cause, let's have a look at the `Dockerfile` first:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 RUN apt-get update && \
     apt-get install build-essential\ 
@@ -516,7 +516,7 @@ RUN cd ${FILENAME} && \
         --with-http_ssl_module && \
     make && make install
 
-RUN rm -rf /${FILENAME}}
+RUN rm -rf /${FILENAME}
 
 CMD ["nginx", "-g", "daemon off;"]
 ```
@@ -526,7 +526,7 @@ As you can see on line 3, the `RUN` instruction installs a lot of stuff. Althoug
 To do so, update your `Dockerfile` as follows:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 EXPOSE 80
 
@@ -583,7 +583,7 @@ Let's build an image using this `Dockerfile` and see the differences.
 docker image build --tag custom-nginx:built .
 
 # Sending build context to Docker daemon  1.057MB
-# Step 1/7 : FROM ubuntu:latest
+# Step 1/7 : FROM ubuntu:focal
 #  ---> f63181f19b2f
 # Step 2/7 : EXPOSE 80
 #  ---> Running in 006f39b75964
