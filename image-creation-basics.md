@@ -258,7 +258,7 @@ Before diving into writing some code, let's plan out the process first. The imag
 Now that you have a plan, let's begin by opening up old `Dockerfile` and update its content as follows:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:20.04
 
 RUN apt-get update && \
     apt-get install build-essential\ 
