@@ -1,3 +1,9 @@
+---
+title: Hello World in Docker
+type: docs
+weight: 3
+---
+
 # Hello World in Docker
 
 Now that you have Docker up and running on your machine, it's time for you to run your first container. Open up the terminal and run the following command:
@@ -66,7 +72,7 @@ Containers and virtual machines are actually different ways of virtualizing your
 
 Virtual machines are usually created and managed by a program known as a hypervisor i.e. [Oracle VM VirtualBox](https://www.virtualbox.org/), [VMware Workstation](https://www.vmware.com/), [KVM](https://www.linux-kvm.org/), [Microsoft Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/about/), etc. This hypervisor program usually sits between the host operating system and the virtual machines to act as a medium of communication.
 
-![](.gitbook/assets/virtual-machines.svg)
+![](virtual-machines.svg)
 
 Each virtual machine comes with its own guest operating system which is just as heavy as the host operating system. Applications running inside a virtual machine communicates with the guest operating system, which talks to the hypervisor, which then in turn talks to the host operating system to allocate necessary resources from the physical infrastructure to the running application.
 
@@ -74,7 +80,7 @@ As you can see, there is a long chain of communication between applications runn
 
 Unlike a virtual machine, a container does the job of virtualization in a smarter way. Instead of having a complete guest operating system inside a container, it just utilizes the host operating system via the container runtime while maintaining isolation just like a traditional virtual machine.
 
-![](.gitbook/assets/containers.svg)
+![](containers.svg)
 
 The container runtime i.e. Docker sits between the containers and the host operating system instead of a hypervisor. The containers then communicate with the container runtime which then communicates with the host operating system to get necessary resources from the physical infrastructure. As a result of eliminating the entire guest operating system layer, containers are much lighter and less resource-hogging than traditional virtual machines.
 
@@ -104,11 +110,11 @@ Containers are just images in running state. When you obtain an image from the i
 
 You've already learned about two very important pieces of the puzzle, _Container_ and _Image_. The final piece is _Registry_. An image registry is a centralized place where you can upload your images and can also download images created by others. [Docker Hub](https://hub.docker.com/) is the default public registry for Docker. Another very popular image registry is [Quay](https://quay.io/) by Red Hat. Throughout this article I'll be using Docker Hub as my registry of choice.
 
-![](.gitbook/assets/docker-hub.png)
+![](docker-hub.png)
 
 You can share any number of public images on Docker Hub for free. People around the world will be able to download them and use them freely. Images that I've uploaded are available on my profile \([fhsinchy](https://hub.docker.com/u/fhsinchy)\) page.
 
-![](.gitbook/assets/my-images-on-docker-hub.png)
+![](my-images-on-docker-hub.png)
 
 Apart from Docker Hub or Quay, you can also create your own image registry for hosting private images. There is also a local registry that runs within your computer that caches images pulled from remote registries.
 
@@ -130,7 +136,7 @@ You as user will usually execute commands using the client component. The client
 
 Okay, enough talking. Now it's time for you to understand how all these pieces of puzzle you just learned about works in harmony. Before I dive into the explanation of what really happened when you ran `docker run hello-world` command, let me show you a little diagram I've made:
 
-![](.gitbook/assets/docker-run-hello-world.svg)
+![](docker-run-hello-world.svg)
 
 This image is a slightly modified version of the one found in the official [docs](https://docs.docker.com/engine/images/architecture.svg). The series of events that occurred when you executed the command can be listed as follows:
 

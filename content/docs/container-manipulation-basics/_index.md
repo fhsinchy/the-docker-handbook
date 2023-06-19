@@ -1,3 +1,9 @@
+---
+title: Container Manipulation Basics
+type: docs
+weight: 4
+---
+
 # Container Manipulation Basics
 
 In the previous sections, you've learned about the building blocks of Docker and have also run a container using the `docker run` command. In this section, you'll be learning about container manipulation in a lot more detail. Container manipulation is one of the most common task you'll be performing every single day so having a proper understanding of the various commands is crucial.
@@ -60,7 +66,7 @@ When you wrote `--publish 8080:80` in the previous sub-section, it meant any req
 
 Now to access the application on your browser, visit `http://127.0.0.1:8080` address.
 
-![](.gitbook/assets/hello-dock.png)
+![](hello-dock.png)
 
 The container can be stopped by simply hitting `ctrl + c` key combination while the terminal window is in focus or closing off the terminal window completely.
 
@@ -216,7 +222,7 @@ docker container start hello-dock-container
 
 Now you can ensure that the container is running by looking at the list of running containers using the `container ls` command. The `container start` command starts any container in detached mode by default and retains any port configurations made previously. So if you visit `http://127.0.0.1:8080` now, you should be able to access the `hello-dock` application just like before.
 
-![](.gitbook/assets/hello-dock.png)
+![](hello-dock.png)
 
 Now, in scenarios where you would like to reboot a running container you may use the `container restart` command. The `container restart` command follows the exact syntax as the `container start` command.
 

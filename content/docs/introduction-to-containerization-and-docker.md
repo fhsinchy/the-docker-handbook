@@ -1,3 +1,9 @@
+---
+title: Introduction to Containerization and Docker
+type: docs
+weight: 1
+---
+
 # Introduction to Containerization and Docker
 
 According to [IBM](https://www.ibm.com/cloud/learn/containerization#toc-what-is-co-r25Smlqq) —

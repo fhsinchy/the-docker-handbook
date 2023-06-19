@@ -1,3 +1,9 @@
+---
+title: Image Manipulation Basics
+type: docs
+weight: 5
+---
+
 # Image Manipulation Basics
 
 Now that you've a solid understanding of running containers using images available publicly, it's time for you to learn about creating your very own images.
@@ -25,7 +31,7 @@ docker container ls
 
 Now, if you visit `http://127.0.0.1:8080` in the browser, you'll see a default response page.
 
-![](.gitbook/assets/nginx-default.png)
+![](nginx-default.png)
 
 That's all nice and good, but what if you want to make a custom NGINX image which functions exactly like the official one, but is built by you? That's completely valid scenario to be honest. In fact, let's do that.
 
@@ -48,10 +54,10 @@ RUN apt-get update && \
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-Images are multi-layered files and In this file, each line \(known as instructions\) that you've written, creates a layer for your image.
+Images are multi-layered files and in this file, each line \(known as instructions\) that you've written, creates a layer for your image.
 
 * Every valid `Dockerfile` starts with a `FROM` instruction. This instruction sets the base image for your resultant image. By setting `ubuntu:latest` as the base image here, you get all the goodness of Ubuntu already available in your custom image hence, you can use things like the `apt-get` command for easy package installation.
-* The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` option explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that I won't  be discussing here.
+* The `EXPOSE` instruction is used to indicate the port that needs to be published. Using this instruction doesn't mean that you won't need to `--publish` the port. You'll still need to use the `--publish` option explicitly. This `EXPOSE` instruction works like a documentation for someone who's trying to run a container using your image. It also has some other usages that I won't be discussing here.
 * The `RUN` instruction in a `Dockerfile` executes a command inside the container shell. The `apt-get update && apt-get install nginx -y` command checks for updated package versions and installs NGINX. The `apt-get clean && rm -rf /var/lib/apt/lists/*` command is used for clearing the package cache because you don't want any unnecessary baggage in your image. These two commands are simple Ubuntu stuff, nothing fancy. The `RUN` instructions here, are written in `shell` form. These can also be written in `exec` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#run) for more information.
 * Finally the `CMD` instruction sets the default command for your image. This instruction is written in `exec` form here comprising of three separate parts. Here, `nginx` refers to the NGINX executable. The `-g` and `daemon off` are options for NGINX. Running NGINX as a single process inside containers is considered a best practice hence the usage of this option. The `CMD` instruction can also be written in `shell` form. You can consult the [official reference](https://docs.docker.com/engine/reference/builder/#cmd) for more information.
 
@@ -105,7 +111,7 @@ docker container ls
 
 To verify, visit `http://127.0.0.1:8080` and you should see the default response page.
 
-![](.gitbook/assets/nginx-default.png)
+![](nginx-default.png)
 
 ## Tagging Images
 
@@ -226,12 +232,12 @@ Now, let's have a closer look at the images beginning from image `d70eaf7277ea` 
 
 I've already mentioned in the previous sub-section that each instruction you write in the `Dockerfile` will create a layer in the image.
 
-*  `d70eaf7277ea` was created by `/bin/sh -c #(nop)  CMD ["/bin/bash"]` which indicates that the default shell inside Ubuntu has been loaded successfully.
+* `d70eaf7277ea` was created by `/bin/sh -c #(nop)  CMD ["/bin/bash"]` which indicates that the default shell inside Ubuntu has been loaded successfully.
 * `6fe4e51e35c1` was created by `/bin/sh -c #(nop)  EXPOSE 80` which was the second instruction in your code.
 * `587c805fe8df` was created by `/bin/sh -c apt-get update && apt-get install nginx -y && apt-get clean && rm -rf /var/lib/apt/lists/*` which was the third instruction in your code. You can also see that this image has a size of `60MB` given all necessary packages were installed during the execution of this instruction.
 * Finally the upper most layer `7f16387f7307` was created by `/bin/sh -c #(nop)  CMD ["nginx", "-g", "daemon off;"]` which sets the default command for this image.
 
-As you can see, the image comprises of many read-only layers each recording a new set of change to the state triggered by certain instructions. When you start a container using an image, a new writable layer on top of the other layers.
+As you can see, the image comprises of many read-only layers each recording a new set of change to the state triggered by certain instructions. When you start a container using an image, a new layer is written on top of the other layers.
 
 This layering phenomenon that happens every time you work with Docker has been made possible by an amazing technical concept called union file system. Here, union means union in set theory. According to [Wikipedia](https://en.wikipedia.org/wiki/UnionFS) - "It allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system. Contents of directories which have the same path within the merged branches will be seen together in a single merged directory, within the new, virtual filesystem."
 
@@ -241,11 +247,11 @@ By utilizing this concept, Docker can avoid data duplication, can use previously
 
 In the previous sub-section, you've learned about the `FROM`, `EXPOSE`, `RUN` and `CMD` instructions. In this sub-section you'll be learning a lot more about other instructions.
 
-In this sub-section you'll be again create a custom NGINX image but the twist is that you'll be building NGINX from source instead of installing it using some package manager such as `apt-get` in the previous example.
+In this sub-section you'll again create a custom NGINX image but the twist is that you'll be building NGINX from source instead of installing it using some package manager such as `apt-get` in the previous example.
 
 In order to build NGINX from source, you first need the source of NGINX. If you've cloned my projects repository you'll see a file named `nginx-1.19.2.tar.gz` inside the `custom-nginx` directory. You'll use this archive as the source for building NGINX.
 
-Before diving into writing some code, let's plan out the process first. The image process creation process this time can be done in seven steps. These are as follows:
+Before diving into writing some code, let's plan out the process first. The image creation process this time can be done in seven steps. These are as follows:
 
 * Get a good base image for building the application i.e. [ubuntu](https://hub.docker.com/_/ubuntu).
 * Install necessary build dependencies on the base image.
@@ -255,10 +261,10 @@ Before diving into writing some code, let's plan out the process first. The imag
 * Get rid of the extracted source code.
 * Run `nginx` executable.
 
-Now that you have a plan, let's begin by opening up old `Dockerfile` and update its content as follows:
+Now that you have a plan, let's begin by opening up old `Dockerfile` and update its contet as follows:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 RUN apt-get update && \
     apt-get install build-essential\ 
@@ -266,6 +272,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -294,7 +301,7 @@ As you can see, the code inside the `Dockerfile` reflects the seven steps I talk
 
 * The `FROM` instruction sets Ubuntu as the base image making an ideal environment for building any application.
 * The `RUN` instruction installs standard packages necessary for building NGINX from source.
-* The `COPY` instruction here is something new. This instruction is responsible for copying the `nginx-1.19.2.tar.gz` file inside the image. The generic syntax for the `COPY` instruction is `COPY <source> <destination>` where source is in your local filesystem and the destination is inside your image. The `.` as the destination means the working directory inside the image which is by default `/` unless set otherwise.
+* The `COPY` instruction here is something new. This instruction is responsible for copying the the `nginx-1.19.2.tar.gz` file inside the image. The generic syntax for the `COPY` instruction is `COPY <source> <destination>` where source is in your local filesystem and the destination is inside your image. The `.` as the destination means the working directory inside the image which is by default `/` unless set otherwise.
 * The second `RUN` instruction here extracts the contents from the archive using `tar` and gets rid of it afterwards.
 * The archive file contains a directory called `nginx-1.19.2` containing the source code. Hence on the next step, you'll have to `cd` inside that directory and perform the build process. You can read the [How to Install Software from Source Code… and Remove it Afterwards](https://itsfoss.com/install-software-from-source-code/) article at [It's Foss](https://itsfoss.com/) to learn more on the topic.
 * Once the build and installation is complete, you remove the `nginx-1.19.2` directory using `rm` command.
@@ -305,7 +312,7 @@ Now to build an image using this code, execute the following command:
 ```text
 docker image build --tag custom-nginx:built .
 
-# Step 1/7 : FROM ubuntu:latest
+# Step 1/7 : FROM ubuntu:focal
 #  ---> d70eaf7277ea
 # Step 2/7 : RUN apt-get update &&     apt-get install build-essential                    libpcre3                     libpcre3-dev                     zlib1g                     zlib1g-dev                     libssl-dev                     -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*
 #  ---> Running in 2d0aa912ea47
@@ -336,7 +343,7 @@ docker image build --tag custom-nginx:built .
 # Successfully tagged custom-nginx:built
 ```
 
-This code is alright but there are some places where improvements can be made. 
+This code is alright but there are some places where improvements can be made.
 
 * Instead of hard coding the filename like `nginx-1.19.2.tar.gz`, you can create an argument using the `ARG` instruction. This way, you'll be able to change the version or filename by just changing the argument.
 * Instead of downloading the archive manually, you can let the daemon download the file during the build process. There is another instruction like `COPY` called the `ADD` instruction which is capable of adding files from the internet.
@@ -344,7 +351,7 @@ This code is alright but there are some places where improvements can be made.
 Open up the `Dockerfile` file and update it's content as follows:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 RUN apt-get update && \
     apt-get install build-essential\ 
@@ -352,6 +359,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -374,7 +382,7 @@ RUN cd ${FILENAME} && \
         --with-http_ssl_module && \
     make && make install
 
-RUN rm -rf /${FILENAME}}
+RUN rm -rf /${FILENAME}
 
 CMD ["nginx", "-g", "daemon off;"]
 ```
@@ -388,9 +396,9 @@ The code is almost identical to the previous code block except a new instruction
 Rest of the code is almost unchanged. You should be able to understand the usage of the arguments by yourself now. Finally let's try to build an image from this updated code.
 
 ```text
-docker image build --tag custom-nginx:built .
+docker image build --tag custom-nginx:built-v2 .
 
-# Step 1/9 : FROM ubuntu:latest
+# Step 1/9 : FROM ubuntu:focal
 #  ---> d70eaf7277ea
 # Step 2/9 : RUN apt-get update &&     apt-get install build-essential                    libpcre3                     libpcre3-dev                     zlib1g                     zlib1g-dev                     libssl-dev                     -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*
 #  ---> cbe1ced3da11
@@ -425,31 +433,31 @@ docker image build --tag custom-nginx:built .
 # Removing intermediate container 63ee44b571bb
 #  ---> 4ce79556db1b
 # Successfully built 4ce79556db1b
-# Successfully tagged custom-nginx:built
+# Successfully tagged custom-nginx:built-v2
 ```
 
-Now you should be able to run a container using the `custom-nginx:built` image.
+Now you should be able to run a container using the `custom-nginx:built-v2` image.
 
 ```text
-docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built
+docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built-v2
 
 # 90ccdbc0b598dddc4199451b2f30a942249d85a8ed21da3c8d14612f17eed0aa
 
 docker container ls
 
 # CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS                  NAMES
-# 90ccdbc0b598        custom-nginx:built   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
+# 90ccdbc0b598        custom-nginx:built-v2   "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:8080->80/tcp   custom-nginx-built
 ```
 
 A container using the `custom-nginx:built-v2` image has been successfully run. The container should be accessible at `http://127.0.0.1:8080` address now.
 
-![](.gitbook/assets/nginx-default.png)
+![](nginx-default.png)
 
 And here is the trusty default response page from NGINX. You can visit the [official reference](https://docs.docker.com/engine/reference/builder/) site to learn more about the available instructions.
 
 ## Optimizing Images
 
-The image we built in the last sub-section is functional but very unoptimized. To prove my point let's  have a look at the size of the image using the `image ls` command:
+The image we built in the last sub-section is functional but very unoptimized. To prove my point let's have a look at the size of the image using the `image ls` command:
 
 ```text
 docker image ls
@@ -483,7 +491,7 @@ docker image ls
 In order to find out the root cause, let's have a look at the `Dockerfile` first:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 RUN apt-get update && \
     apt-get install build-essential\ 
@@ -491,6 +499,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -513,17 +522,17 @@ RUN cd ${FILENAME} && \
         --with-http_ssl_module && \
     make && make install
 
-RUN rm -rf /${FILENAME}}
+RUN rm -rf /${FILENAME}
 
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. Out of the 6 packages that we installed, only two are necessary for running NGINX. These are `libpcre3` and `zlib1g`. So a better idea can be to uninstall the other packages once the build process is done. 
+As you can see on line 3, the `RUN` instruction installs a lot of stuff. Although these packages are necessary for building NGINX from source, they are not necessary for running it. Out of the 6 packages that we installed, only two are necessary for running NGINX. These are `libpcre3` and `zlib1g`. So a better idea can be to uninstall the other packages once the build process is done.
 
 To do so, update your `Dockerfile` as follows:
 
 ```text
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 EXPOSE 80
 
@@ -538,6 +547,7 @@ RUN apt-get update && \
                     libpcre3-dev \
                     zlib1g \
                     zlib1g-dev \
+                    libssl1.1 \
                     libssl-dev \
                     -y && \
     tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
@@ -579,7 +589,7 @@ Let's build an image using this `Dockerfile` and see the differences.
 docker image build --tag custom-nginx:built .
 
 # Sending build context to Docker daemon  1.057MB
-# Step 1/7 : FROM ubuntu:latest
+# Step 1/7 : FROM ubuntu:focal
 #  ---> f63181f19b2f
 # Step 2/7 : EXPOSE 80
 #  ---> Running in 006f39b75964
@@ -663,7 +673,7 @@ The code is almost identical except a few changes. I'll be listing the changes a
 
 * Instead of using `apt-get install` for installing packages, we use `apk add` and the `--no-cache` option means that the downloaded package won't be cached. Likewise `apk del` is used instead of `apt-get remove` to uninstall packages.
 * The `--virtual` option for `apk add` command is used for bundling a bunch of packages into a single virtual package for easier management. Packages that are needed only for building the program is labeled as `.build-deps` which is then removed on line 29 by executing `apk del .build-deps` command. You can learn more about [virtuals](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html#_virtuals) in the official docs.
-* The packages names are a bit different here. Usually every Linux distribution has its package repository available to everyone where you can search for packages. If you know the packages required for a certain task then you can just head over to the designated repository for a distribution and search for it. You can look up Alpine Linux packages on [https://pkgs.alpinelinux.org/packages](https://pkgs.alpinelinux.org/packages) link.
+* The package names are a bit different here. Usually every Linux distribution has its package repository available to everyone where you can search for packages. If you know the packages required for a certain task then you can just head over to the designated repository for a distribution and search for it. You can look up Alpine Linux packages on [https://pkgs.alpinelinux.org/packages](https://pkgs.alpinelinux.org/packages) link.
 
 Now build a new image using this `Dockerfile` and see the difference in file size:
 
@@ -746,7 +756,7 @@ Explanation for the instructions in this file is as follows:
 
 * The `FROM` instruction sets [python](https://hub.docker.com/_/python) as the base image making an ideal environment for running python scripts. The `3-alpine` tag indicates that you want the Alpine variant of Python 3.
 * The `WORKDIR` instruction sets the default working directory to `/zone` here. The name of the working directory is completely random here. I found zone to be a fitting name, you may use anything you want.
-* Given the `rmbyext` script is installed from GitHub, `git` is a install time dependency. The `RUN` instruction on line 5 installs `git` then installs the `rmbyext` script using git and pip. It also gets rid of `git` afterwards.
+* Given the `rmbyext` script is installed from GitHub, `git` is an install time dependency. The `RUN` instruction on line 5 installs `git` then installs the `rmbyext` script using git and pip. It also gets rid of `git` afterwards.
 * Finally on line 9, the `ENTRYPOINT` instruction sets the `rmbyext` script as the entry-point for this image.
 
 In this entire file, line 9 is the magic that turns this seemingly normal image to an executable one. Now to build the image you can execute following command:
@@ -865,7 +875,7 @@ Take the `node` image as an example. The `node:lts` image refers to the long ter
 
 If you do not give the image any tag, it'll be automatically tagged as `latest`. But that doesn't mean that the `latest` tag will always refer to the latest version. If for some reason you explicitly tag an older version of the image as `latest` then Docker will not make any extra effort to cross check that.
 
-Once the image has been built, you can them upload that by executing the following command:
+Once the image has been built, you can then upload that by executing the following command:
 
 ```text
 docker image push <image repository>:<image tag>
@@ -887,5 +897,5 @@ docker image push fhsinchy/custom-nginx:latest
 # latest: digest: sha256:ffe93440256c9edb2ed67bf3bba3c204fec3a46a36ac53358899ce1a9eee497a size: 1788
 ```
 
-Depending on the image size, the upload may take some time. Once it's done you should able to find the image in your hub profile page.
+Depending on the image size, the upload may take some time. Once it's done you should be able to find the image in your hub profile page.
 

@@ -1,3 +1,9 @@
+---
+title: Conclusion
+type: docs
+weight: 10
+---
+
 # Conclusion
 
 I would like to thank you from the bottom of my heart for the time you've spent reading this book. I hope you've enjoyed it and have learned all the essentials of Docker.

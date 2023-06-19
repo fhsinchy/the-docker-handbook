@@ -1,3 +1,9 @@
+---
+title: Containerizing a JavaScript Application
+type: docs
+weight: 6
+---
+
 # Containerizing a JavaScript Application
 
 Now that you've got some idea of creating images, it's time to work with something a bit more relevant. In this sub-section, you'll be working with the source code of the [fhsinchy/hello-dock](https://hub.docker.com/r/fhsinchy/hello-dock) image that you worked with on a previous section. In the process of containerizing this very simple application, you'll be introduced to volumes and multi-staged builds, two of the most important concepts in Docker.
@@ -96,7 +102,7 @@ docker container run \
 
 Now visit `http://127.0.0.1:3000` to see the `hello-dock` application in action.
 
-![](.gitbook/assets/hello-dock-dev.png)
+![](hello-dock-dev.png)
 
 Congratulations on running your first real-world application inside a container. The code you've just written is okay but there is one big issue with it and there are a few places where it can be improved. Let's begin with the issue first.
 
@@ -106,13 +112,13 @@ If you've worked with any front-end JavaScript framework before, you should know
 
 But if you make any change in your code right now, you'll see nothing happening to your application running in the browser. The reason behind this is the fact that you're making changes in the code that you have in your local file system but the application you're seeing in the browser resides inside the container file system.
 
-![](.gitbook/assets/local-vs-container-file-system.svg)
+![](local-vs-container-file-system.svg)
 
 To solve this issue, you can again make use of a [bind mount](https://docs.docker.com/storage/bind-mounts/). You've already had a brief encounter of bind mounts in the [Working With Executable Images](container-manipulation-basics.md#working-with-executable-images) sub-section.
 
 Using bind mounts, you can easily mount one of your local file system directory inside a container. Instead of making a copy of the local file system, the bind mount can reference the local file system directly from inside the container.
 
-![](.gitbook/assets/bind-mounts.svg)
+![](bind-mounts.svg)
 
 This way, any changes you make to your local source code will reflect immediately inside the container,  triggering the hot reload feature of `vite` development server. Changes made to the file system inside the container will reflect on your local file system as well.
 
@@ -312,7 +318,7 @@ docker container run \
 
 The running application should be available on `http://127.0.0.1:8080` address:
 
-![](.gitbook/assets/hello-dock-prod.png)
+![](hello-dock-prod.png)
 
 Here you can see my `hello-dock` application in all it's glory. Multi-staged builds can be very useful if you're building large applications with a lot of dependencies. If configured properly, images built in multiple stages can be very optimized and compact.
 

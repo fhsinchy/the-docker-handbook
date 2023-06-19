@@ -1,3 +1,9 @@
+---
+title: Installing Docker
+type: docs
+weight: 2
+---
+
 # Installing Docker
 
 Installation of Docker varies greatly depending on the operating system you’re on but it's universally simple across the board. Docker runs flawlessly on all three major platforms, i.e. Mac, Windows and Linux. Among the three, the installation process on Mac is the easiest.
@@ -6,11 +12,11 @@ Installation of Docker varies greatly depending on the operating system you’re
 
 On a mac, all you have to do is navigate to the official [download page](https://www.docker.com/products/docker-desktop) and click the _Download for Mac \(stable\)_ button. You’ll get a regular looking _Apple Disk Image_ file and inside the file, there will be the application. All you have to do is drag the file and drop it on your Applications directory.
 
-![](.gitbook/assets/drag-docker-in-applications-directory.png)
+![](drag-docker-in-applications-directory.png)
 
 You can start Docker by simply double-clicking the application icon. Once the application start, you'll see the Docker icon appear on your menu-bar.
 
-![](.gitbook/assets/docker-icon-in-menubar.png)
+![](docker-icon-in-menubar.png)
 
 Now, open up the terminal and execute `docker --version` and `docker-compose --version` to ensure the success of the installation.
 
@@ -24,11 +30,11 @@ On Windows, the procedure is almost the same, except there are a few extra steps
 
 Once the installation is done, start _Docker Desktop_ either from the start menu or your desktop. The docker icon should show up on your taskbar.
 
-![](.gitbook/assets/docker-icon-in-taskbar.png)
+![](docker-icon-in-taskbar.png)
 
 Now, open up Ubuntu or whatever distribution you've installed from Microsoft Store. Execute `docker --version` and `docker-compose --version` commands to make sure that the installation was successful.
 
-![](.gitbook/assets/docker-and-compose-version-on-windows.png)
+![](docker-and-compose-version-on-windows.png)
 
 You can access Docker from your regular Command Prompt or PowerShell as well. It's just that I prefer using WSL2 over any other command line on Windows.
 
@@ -49,7 +55,7 @@ The Docker Desktop package on Windows or Mac is a collection of tools like `Dock
 
 Once the installation is done, open up the terminal and execute `docker --version` and `docker-compose --version` to ensure the success of the installation.
 
-![](.gitbook/assets/docker-and-compose-version-on-linux.png)
+![](docker-and-compose-version-on-linux.png)
 
 Although Docker performs quite well regardless of the platform you’re on, I prefer Linux over the others. Throughout the article, I’ll be switching between my [Ubuntu 20.10](https://releases.ubuntu.com/20.10/) and [Fedora 33](https://fedoramagazine.org/announcing-fedora-33/) workstations.
 

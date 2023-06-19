@@ -1,3 +1,9 @@
+---
+title: Containerizing a Multi-Container JavaScript Application
+type: docs
+weight: 8
+---
+
 # Containerizing a Multi-Container JavaScript Application
 
 Now that you've learned enough about networks in Docker, in this sub-section you'll learn to containerize a full-fledged multi-container project. The project you'll be working with is a simple `notes-api` powered by Express.js and PostgreSQL.
@@ -431,7 +437,7 @@ docker container ls
 
 The container is running now. You can visit `http://127.0.0.1:3000/` to see the API in action.
 
-![](.gitbook/assets/bonjour-mon-ami.png)
+![](bonjour-mon-ami.png)
 
 The API has five routes in total that you can see inside the `/notes-api/api/api/routes/notes.js` file. It was bootstrapped with one of my open-source projects:
 

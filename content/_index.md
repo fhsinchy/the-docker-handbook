@@ -1,6 +1,11 @@
+---
+title: The Docker Handbook
+type: docs
+---
+
 # The Docker Handbook
 
-![](.gitbook/assets/docker-handbook-preview.png)
+![](docker-handbook-preview.png)
 
 The concept of containerization itself is pretty old, but the emergence of the [Docker Engine](https://docs.docker.com/get-started/overview/#docker-engine) in 2013 has made it much easier to containerize your applications.
 
@@ -21,7 +26,7 @@ As in-demand as it may be, getting started can seem a bit intimidating at first.
 
 Code for the example projects can be found in the following repository:
 
-{% embed url="https://github.com/fhsinchy/docker-handbook-projects/" caption="spare a ⭐ to keep me motivated" %}
+[https://github.com/fhsinchy/docker-handbook-projects/](https://github.com/fhsinchy/docker-handbook-projects/)
 
 You can find the complete code in the [completed](https://github.com/fhsinchy/docker-handbook-projects/tree/completed) branch.
 
@@ -29,15 +34,15 @@ You can find the complete code in the [completed](https://github.com/fhsinchy/do
 
 This article is completely open-source and quality contributions are more than welcomed. You can find the full content in the following repository:
 
-{% embed url="https://github.com/fhsinchy/the-docker-handbook" caption="spare a ⭐ to keep me motivated" %}
+[https://github.com/fhsinchy/the-docker-handbook](https://github.com/fhsinchy/the-docker-handbook)
 
-I usually do my changes and updates on the GitBook version of the article first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the article in the following link:
+I usually do my changes and updates on the GitHub version of the article first and then publish them on freeCodeCamp. You can find the always updated and often incomplete version of the article in the following link:
 
-{% embed url="https://docker-handbook.farhan.dev/" caption="don\'t forget to leave a ⭐" %}
+[https://docker-handbook.farhan.dev/](https://docker-handbook.farhan.dev/)
 
 If you're looking for the complete and stable version of the article then freeCodeCamp will be the best place to go:
 
-{% embed url="https://www.freecodecamp.org/news/the-docker-handbook/" caption="sharing with others may help" %}
+[https://www.freecodecamp.org/news/the-docker-handbook/](https://www.freecodecamp.org/news/the-docker-handbook/)
 
 Which ever version of the article you end up reading though, don't forget to let me know your opinion. Constructive criticism is always welcomed.
 
