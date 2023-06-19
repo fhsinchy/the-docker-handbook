@@ -8,7 +8,7 @@ weight: 10
 
 I would like to thank you from the bottom of my heart for the time you've spent reading this book. I hope you've enjoyed it and have learned all the essentials of Docker.
 
-Apart from this one, I've written full-length handbooks on other complicated topics available for free on [freeCodeCamp](https://www.freecodecamp.org/news/the-docker-handbook/freecodecamp.org/news/author/farhanhasin/).
+Apart from this one, I've written full-length handbooks on other complicated topics available for free on [freeCodeCamp](https://www.freecodecamp.org/news/author/farhanhasin/).
 
 These handbooks are part of my mission to simplify hard to understand technologies for everyone. Each of these handbooks takes a lot of time and effort to write.
 
