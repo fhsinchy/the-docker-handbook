@@ -449,7 +449,7 @@ In the previous section, I briefly mentioned executable images. These images are
 
 Take for example my [rmbyext](https://github.com/fhsinchy/rmbyext) project. This is a simple python script capable of recursively deleting files of given extensions. To learn more about the project, you can checkout the repository:
 
-{% embed url="https://github.com/fhsinchy/rmbyext" caption="spare a ⭐ to keep me motivated" %}
+[https://github.com/fhsinchy/rmbyext](https://github.com/fhsinchy/rmbyext)
 
 If you have both git and python installed, you can install this script by executing the following command:
 
