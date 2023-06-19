@@ -1,4 +1,4 @@
-baseURL = 'http://fhsinchy.github.io/the-docker-handbook/'
+baseURL = 'https://docker-handbook.farhan.dev/'
 languageCode = 'en-us'
 title = 'The Docker Handbook'
 theme = 'hugo-book'
