@@ -1,9 +1,3 @@
----
-title: Containerizing a JavaScript Application
-type: docs
-weight: 6
----
-
 # Containerizing a JavaScript Application
 
 Now that you've got some idea of creating images, it's time to work with something a bit more relevant. In this sub-section, you'll be working with the source code of the [fhsinchy/hello-dock](https://hub.docker.com/r/fhsinchy/hello-dock) image that you worked with on a previous section. In the process of containerizing this very simple application, you'll be introduced to volumes and multi-staged builds, two of the most important concepts in Docker.

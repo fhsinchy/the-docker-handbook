@@ -1,9 +1,3 @@
----
-title: Network Manipulation Basics
-type: docs
-weight: 7
----
-
 # Network Manipulation Basics
 
 So far in this article, you've only worked with single container projects. But in real life, the majority of projects that you'll have to work with will have at least more than one container and to be honest, working with a bunch of containers can be a little difficult if you don't understand the nuances of container isolation. So in this section of the article you'll get familiar with basic networking with Docker and will work hands on with a small multi-container project.

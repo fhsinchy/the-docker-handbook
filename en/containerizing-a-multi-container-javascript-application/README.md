@@ -1,9 +1,3 @@
----
-title: Containerizing a Multi-Container JavaScript Application
-type: docs
-weight: 8
----
-
 # Containerizing a Multi-Container JavaScript Application
 
 Now that you've learned enough about networks in Docker, in this sub-section you'll learn to containerize a full-fledged multi-container project. The project you'll be working with is a simple `notes-api` powered by Express.js and PostgreSQL.

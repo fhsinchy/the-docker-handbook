@@ -1,9 +1,3 @@
----
-title: Image Manipulation Basics
-type: docs
-weight: 5
----
-
 # Image Manipulation Basics
 
 Now that you've a solid understanding of running containers using images available publicly, it's time for you to learn about creating your very own images.

@@ -1,9 +1,3 @@
----
-title: Composing Projects Using Docker-Compose
-type: docs
-weight: 9
----
-
 # Composing Projects Using Docker-Compose
 
 In the previous section, you've learned about managing a multi-container project and the difficulties of it. Instead of writing so many commands, there is an easier way to manage multi-container projects, a tool called [Docker Compose](https://docs.docker.com/compose/).

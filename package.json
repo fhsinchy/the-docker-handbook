@@ -1,0 +1,16 @@
+{
+    "name": "the-docker-handbook",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": [],
+    "license": "MIT",
+    "author": "Farhan Hasin Chowdhury",
+    "scripts": {
+        "build": "honkit build",
+        "dev": "honkit serve",
+        "pdf": "honkit pdf"
+    },
+    "devDependencies": {
+        "honkit": "^5.1.0"
+    }
+}

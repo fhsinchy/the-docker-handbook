@@ -1,9 +1,3 @@
----
-title: Hello World in Docker
-type: docs
-weight: 3
----
-
 # Hello World in Docker
 
 Now that you have Docker up and running on your machine, it's time for you to run your first container. Open up the terminal and run the following command:

@@ -1,8 +1,3 @@
----
-title: The Docker Handbook
-type: docs
----
-
 # The Docker Handbook
 
 ![](docker-handbook-preview.png)
