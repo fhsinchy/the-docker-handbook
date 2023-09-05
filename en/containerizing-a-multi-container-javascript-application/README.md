@@ -435,7 +435,7 @@ The container is running now. You can visit `http://127.0.0.1:3000/` to see the 
 
 The API has five routes in total that you can see inside the `/notes-api/api/api/routes/notes.js` file. It was bootstrapped with one of my open-source projects:
 
-{% embed url="https://github.com/fhsinchy/create-node-rocket-api" caption="spare a ⭐ to keep me motivated" %}
+https://github.com/fhsinchy/create-node-rocket-api
 
 Although the container is running, there is one last thing that you'll have to do before you can start using it. You'll have to run the database migration necessary for setting up the database tables, and you can do that by executing `npm run db:migrate` command inside the container.
 
