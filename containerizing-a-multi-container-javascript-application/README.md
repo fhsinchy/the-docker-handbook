@@ -196,7 +196,7 @@ Go to the directory where you've cloned the project codes. Inside there, go insi
 FROM node:lts-alpine as builder
 
 # install dependencies for node-gyp
-RUN apk add --no-cache python make g++
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 

@@ -15,7 +15,7 @@ Go the directory where you've cloned the repository that came with this article.
 FROM node:lts-alpine as builder
 
 # install dependencies for node-gyp
-RUN apk add --no-cache python make g++
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
@@ -172,7 +172,7 @@ docker-compose --file docker-compose.yaml up --detach
 #
 # Step 1/13 : FROM node:lts-alpine as builder
 #  ---> 471e8b4eb0b2
-# Step 2/13 : RUN apk add --no-cache python make g++
+# Step 2/13 : RUN apk add --no-cache python3 make g++
 #  ---> Running in 197056ec1964
 ### LONG INSTALLATION STUFF GOES HERE ###
 # Removing intermediate container 197056ec1964
@@ -438,7 +438,7 @@ docker-compose --file docker-compose.yaml up --detach
 # 
 # Step 1/13 : FROM node:lts-alpine as builder
 #  ---> 471e8b4eb0b2
-# Step 2/13 : RUN apk add --no-cache python make g++
+# Step 2/13 : RUN apk add --no-cache python3 make g++
 #  ---> Running in 8a4485388fd3
 ### LONG INSTALLATION STUFF GOES HERE ###
 # Removing intermediate container 8a4485388fd3
