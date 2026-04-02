@@ -1,0 +1,40 @@
+name: Handbook CI
+
+on:
+  push:
+    branches: [master, main, 'reboot/**']
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout handbook
+        uses: actions/checkout@v4
+
+      - name: Checkout projects repo
+        uses: actions/checkout@v4
+        with:
+          repository: fhsinchy/docker-handbook-projects
+          path: ../docker-handbook-projects
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build handbook
+        run: npm run build
+
+      - name: Validate project matrix
+        run: npm run validate:matrix
+
+      - name: Validate project links
+        run: npm run validate:links
+
+      - name: Validate markdown links
+        run: npm run validate:markdown

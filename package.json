@@ -8,7 +8,11 @@
     "scripts": {
         "build": "honkit build",
         "dev": "honkit serve",
-        "pdf": "honkit pdf"
+        "pdf": "honkit pdf",
+        "validate:matrix": "node scripts/validate-project-matrix.mjs",
+        "validate:links": "node scripts/validate-project-links.mjs",
+        "validate:markdown": "node scripts/validate-markdown-links.mjs",
+        "check": "npm run build && npm run validate:matrix && npm run validate:links && npm run validate:markdown"
     },
     "devDependencies": {
         "honkit": "^5.1.0"
